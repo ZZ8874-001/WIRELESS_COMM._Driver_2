@@ -1,0 +1,295 @@
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccyDziFh.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"freertos.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/freertos.c"
+  20              		.section	.text.StartQITask,"ax",%progbits
+  21              		.align	1
+  22              		.global	StartQITask
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	StartQITask:
+  28              	.LVL0:
+  29              	.LFB128:
+   1:Core/Src/freertos.c **** /* USER CODE BEGIN Header */
+   2:Core/Src/freertos.c **** /**
+   3:Core/Src/freertos.c ****   ******************************************************************************
+   4:Core/Src/freertos.c ****   * File Name          : freertos.c
+   5:Core/Src/freertos.c ****   * Description        : Code for freertos applications
+   6:Core/Src/freertos.c ****   ******************************************************************************
+   7:Core/Src/freertos.c ****   * @attention
+   8:Core/Src/freertos.c ****   *
+   9:Core/Src/freertos.c ****   * Copyright (c) 2025 STMicroelectronics.
+  10:Core/Src/freertos.c ****   * All rights reserved.
+  11:Core/Src/freertos.c ****   *
+  12:Core/Src/freertos.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  13:Core/Src/freertos.c ****   * in the root directory of this software component.
+  14:Core/Src/freertos.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:Core/Src/freertos.c ****   *
+  16:Core/Src/freertos.c ****   ******************************************************************************
+  17:Core/Src/freertos.c ****   */
+  18:Core/Src/freertos.c **** /* USER CODE END Header */
+  19:Core/Src/freertos.c **** 
+  20:Core/Src/freertos.c **** /* Includes ------------------------------------------------------------------*/
+  21:Core/Src/freertos.c **** #include "FreeRTOS.h"
+  22:Core/Src/freertos.c **** #include "task.h"
+  23:Core/Src/freertos.c **** #include "main.h"
+  24:Core/Src/freertos.c **** #include "cmsis_os.h"
+  25:Core/Src/freertos.c **** 
+  26:Core/Src/freertos.c **** /* Private includes ----------------------------------------------------------*/
+  27:Core/Src/freertos.c **** /* USER CODE BEGIN Includes */
+  28:Core/Src/freertos.c **** #include "wirelessrx.h"
+  29:Core/Src/freertos.c **** /* USER CODE END Includes */
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccyDziFh.s 			page 2
+
+
+  30:Core/Src/freertos.c **** 
+  31:Core/Src/freertos.c **** /* Private typedef -----------------------------------------------------------*/
+  32:Core/Src/freertos.c **** /* USER CODE BEGIN PTD */
+  33:Core/Src/freertos.c **** 
+  34:Core/Src/freertos.c **** /* USER CODE END PTD */
+  35:Core/Src/freertos.c **** 
+  36:Core/Src/freertos.c **** /* Private define ------------------------------------------------------------*/
+  37:Core/Src/freertos.c **** /* USER CODE BEGIN PD */
+  38:Core/Src/freertos.c **** 
+  39:Core/Src/freertos.c **** /* USER CODE END PD */
+  40:Core/Src/freertos.c **** 
+  41:Core/Src/freertos.c **** /* Private macro -------------------------------------------------------------*/
+  42:Core/Src/freertos.c **** /* USER CODE BEGIN PM */
+  43:Core/Src/freertos.c **** 
+  44:Core/Src/freertos.c **** /* USER CODE END PM */
+  45:Core/Src/freertos.c **** 
+  46:Core/Src/freertos.c **** /* Private variables ---------------------------------------------------------*/
+  47:Core/Src/freertos.c **** /* USER CODE BEGIN Variables */
+  48:Core/Src/freertos.c **** 
+  49:Core/Src/freertos.c **** /* USER CODE END Variables */
+  50:Core/Src/freertos.c **** /* Definitions for QITask */
+  51:Core/Src/freertos.c **** osThreadId_t QITaskHandle;
+  52:Core/Src/freertos.c **** const osThreadAttr_t QITask_attributes = {
+  53:Core/Src/freertos.c ****   .name = "QITask",
+  54:Core/Src/freertos.c ****   .stack_size = 128 * 4,
+  55:Core/Src/freertos.c ****   .priority = (osPriority_t) osPriorityNormal,
+  56:Core/Src/freertos.c **** };
+  57:Core/Src/freertos.c **** 
+  58:Core/Src/freertos.c **** /* Private function prototypes -----------------------------------------------*/
+  59:Core/Src/freertos.c **** /* USER CODE BEGIN FunctionPrototypes */
+  60:Core/Src/freertos.c **** 
+  61:Core/Src/freertos.c **** /* USER CODE END FunctionPrototypes */
+  62:Core/Src/freertos.c **** 
+  63:Core/Src/freertos.c **** void StartQITask(void *argument);
+  64:Core/Src/freertos.c **** 
+  65:Core/Src/freertos.c **** void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
+  66:Core/Src/freertos.c **** 
+  67:Core/Src/freertos.c **** /**
+  68:Core/Src/freertos.c ****   * @brief  FreeRTOS initialization
+  69:Core/Src/freertos.c ****   * @param  None
+  70:Core/Src/freertos.c ****   * @retval None
+  71:Core/Src/freertos.c ****   */
+  72:Core/Src/freertos.c **** void MX_FREERTOS_Init(void) {
+  73:Core/Src/freertos.c ****   /* USER CODE BEGIN Init */
+  74:Core/Src/freertos.c **** 
+  75:Core/Src/freertos.c ****   /* USER CODE END Init */
+  76:Core/Src/freertos.c **** 
+  77:Core/Src/freertos.c ****   /* USER CODE BEGIN RTOS_MUTEX */
+  78:Core/Src/freertos.c ****   /* add mutexes, ... */
+  79:Core/Src/freertos.c ****   /* USER CODE END RTOS_MUTEX */
+  80:Core/Src/freertos.c **** 
+  81:Core/Src/freertos.c ****   /* USER CODE BEGIN RTOS_SEMAPHORES */
+  82:Core/Src/freertos.c ****   /* add semaphores, ... */
+  83:Core/Src/freertos.c ****   /* USER CODE END RTOS_SEMAPHORES */
+  84:Core/Src/freertos.c **** 
+  85:Core/Src/freertos.c ****   /* USER CODE BEGIN RTOS_TIMERS */
+  86:Core/Src/freertos.c ****   /* start timers, add new ones, ... */
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccyDziFh.s 			page 3
+
+
+  87:Core/Src/freertos.c ****   /* USER CODE END RTOS_TIMERS */
+  88:Core/Src/freertos.c **** 
+  89:Core/Src/freertos.c ****   /* USER CODE BEGIN RTOS_QUEUES */
+  90:Core/Src/freertos.c ****   /* add queues, ... */
+  91:Core/Src/freertos.c ****   /* USER CODE END RTOS_QUEUES */
+  92:Core/Src/freertos.c **** 
+  93:Core/Src/freertos.c ****   /* Create the thread(s) */
+  94:Core/Src/freertos.c ****   /* creation of QITask */
+  95:Core/Src/freertos.c ****   QITaskHandle = osThreadNew(StartQITask, NULL, &QITask_attributes);
+  96:Core/Src/freertos.c **** 
+  97:Core/Src/freertos.c ****   /* USER CODE BEGIN RTOS_THREADS */
+  98:Core/Src/freertos.c ****   /* add threads, ... */
+  99:Core/Src/freertos.c ****   /* USER CODE END RTOS_THREADS */
+ 100:Core/Src/freertos.c **** 
+ 101:Core/Src/freertos.c ****   /* USER CODE BEGIN RTOS_EVENTS */
+ 102:Core/Src/freertos.c ****   /* add events, ... */
+ 103:Core/Src/freertos.c ****   /* USER CODE END RTOS_EVENTS */
+ 104:Core/Src/freertos.c **** 
+ 105:Core/Src/freertos.c **** }
+ 106:Core/Src/freertos.c **** 
+ 107:Core/Src/freertos.c **** /* USER CODE BEGIN Header_StartQITask */
+ 108:Core/Src/freertos.c **** /**
+ 109:Core/Src/freertos.c ****   * @brief  Function implementing the QITask thread.
+ 110:Core/Src/freertos.c ****   * @param  argument: Not used
+ 111:Core/Src/freertos.c ****   * @retval None
+ 112:Core/Src/freertos.c ****   */
+ 113:Core/Src/freertos.c **** /* USER CODE END Header_StartQITask */
+ 114:Core/Src/freertos.c **** void StartQITask(void *argument)
+ 115:Core/Src/freertos.c **** {
+  30              		.loc 1 115 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 8
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 115 1 is_stmt 0 view .LVU1
+  35 0000 00B5     		push	{lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 4
+  38              		.cfi_offset 14, -4
+  39 0002 83B0     		sub	sp, sp, #12
+  40              	.LCFI1:
+  41              		.cfi_def_cfa_offset 16
+ 116:Core/Src/freertos.c ****   /* USER CODE BEGIN StartQITask */
+ 117:Core/Src/freertos.c ****   TickType_t xLastWakeTime = xTaskGetTickCount();
+  42              		.loc 1 117 3 is_stmt 1 view .LVU2
+  43              		.loc 1 117 30 is_stmt 0 view .LVU3
+  44 0004 FFF7FEFF 		bl	xTaskGetTickCount
+  45              	.LVL1:
+  46              		.loc 1 117 14 view .LVU4
+  47 0008 0190     		str	r0, [sp, #4]
+ 118:Core/Src/freertos.c ****   const TickType_t xFrequency = pdMS_TO_TICKS(0.5f); // 1 tick = 0.25 ms
+  48              		.loc 1 118 3 is_stmt 1 view .LVU5
+  49              	.LVL2:
+  50              	.L2:
+ 119:Core/Src/freertos.c ****   /* Infinite loop */
+ 120:Core/Src/freertos.c ****   for(;;)
+  51              		.loc 1 120 3 discriminator 1 view .LVU6
+ 121:Core/Src/freertos.c ****   {
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccyDziFh.s 			page 4
+
+
+ 122:Core/Src/freertos.c ****     QITask();
+  52              		.loc 1 122 5 discriminator 1 view .LVU7
+  53 000a FFF7FEFF 		bl	QITask
+  54              	.LVL3:
+ 123:Core/Src/freertos.c ****     vTaskDelayUntil(&xLastWakeTime, xFrequency);
+  55              		.loc 1 123 5 discriminator 1 view .LVU8
+  56 000e 0021     		movs	r1, #0
+  57 0010 01A8     		add	r0, sp, #4
+  58 0012 FFF7FEFF 		bl	vTaskDelayUntil
+  59              	.LVL4:
+ 120:Core/Src/freertos.c ****   {
+  60              		.loc 1 120 3 discriminator 1 view .LVU9
+  61 0016 F8E7     		b	.L2
+  62              		.cfi_endproc
+  63              	.LFE128:
+  65              		.section	.text.MX_FREERTOS_Init,"ax",%progbits
+  66              		.align	1
+  67              		.global	MX_FREERTOS_Init
+  68              		.syntax unified
+  69              		.thumb
+  70              		.thumb_func
+  72              	MX_FREERTOS_Init:
+  73              	.LFB127:
+  72:Core/Src/freertos.c ****   /* USER CODE BEGIN Init */
+  74              		.loc 1 72 29 view -0
+  75              		.cfi_startproc
+  76              		@ args = 0, pretend = 0, frame = 0
+  77              		@ frame_needed = 0, uses_anonymous_args = 0
+  78 0000 08B5     		push	{r3, lr}
+  79              	.LCFI2:
+  80              		.cfi_def_cfa_offset 8
+  81              		.cfi_offset 3, -8
+  82              		.cfi_offset 14, -4
+  95:Core/Src/freertos.c **** 
+  83              		.loc 1 95 3 view .LVU11
+  95:Core/Src/freertos.c **** 
+  84              		.loc 1 95 18 is_stmt 0 view .LVU12
+  85 0002 044A     		ldr	r2, .L6
+  86 0004 0021     		movs	r1, #0
+  87 0006 0448     		ldr	r0, .L6+4
+  88 0008 FFF7FEFF 		bl	osThreadNew
+  89              	.LVL5:
+  95:Core/Src/freertos.c **** 
+  90              		.loc 1 95 16 view .LVU13
+  91 000c 034B     		ldr	r3, .L6+8
+  92 000e 1860     		str	r0, [r3]
+ 105:Core/Src/freertos.c **** 
+  93              		.loc 1 105 1 view .LVU14
+  94 0010 08BD     		pop	{r3, pc}
+  95              	.L7:
+  96 0012 00BF     		.align	2
+  97              	.L6:
+  98 0014 00000000 		.word	QITask_attributes
+  99 0018 00000000 		.word	StartQITask
+ 100 001c 00000000 		.word	QITaskHandle
+ 101              		.cfi_endproc
+ 102              	.LFE127:
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccyDziFh.s 			page 5
+
+
+ 104              		.global	QITask_attributes
+ 105              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 106              		.align	2
+ 107              	.LC0:
+ 108 0000 51495461 		.ascii	"QITask\000"
+ 108      736B00
+ 109              		.section	.rodata.QITask_attributes,"a"
+ 110              		.align	2
+ 113              	QITask_attributes:
+ 114 0000 00000000 		.word	.LC0
+ 115 0004 00000000 		.space	16
+ 115      00000000 
+ 115      00000000 
+ 115      00000000 
+ 116 0014 00020000 		.word	512
+ 117 0018 18000000 		.word	24
+ 118 001c 00000000 		.space	8
+ 118      00000000 
+ 119              		.global	QITaskHandle
+ 120              		.section	.bss.QITaskHandle,"aw",%nobits
+ 121              		.align	2
+ 124              	QITaskHandle:
+ 125 0000 00000000 		.space	4
+ 126              		.text
+ 127              	.Letext0:
+ 128              		.file 2 "e:\\vscode\\msys2\\mingw64\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 129              		.file 3 "e:\\vscode\\msys2\\mingw64\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 130              		.file 4 "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h"
+ 131              		.file 5 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h"
+ 132              		.file 6 "Middlewares/Third_Party/FreeRTOS/Source/include/task.h"
+ 133              		.file 7 "Application/wirelessrx.h"
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccyDziFh.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 freertos.c
+C:\Users\31005\AppData\Local\Temp\ccyDziFh.s:21     .text.StartQITask:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccyDziFh.s:27     .text.StartQITask:00000000 StartQITask
+C:\Users\31005\AppData\Local\Temp\ccyDziFh.s:66     .text.MX_FREERTOS_Init:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccyDziFh.s:72     .text.MX_FREERTOS_Init:00000000 MX_FREERTOS_Init
+C:\Users\31005\AppData\Local\Temp\ccyDziFh.s:98     .text.MX_FREERTOS_Init:00000014 $d
+C:\Users\31005\AppData\Local\Temp\ccyDziFh.s:113    .rodata.QITask_attributes:00000000 QITask_attributes
+C:\Users\31005\AppData\Local\Temp\ccyDziFh.s:124    .bss.QITaskHandle:00000000 QITaskHandle
+C:\Users\31005\AppData\Local\Temp\ccyDziFh.s:106    .rodata.str1.4:00000000 $d
+C:\Users\31005\AppData\Local\Temp\ccyDziFh.s:110    .rodata.QITask_attributes:00000000 $d
+C:\Users\31005\AppData\Local\Temp\ccyDziFh.s:121    .bss.QITaskHandle:00000000 $d
+
+UNDEFINED SYMBOLS
+xTaskGetTickCount
+QITask
+vTaskDelayUntil
+osThreadNew

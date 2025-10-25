@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "filter32.h": "c",
+        "wirelessrx.h": "c"
+    }
+}
