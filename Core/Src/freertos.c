@@ -114,14 +114,14 @@ void MX_FREERTOS_Init(void) {
 void StartQITask(void *argument)
 {
   /* USER CODE BEGIN StartQITask */
-  TickType_t xLastWakeTime = xTaskGetTickCount();
-  const TickType_t xFrequency = pdMS_TO_TICKS(0.5f); // 1 tick = 0.25 ms
+  // TickType_t xLastWakeTime = xTaskGetTickCount();
+  // const TickType_t xFrequency = pdMS_TO_TICKS(0.5f); // 1 tick = 0.5 ms
   /* Infinite loop */
   for(;;)
   {
-    QITask();
-    vTaskDelayUntil(&xLastWakeTime, xFrequency);
-    // osDelay(1);
+    // QITask();
+    // vTaskDelayUntil(&xLastWakeTime, xFrequency);
+    osDelay(1);
   }
   /* USER CODE END StartQITask */
 }

@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "filter32.h": "c",
-        "wirelessrx.h": "c"
+        "wirelessrx.h": "c",
+        "cmsis_os.h": "c"
     }
 }

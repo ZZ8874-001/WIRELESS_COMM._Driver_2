@@ -36,32 +36,40 @@ void WirelessInit()
 
 void QITask()
 {
+    static uint8_t count_connected = 0;
+    static uint8_t count_connecting = 0;
+
     switch(RxStatus)
     {
     case RxStatus_Connecting:
+        SwitchHighOrLowPower(SOF[count_connecting%8]);
+        count_connected = 0;
+        count_connecting++;
+        break;
+    case RxStatus_Connected:
         // 0.5ms
-        static uint8_t count = 0;
         static uint8_t data = 0;
 
-        if(count < 8)
+        if(count_connected < 8)
         {
-            SwitchHighOrLowPower(SOF[count]);
+            SwitchHighOrLowPower(SOF[count_connected]);
             data =  (uint8_t)VIn_f;
         }
-        else if(count < 16)
+        else if(count_connected < 16)
         {
-            DOF[count - 8] = (data >> (15 - count)) & 0x01;
-            SwitchHighOrLowPower(DOF[count - 8]);
+            DOF[count_connected - 8] = (data >> (15 - count_connected)) & 0x01;
+            SwitchHighOrLowPower(DOF[count_connected - 8]);
         }
-        else if(count < 200)
+        else if(count_connected < 200)
         {
             HighPower();
         }
         else
         {
-            count = 0;
+            count_connected = 0;
         }
-        count++;
+        count_connected++;
+        count_connecting = 0;
         break;
     case RxStatus_Disconnected:
         HighPower();
@@ -86,10 +94,10 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
         {
             RxStatus = RxStatus_Connecting;
         }
-        else
+        else if(RxStatus != RxStatus_Connecting && RxStatus != RxStatus_Connected)
         {
             RxStatus = RxStatus_Disconnected;
-        };
+        }
     }
     
     // static int time = 0;        //ADC采样次数
@@ -136,14 +144,14 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 
 void LowPower()
 {
-    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_8,GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_9,GPIO_PIN_SET);
+    HAL_GPIO_WritePin(PULSEA_GPIO_Port,PULSEA_Pin,GPIO_PIN_SET);
+    HAL_GPIO_WritePin(PULSEB_GPIO_Port,PULSEB_Pin,GPIO_PIN_SET);
 }
 
 void HighPower()
 {
-    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_8,GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_9,GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(PULSEA_GPIO_Port,PULSEA_Pin,GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(PULSEB_GPIO_Port,PULSEB_Pin,GPIO_PIN_RESET);
 }
 
 //BBEN开则电容充电，关则电容不充电
@@ -151,11 +159,11 @@ void SwitchBBEN(int On_Off)
 {
     if(On_Off)
     {
-        HAL_GPIO_WritePin(GPIOA,GPIO_PIN_7,GPIO_PIN_SET);
+        HAL_GPIO_WritePin(BBEN_GPIO_Port,BBEN_Pin,GPIO_PIN_SET);
     }
     else
     {
-        HAL_GPIO_WritePin(GPIOA,GPIO_PIN_7,GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(BBEN_GPIO_Port,BBEN_Pin,GPIO_PIN_RESET);
     }
 
 }
@@ -164,25 +172,25 @@ void SwitchENA_ENB(int On_Off)
 {
     if(On_Off)
     {
-        HAL_GPIO_WritePin(GPIOA,GPIO_PIN_3,GPIO_PIN_SET);
-        HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,GPIO_PIN_SET);
+        HAL_GPIO_WritePin(ENA_GPIO_Port,ENA_Pin,GPIO_PIN_SET);
+        HAL_GPIO_WritePin(ENB_GPIO_Port,ENB_Pin,GPIO_PIN_SET);
     }
     else
     {
-        HAL_GPIO_WritePin(GPIOA,GPIO_PIN_3,GPIO_PIN_RESET);
-        HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(ENA_GPIO_Port,ENA_Pin,GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(ENB_GPIO_Port,ENB_Pin,GPIO_PIN_RESET);
     }
 }
 
 void SwitchHighOrLowPower(int On_Off)
 {
-    if(On_Off == 0)
+    if(On_Off)
     {
-        HighPower();
+        LowPower();
     }
     else
     {
-        LowPower();
+        HighPower();
     }
     
 }
