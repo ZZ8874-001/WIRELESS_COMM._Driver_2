@@ -21,6 +21,7 @@ enum RxStatus_t
     RxStatus_Connecting = 1,
     RxStatus_Disconnected = 2,
     RxStatus_Connected = 3,
+    RxStatus_Debug = 4,
 };
 
 
@@ -34,8 +35,8 @@ void SwitchENA_ENB(int On_Off);
 void SwitchHighOrLowPower(int On_Off);
 void IntLimiter(int num,int min,int max);
 void QITask();
-
-
+void SOF_To_Decode();
+void DOF_To_Decode();
 
 
 #endif

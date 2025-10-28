@@ -8,8 +8,11 @@ float V_values[ADC_DataSize];
 uint32_t DWT_Count;
 float VIn_f;
 float VCC_f;
-uint8_t SOF[8] = {0,1,1,1,1,0,1,0};//0是高功率，1是低功率
-uint8_t DOF[8] = {0,0,0,0,0,0,0,0};
+// 10100110
+uint8_t SOF[8] = {1,0,1,0,0,1,1,0};//0是高功率，1是低功率
+uint8_t SOF_decode[16];
+uint8_t DOF[16] = {1,0,0,0,0,0,0,0};
+uint8_t DOF_decode[16];
 First_Order_Filter_t VInFilter;
 First_Order_Filter_t VCCFilter;
 enum RxStatus_t RxStatus = RxStatus_Unknow;
@@ -31,37 +34,54 @@ void WirelessInit()
 
     First_Order_Filter_Init(&VInFilter,1/97500.0f,30.0f);
     First_Order_Filter_Init(&VCCFilter,1/97500.0f,30.0f);
+    SOF_To_Decode();
 
 }
 
 void QITask()
 {
-    static uint8_t count_connected = 0;
-    static uint8_t count_connecting = 0;
+    static uint8_t data = 0;
+    static uint16_t count_connected = 0;
+    static uint16_t count_debug = 0;
 
     switch(RxStatus)
     {
-    case RxStatus_Connecting:
-        SwitchHighOrLowPower(SOF[count_connecting%8]);
+    case RxStatus_Debug:
+        if(count_debug < 16)
+        {
+            SwitchENA_ENB(On);
+            SwitchHighOrLowPower(SOF_decode[count_debug]);
+        }
+        else if(count_debug < 32)
+        {
+            SwitchENA_ENB(On);
+            DOF_To_Decode();
+            SwitchHighOrLowPower(DOF_decode[count_debug - 16]);
+        }
+        else
+        {
+            count_debug = 0;
+        }
+        count_debug++;
         count_connected = 0;
-        count_connecting++;
         break;
     case RxStatus_Connected:
-        // 0.5ms
-        static uint8_t data = 0;
-
-        if(count_connected < 8)
+        // 0.25ms 4kHz
+        // 100ms 1period
+        if(count_connected < 16)
         {
-            SwitchHighOrLowPower(SOF[count_connected]);
-            data =  (uint8_t)VIn_f;
+            SwitchENA_ENB(On);
+            SwitchHighOrLowPower(SOF_decode[count_connected]);
         }
-        else if(count_connected < 16)
+        else if(count_connected < 32)
         {
-            DOF[count_connected - 8] = (data >> (15 - count_connected)) & 0x01;
-            SwitchHighOrLowPower(DOF[count_connected - 8]);
+            SwitchENA_ENB(On);
+            DOF_To_Decode();
+            SwitchHighOrLowPower(DOF_decode[count_connected - 16]);
         }
-        else if(count_connected < 200)
+        else if(count_connected < 400)
         {
+            SwitchENA_ENB(Off);
             HighPower();
         }
         else
@@ -69,14 +89,63 @@ void QITask()
             count_connected = 0;
         }
         count_connected++;
-        count_connecting = 0;
+        count_debug = 0;
         break;
     case RxStatus_Disconnected:
+        SwitchENA_ENB(Off);
         HighPower();
         break;
     }
     
 }
+
+void SOF_To_Decode()
+{
+    SOF_decode[0] = 1;
+    SOF_decode[1] = 0;
+    for(int i=1;i<8;i++)
+    {
+        if(SOF[i] == 1)
+        {
+            SOF_decode[i*2] = !SOF_decode[i*2-1];
+            SOF_decode[i*2+1] = SOF_decode[i*2-1];       
+        }
+        else
+        {
+            SOF_decode[i*2] = !SOF_decode[i*2-1];
+            SOF_decode[i*2+1] = !SOF_decode[i*2-1];
+        }
+    }
+}
+
+void DOF_To_Decode()
+{
+    if(DOF[0] == 1)
+    {
+        DOF_decode[0] = !SOF_decode[15];
+        DOF_decode[1] = SOF_decode[15];
+    }
+    else
+    {
+        DOF_decode[0] = !SOF_decode[15];
+        DOF_decode[1] = !SOF_decode[15];
+    }
+
+    for(int i=1;i<8;i++)
+    {
+        if(DOF[i] == 1)
+        {
+            DOF_decode[i*2] = !DOF_decode[i*2-1];
+            DOF_decode[i*2+1] = DOF_decode[i*2-1];       
+        }
+        else
+        {
+            DOF_decode[i*2] = !DOF_decode[i*2-1];
+            DOF_decode[i*2+1] = !DOF_decode[i*2-1];
+        }
+    }
+}
+
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
     if(hadc == &hadc1)
@@ -90,13 +159,18 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
         VIn_f = First_Order_Filter_Calculate(&VInFilter,V_values[ADCVIN]);
         VCC_f = First_Order_Filter_Calculate(&VCCFilter,V_values[ADCVCC]);
 
-        if(VIn_f > 18.0f && RxStatus != RxStatus_Connected)
+        VIn_f = 20.0f;
+        if(RxStatus != RxStatus_Debug)
         {
-            RxStatus = RxStatus_Connecting;
-        }
-        else if(RxStatus != RxStatus_Connecting && RxStatus != RxStatus_Connected)
-        {
-            RxStatus = RxStatus_Disconnected;
+            if(VIn_f > 19.0f)
+            {
+                // RxStatus = RxStatus_Connecting;
+                RxStatus = RxStatus_Connected;
+            }
+            else if(VIn_f < 17.0f)
+            {
+                RxStatus = RxStatus_Disconnected;
+            }
         }
     }
     
