@@ -112,8 +112,8 @@ void SOF_To_Decode()
         }
         else
         {
-            SOF_decode[i*2] = !SOF_decode[i*2-1];
-            SOF_decode[i*2+1] = !SOF_decode[i*2-1];
+            SOF_decode[i*2] = SOF_decode[i*2-1];
+            SOF_decode[i*2+1] = SOF_decode[i*2-1];
         }
     }
 }
@@ -127,8 +127,8 @@ void DOF_To_Decode()
     }
     else
     {
-        DOF_decode[0] = !SOF_decode[15];
-        DOF_decode[1] = !SOF_decode[15];
+        DOF_decode[0] = SOF_decode[15];
+        DOF_decode[1] = SOF_decode[15];
     }
 
     for(int i=1;i<8;i++)
