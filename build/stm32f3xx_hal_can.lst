@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
   27:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   ==============================================================================
   28:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****                         ##### How to use this driver #####
   29:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   ==============================================================================
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 2
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 2
 
 
   30:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     [..]
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
   84:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
   85:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       (#) Transmission:
   86:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****             (++) Monitor the Tx mailboxes availability until at least one Tx
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 3
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 3
 
 
   87:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****                  mailbox is free, using HAL_CAN_GetTxMailboxesFreeLevel().
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  141:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   =============================================
  142:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
  143:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   The compilation define  USE_HAL_CAN_REGISTER_CALLBACKS when set to 1
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 4
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 4
 
 
  144:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   allows the user to configure dynamically the driver callbacks.
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  198:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   in HAL_CAN_STATE_READY or HAL_CAN_STATE_RESET state,
  199:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   thus registered (user) MspInit/DeInit callbacks can be used during the Init/DeInit.
  200:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   In that case first register the MspInit/MspDeInit user callbacks
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 5
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 5
 
 
  201:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   using HAL_CAN_RegisterCallback() before calling HAL_CAN_DeInit()
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  255:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   ==============================================================================
  256:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****               ##### Initialization and de-initialization functions #####
  257:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   ==============================================================================
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 6
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 6
 
 
  258:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     [..]  This section provides functions allowing to:
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  312:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     hcan->TxMailbox2AbortCallback    =  HAL_CAN_TxMailbox2AbortCallback;    /* Legacy weak TxMailbo
  313:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     hcan->SleepCallback              =  HAL_CAN_SleepCallback;              /* Legacy weak SleepCal
  314:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     hcan->WakeUpFromRxMsgCallback    =  HAL_CAN_WakeUpFromRxMsgCallback;    /* Legacy weak WakeUpFr
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 7
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 7
 
 
  315:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     hcan->ErrorCallback              =  HAL_CAN_ErrorCallback;              /* Legacy weak ErrorCal
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  369:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       /* Change CAN state */
  370:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       hcan->State = HAL_CAN_STATE_ERROR;
  371:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 8
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 8
 
 
  372:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       return HAL_ERROR;
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  426:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   /* Set the transmit FIFO priority */
  427:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   if (hcan->Init.TransmitFifoPriority == ENABLE)
  428:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   {
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 9
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 9
 
 
  429:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     SET_BIT(hcan->Instance->MCR, CAN_MCR_TXFP);
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  483:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** #else
  484:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   /* DeInit the low level hardware: CLOCK, NVIC */
  485:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   HAL_CAN_MspDeInit(hcan);
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 10
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 10
 
 
  486:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** #endif /* USE_HAL_CAN_REGISTER_CALLBACKS */
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  277:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
   55              		.loc 1 277 3 view .LVU4
  280:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   {
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 11
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 11
 
 
   56              		.loc 1 280 3 view .LVU5
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
   92 0018 1360     		str	r3, [r2]
  338:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
   93              		.loc 1 338 3 view .LVU24
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 12
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 12
 
 
  338:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  131              	.L3:
  451:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
  132              		.loc 1 451 1 view .LVU42
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 13
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 13
 
 
  133 0044 38BD     		pop	{r3, r4, r5, pc}
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  172              		.loc 1 367 7 is_stmt 1 view .LVU57
  367:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
  173              		.loc 1 367 11 is_stmt 0 view .LVU58
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 14
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 14
 
 
  174 006e 636A     		ldr	r3, [r4, #36]
@@ -838,7 +838,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  397:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   {
  213              		.loc 1 397 6 view .LVU74
  214 00a0 012B     		cmp	r3, #1
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 15
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 15
 
 
  215 00a2 39D0     		beq	.L31
@@ -898,7 +898,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  256 00dc 1360     		str	r3, [r2]
  257              	.L20:
  437:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****                                             hcan->Init.SyncJumpWidth  |
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 16
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 16
 
 
  258              		.loc 1 437 3 view .LVU88
@@ -958,7 +958,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  409:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   }
  303              		.loc 1 409 5 view .LVU98
  304 0124 2268     		ldr	r2, [r4]
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 17
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 17
 
 
  305 0126 1368     		ldr	r3, [r2]
@@ -1018,7 +1018,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  524:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** {
  349              		.loc 1 524 1 is_stmt 1 view -0
  350              		.cfi_startproc
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 18
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 18
 
 
  351              		@ args = 0, pretend = 0, frame = 0
@@ -1078,7 +1078,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  562:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   HAL_StatusTypeDef status = HAL_OK;
  563:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
  564:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   if (pCallback == NULL)
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 19
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 19
 
 
  565:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   {
@@ -1138,7 +1138,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  619:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
  620:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       case HAL_CAN_WAKEUP_FROM_RX_MSG_CB_ID :
  621:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         hcan->WakeUpFromRxMsgCallback = pCallback;
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 20
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 20
 
 
  622:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         break;
@@ -1198,7 +1198,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  676:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** }
  677:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
  678:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** /**
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 21
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 21
 
 
  679:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   * @brief  Unregister a CAN CallBack.
@@ -1258,7 +1258,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  733:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
  734:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       case HAL_CAN_RX_FIFO0_MSG_PENDING_CB_ID :
  735:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         hcan->RxFifo0MsgPendingCallback = HAL_CAN_RxFifo0MsgPendingCallback;
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 22
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 22
 
 
  736:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         break;
@@ -1318,7 +1318,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  790:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
  791:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       default :
  792:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         /* Update the error code */
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 23
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 23
 
 
  793:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         hcan->ErrorCode |= HAL_CAN_ERROR_INVALID_CALLBACK;
@@ -1378,7 +1378,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  842:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   uint32_t filternbrbitpos;
  375              		.loc 1 842 3 view .LVU107
  843:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   CAN_TypeDef *can_ip = hcan->Instance;
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 24
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 24
 
 
  376              		.loc 1 843 3 view .LVU108
@@ -1438,7 +1438,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  881:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       can_ip->sFilterRegister[sFilterConfig->FilterBank].FR1 =
  882:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         ((0x0000FFFFU & (uint32_t)sFilterConfig->FilterMaskIdLow) << 16U) |
  883:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         (0x0000FFFFU & (uint32_t)sFilterConfig->FilterIdLow);
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 25
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 25
 
 
  884:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
@@ -1498,7 +1498,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  938:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     /* Leave the initialisation mode for the filter */
  939:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     CLEAR_BIT(can_ip->FMR, CAN_FMR_FINIT);
  940:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 26
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 26
 
 
  941:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     /* Return function status */
@@ -1558,7 +1558,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  425 0024 C2F80032 		str	r3, [r2, #512]
  868:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
  426              		.loc 1 868 5 view .LVU133
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 27
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 27
 
 
  868:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
@@ -1618,7 +1618,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  887:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         ((0x0000FFFFU & (uint32_t)sFilterConfig->FilterMaskIdHigh) << 16U) |
  465              		.loc 1 887 44 view .LVU150
  466 0066 4869     		ldr	r0, [r1, #20]
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 28
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 28
 
 
  888:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         (0x0000FFFFU & (uint32_t)sFilterConfig->FilterIdHigh);
@@ -1678,7 +1678,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  933:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     {
  506              		.loc 1 933 8 view .LVU166
  507 009e 0129     		cmp	r1, #1
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 29
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 29
 
 
  508 00a0 2BD0     		beq	.L52
@@ -1738,7 +1738,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  904:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         (0x0000FFFFU & (uint32_t)sFilterConfig->FilterMaskIdLow);
  550              		.loc 1 904 76 view .LVU180
  551 00d2 8D68     		ldr	r5, [r1, #8]
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 30
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 30
 
 
  552 00d4 44EA0544 		orr	r4, r4, r5, lsl #16
@@ -1798,7 +1798,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  963:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   ==============================================================================
  964:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     [..]  This section provides functions allowing to:
  965:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       (+) HAL_CAN_Start                    : Start the CAN module
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 31
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 31
 
 
  966:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       (+) HAL_CAN_Stop                     : Stop the CAN module
@@ -1858,7 +1858,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  999:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     /* Request leave initialisation */
 1000:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     CLEAR_BIT(hcan->Instance->MCR, CAN_MCR_INRQ);
 1001:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 32
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 32
 
 
 1002:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     /* Get tick */
@@ -1918,7 +1918,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  632 001e 80F82030 		strb	r3, [r0, #32]
 1000:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
  633              		.loc 1 1000 5 is_stmt 1 view .LVU200
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 33
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 33
 
 
  634 0022 0268     		ldr	r2, [r0]
@@ -1978,7 +1978,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  671              		.loc 1 1015 21 is_stmt 0 view .LVU217
  672 004e 0523     		movs	r3, #5
  673 0050 84F82030 		strb	r3, [r4, #32]
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 34
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 34
 
 
 1017:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       }
@@ -2038,7 +2038,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  712              		.loc 1 1046 3 view .LVU227
  713              		.loc 1 1046 11 is_stmt 0 view .LVU228
  714 0004 90F82030 		ldrb	r3, [r0, #32]	@ zero_extendqisi2
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 35
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 35
 
 
  715 0008 DBB2     		uxtb	r3, r3
@@ -2098,7 +2098,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1086:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** }
  730              		.loc 1 1086 1 view .LVU235
  731 0018 38BD     		pop	{r3, r4, r5, pc}
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 36
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 36
 
 
  732              	.LVL36:
@@ -2158,7 +2158,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  770 0044 6362     		str	r3, [r4, #36]
 1064:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
  771              		.loc 1 1064 9 is_stmt 1 view .LVU252
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 37
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 37
 
 
 1064:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
@@ -2218,7 +2218,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  816              		.cfi_offset 4, -8
  817              		.cfi_offset 14, -4
  818 0004 0446     		mov	r4, r0
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 38
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 38
 
 
  469:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
@@ -2278,7 +2278,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  861              		.thumb
  862              		.thumb_func
  864              	HAL_CAN_RequestSleep:
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 39
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 39
 
 
  865              	.LVL45:
@@ -2338,7 +2338,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1115:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     /* Return function status */
 1116:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     return HAL_ERROR;
  891              		.loc 1 1116 5 is_stmt 1 view .LVU288
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 40
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 40
 
 
  892              		.loc 1 1116 12 is_stmt 0 view .LVU289
@@ -2398,7 +2398,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  931              		.cfi_def_cfa_offset 8
 1130:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   __IO uint32_t count = 0;
  932              		.loc 1 1130 3 is_stmt 1 view .LVU297
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 41
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 41
 
 
  933              		.loc 1 1130 17 is_stmt 0 view .LVU298
@@ -2458,7 +2458,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1150:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
 1151:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         return HAL_ERROR;
 1152:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       }
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 42
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 42
 
 
 1153:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     } while ((hcan->Instance->MSR & CAN_MSR_SLAK) != 0U);
@@ -2518,7 +2518,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1005 004c 0120     		movs	r0, #1
  1006              	.LVL58:
  1007              	.L83:
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 43
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 43
 
 
 1164:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   }
@@ -2578,7 +2578,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1047              		.loc 1 1180 6 view .LVU337
  1048 0008 012B     		cmp	r3, #1
  1049 000a 01D9     		bls	.L93
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 44
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 44
 
 
 1177:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   HAL_CAN_StateTypeDef state = hcan->State;
@@ -2638,7 +2638,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1198:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   *         the configuration information for the specified CAN.
 1199:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   * @param  pHeader pointer to a CAN_TxHeaderTypeDef structure.
 1200:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   * @param  aData array containing the payload of the Tx frame.
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 45
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 45
 
 
 1201:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   * @param  pTxMailbox pointer to a variable where the function will return
@@ -2698,7 +2698,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1114              		.loc 1 1227 3 view .LVU360
  1115              		.loc 1 1227 38 is_stmt 0 view .LVU361
  1116 000a 0CF1FF3C 		add	ip, ip, #-1
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 46
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 46
 
 
  1117              	.LVL69:
@@ -2758,7 +2758,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1152 0034 0468     		ldr	r4, [r0]
 1244:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****                                                            pHeader->RTR);
  1153              		.loc 1 1244 98 view .LVU379
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 47
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 47
 
 
  1154 0036 43EA4555 		orr	r5, r3, r5, lsl #21
@@ -2818,7 +2818,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1188 0070 C1F88C31 		str	r3, [r1, #396]
 1265:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****                 ((uint32_t)aData[7] << CAN_TDH0R_DATA7_Pos) |
 1266:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****                 ((uint32_t)aData[6] << CAN_TDH0R_DATA6_Pos) |
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 48
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 48
 
 
 1267:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****                 ((uint32_t)aData[5] << CAN_TDH0R_DATA5_Pos) |
@@ -2878,7 +2878,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1226 00b2 CC68     		ldr	r4, [r1, #12]
 1250:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****                                                            pHeader->RTR);
  1227              		.loc 1 1250 73 view .LVU400
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 49
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 49
 
 
  1228 00b4 2343     		orrs	r3, r3, r4
@@ -2938,7 +2938,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1266              		.loc 1 1292 21 view .LVU412
  1267 00e0 43F48023 		orr	r3, r3, #262144
  1268 00e4 4362     		str	r3, [r0, #36]
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 50
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 50
 
 
 1293:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
@@ -2998,7 +2998,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1304 0006 DBB2     		uxtb	r3, r3
  1305              		.loc 1 1313 6 view .LVU423
  1306 0008 012B     		cmp	r3, #1
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 51
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 51
 
 
  1307 000a 05D9     		bls	.L109
@@ -3058,7 +3058,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1325 001c 04D0     		beq	.L105
 1320:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     }
  1326              		.loc 1 1320 7 is_stmt 1 view .LVU432
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 52
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 52
 
 
  1327 001e 0268     		ldr	r2, [r0]
@@ -3118,7 +3118,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1351:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   * @param  hcan pointer to a CAN_HandleTypeDef structure that contains
 1352:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   *         the configuration information for the specified CAN.
 1353:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   * @retval Number of free Tx Mailboxes.
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 53
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 53
 
 
 1354:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   */
@@ -3178,7 +3178,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1394              	.L110:
 1384:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** }
  1395              		.loc 1 1384 1 is_stmt 0 view .LVU452
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 54
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 54
 
 
  1396 000e 7047     		bx	lr
@@ -3238,7 +3238,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1434 0030 7047     		bx	lr
  1435              		.cfi_endproc
  1436              	.LFE135:
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 55
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 55
 
 
  1438              		.section	.text.HAL_CAN_IsTxMessagePending,"ax",%progbits
@@ -3298,7 +3298,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1470              	.LVL103:
 1400:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   HAL_CAN_StateTypeDef state = hcan->State;
  1471              		.loc 1 1400 12 view .LVU479
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 56
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 56
 
 
  1472 000e 7047     		bx	lr
@@ -3358,7 +3358,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1422:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****             mode is enabled.
 1423:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   * @param  hcan pointer to a CAN_HandleTypeDef structure that contains
 1424:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   *         the configuration information for the specified CAN.
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 57
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 57
 
 
 1425:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   * @param  TxMailbox Tx Mailbox where the timestamp of message sent will be
@@ -3418,7 +3418,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1537 000e 7047     		bx	lr
  1538              	.LVL112:
  1539              	.L126:
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 58
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 58
 
 
 1443:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
@@ -3478,7 +3478,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
   50:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
   51:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif                                           
   52:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __NO_RETURN
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 59
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 59
 
 
   53:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((__noreturn__))
@@ -3538,7 +3538,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  107:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
  108:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
  109:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 60
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 60
 
 
  110:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ALIGNED
@@ -3598,7 +3598,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  164:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               non-secure Control Register value
  165:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  166:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_CONTROL_NS(void)
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 61
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 61
 
 
  167:Drivers/CMSIS/Include/cmsis_gcc.h **** {
@@ -3658,7 +3658,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  221:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
  222:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  223:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, apsr" : "=r" (result) );
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 62
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 62
 
 
  224:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
@@ -3718,7 +3718,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  278:Drivers/CMSIS/Include/cmsis_gcc.h **** {
  279:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR psp, %0" : : "r" (topOfProcStack) : );
  280:Drivers/CMSIS/Include/cmsis_gcc.h **** }
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 63
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 63
 
 
  281:Drivers/CMSIS/Include/cmsis_gcc.h **** 
@@ -3778,7 +3778,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  335:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  336:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  337:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 64
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 64
 
 
  338:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
@@ -3838,7 +3838,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  392:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
  393:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Priority Mask (non-secure)
  394:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current state of the non-secure priority mask bit from the Priority Mask Reg
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 65
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 65
 
 
  395:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               Priority Mask value
@@ -3898,7 +3898,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  449:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  450:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_fault_irq(void)
  451:Drivers/CMSIS/Include/cmsis_gcc.h **** {
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 66
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 66
 
 
  452:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsid f" : : : "memory");
@@ -3958,7 +3958,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  506:Drivers/CMSIS/Include/cmsis_gcc.h **** }
  507:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
  508:Drivers/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 67
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 67
 
 
  509:Drivers/CMSIS/Include/cmsis_gcc.h **** 
@@ -4018,7 +4018,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  563:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
  564:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
  565:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Fault Mask (non-secure)
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 68
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 68
 
 
  566:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Fault Mask register when in secure state.
@@ -4078,7 +4078,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  620:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
  621:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psplim_ns"  : "=r" (result) );
  622:Drivers/CMSIS/Include/cmsis_gcc.h ****   return result;
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 69
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 69
 
 
  623:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
@@ -4138,7 +4138,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  677:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               MSPLIM Register value
  678:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  679:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_MSPLIM(void)
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 70
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 70
 
 
  680:Drivers/CMSIS/Include/cmsis_gcc.h **** {
@@ -4198,7 +4198,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  734:Drivers/CMSIS/Include/cmsis_gcc.h **** }
  735:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  736:Drivers/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 71
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 71
 
 
  737:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
@@ -4258,7 +4258,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  791:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  792:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_FPSCR(uint32_t fpscr)
  793:Drivers/CMSIS/Include/cmsis_gcc.h **** {
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 72
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 72
 
 
  794:Drivers/CMSIS/Include/cmsis_gcc.h **** #if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
@@ -4318,7 +4318,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  848:Drivers/CMSIS/Include/cmsis_gcc.h ****            a low-power state until one of a number of events occurs.
  849:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  850:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __WFE()                             __ASM volatile ("wfe")
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 73
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 73
 
 
  851:Drivers/CMSIS/Include/cmsis_gcc.h **** 
@@ -4378,7 +4378,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  905:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
  906:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  907:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("rev %0, %1" : __CMSIS_GCC_OUT_REG (result) : __CMSIS_GCC_USE_REG (value) );
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 74
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 74
 
 
  908:Drivers/CMSIS/Include/cmsis_gcc.h ****   return result;
@@ -4438,7 +4438,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  962:Drivers/CMSIS/Include/cmsis_gcc.h **** }
  963:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  964:Drivers/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 75
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 75
 
 
  965:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
@@ -4498,7 +4498,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1560 0014 B1FA81F1 		clz	r1, r1
  1561              	.LVL114:
 1446:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   }
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 76
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 76
 
 
  1562              		.loc 1 1446 5 is_stmt 1 view .LVU510
@@ -4558,7 +4558,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1597 0000 90F820C0 		ldrb	ip, [r0, #32]	@ zero_extendqisi2
  1598              	.LVL119:
 1468:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 77
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 77
 
 
 1469:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   assert_param(IS_CAN_RX_FIFO(RxFifo));
@@ -4618,7 +4618,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1637              		.loc 1 1483 16 view .LVU536
  1638 002c 7EE0     		b	.L131
  1639              	.LVL123:
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 78
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 78
 
 
  1640              	.L129:
@@ -4678,7 +4678,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1677 0054 002C     		cmp	r4, #0
  1678 0056 6BD1     		bne	.L132
 1501:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     {
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 79
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 79
 
 
 1502:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       pHeader->StdId = (CAN_RI0R_STID & hcan->Instance->sFIFOMailBox[RxFifo].RIR) >> CAN_TI0R_STID_
@@ -4738,7 +4738,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1519:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     pHeader->FilterMatchIndex = (CAN_RDT0R_FMI & hcan->Instance->sFIFOMailBox[RxFifo].RDTR) >> CAN_
  1716              		.loc 1 1519 5 is_stmt 1 view .LVU570
  1717              		.loc 1 1519 54 is_stmt 0 view .LVU571
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 80
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 80
 
 
  1718 008c 0468     		ldr	r4, [r0]
@@ -4798,7 +4798,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1526:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     aData[3] = (uint8_t)((CAN_RDL0R_DATA3 & hcan->Instance->sFIFOMailBox[RxFifo].RDLR) >> CAN_RDL0R
  1766              		.loc 1 1526 5 is_stmt 1 view .LVU594
  1767              		.loc 1 1526 49 is_stmt 0 view .LVU595
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 81
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 81
 
 
  1768 00d6 0268     		ldr	r2, [r0]
@@ -4858,7 +4858,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1815              		.loc 1 1533 8 is_stmt 0 view .LVU619
  1816 011e C1B9     		cbnz	r1, .L136
 1534:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     {
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 82
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 82
 
 
 1535:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       /* Release RX FIFO 0 */
@@ -4918,7 +4918,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1848 0138 2C59     		ldr	r4, [r5, r4]
 1507:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     }
  1849              		.loc 1 1507 67 view .LVU628
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 83
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 83
 
 
  1850 013a E408     		lsrs	r4, r4, #3
@@ -4978,7 +4978,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1892              		.loc 1 1554 1 view .LVU641
  1893 0168 7047     		bx	lr
  1894              		.cfi_endproc
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 84
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 84
 
 
  1895              	.LFE138:
@@ -5038,7 +5038,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1575:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     if (RxFifo == CAN_RX_FIFO0)
 1576:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     {
 1577:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       filllevel = hcan->Instance->RF0R & CAN_RF0R_FMP0;
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 85
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 85
 
 
 1578:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     }
@@ -5098,7 +5098,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  1962              		.cfi_endproc
  1963              	.LFE139:
  1965              		.section	.text.HAL_CAN_ActivateNotification,"ax",%progbits
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 86
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 86
 
 
  1966              		.align	1
@@ -5158,7 +5158,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1624:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   if ((state == HAL_CAN_STATE_READY) ||
  1985              		.loc 1 1624 3 view .LVU670
  1986              		.loc 1 1624 38 is_stmt 0 view .LVU671
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 87
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 87
 
 
  1987 0004 013B     		subs	r3, r3, #1
@@ -5218,7 +5218,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  2022              		.section	.text.HAL_CAN_DeactivateNotification,"ax",%progbits
  2023              		.align	1
  2024              		.global	HAL_CAN_DeactivateNotification
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 88
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 88
 
 
  2025              		.syntax unified
@@ -5278,7 +5278,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  2051              		.loc 1 1669 5 is_stmt 1 view .LVU692
  2052              		.loc 1 1669 9 is_stmt 0 view .LVU693
  2053 000c 436A     		ldr	r3, [r0, #36]
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 89
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 89
 
 
  2054              		.loc 1 1669 21 view .LVU694
@@ -5338,7 +5338,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1687:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   uint32_t rf0rflags = READ_REG(hcan->Instance->RF0R);
 1688:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   uint32_t rf1rflags = READ_REG(hcan->Instance->RF1R);
 1689:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   uint32_t esrflags = READ_REG(hcan->Instance->ESR);
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 90
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 90
 
 
 1690:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
@@ -5398,7 +5398,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1744:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       {
 1745:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         /* Transmission Mailbox 1 complete callback */
 1746:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** #if USE_HAL_CAN_REGISTER_CALLBACKS == 1
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 91
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 91
 
 
 1747:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         /* Call registered callback*/
@@ -5458,7 +5458,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1801:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****           /* Update error code */
 1802:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****           errorcode |= HAL_CAN_ERROR_TX_ALST2;
 1803:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         }
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 92
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 92
 
 
 1804:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         else if ((tsrflags & CAN_TSR_TERR2) != 0U)
@@ -5518,7 +5518,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1858:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   {
 1859:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     /* Check if message is still pending */
 1860:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     if ((hcan->Instance->RF0R & CAN_RF0R_FMP0) != 0U)
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 93
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 93
 
 
 1861:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     {
@@ -5578,7 +5578,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1915:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** #else
 1916:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       /* Call weak (surcharged) callback */
 1917:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       HAL_CAN_RxFifo1MsgPendingCallback(hcan);
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 94
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 94
 
 
 1918:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** #endif /* USE_HAL_CAN_REGISTER_CALLBACKS */
@@ -5638,7 +5638,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1972:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         /* No need for clear of Error Warning Flag as read-only */
 1973:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       }
 1974:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 95
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 95
 
 
 1975:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       /* Check Error Passive Flag */
@@ -5698,7 +5698,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 2029:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         /* Clear Last error code Flag */
 2030:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****         CLEAR_BIT(hcan->Instance->ESR, CAN_ESR_LEC);
 2031:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****       }
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 96
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 96
 
 
 2032:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****     }
@@ -5758,7 +5758,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 2086:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** /**
 2087:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   * @brief  Transmission Mailbox 0 complete callback.
 2088:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   * @param  hcan pointer to a CAN_HandleTypeDef structure that contains
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 97
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 97
 
 
 2089:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   *         the configuration information for the specified CAN.
@@ -5818,7 +5818,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 2118:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** }
  2116              		.loc 1 2118 1 is_stmt 0 view .LVU707
  2117 0000 7047     		bx	lr
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 98
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 98
 
 
  2118              		.cfi_endproc
@@ -5878,7 +5878,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 2143:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** __weak void HAL_CAN_TxMailbox0AbortCallback(CAN_HandleTypeDef *hcan)
 2144:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** {
  2152              		.loc 1 2144 1 is_stmt 1 view -0
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 99
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 99
 
 
  2153              		.cfi_startproc
@@ -5938,7 +5938,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  2185              		.align	1
  2186              		.weak	HAL_CAN_TxMailbox2AbortCallback
  2187              		.syntax unified
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 100
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 100
 
 
  2188              		.thumb
@@ -5998,7 +5998,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  2219              		@ link register save eliminated.
 2196:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   /* Prevent unused argument(s) compilation warning */
 2197:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   UNUSED(hcan);
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 101
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 101
 
 
  2220              		.loc 1 2197 3 view .LVU721
@@ -6058,7 +6058,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  2255              	.LVL166:
  2256              	.LFB151:
 2221:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 102
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 102
 
 
 2222:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** /**
@@ -6118,7 +6118,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 2251:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****             the HAL_CAN_RxFifo1FullCallback could be implemented in the user
 2252:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****             file
 2253:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****    */
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 103
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 103
 
 
 2254:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** }
@@ -6178,7 +6178,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 2276:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   * @retval None
 2277:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   */
 2278:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** __weak void HAL_CAN_WakeUpFromRxMsgCallback(CAN_HandleTypeDef *hcan)
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 104
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 104
 
 
 2279:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** {
@@ -6238,7 +6238,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  2352              		.section	.text.HAL_CAN_IRQHandler,"ax",%progbits
  2353              		.align	1
  2354              		.global	HAL_CAN_IRQHandler
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 105
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 105
 
 
  2355              		.syntax unified
@@ -6298,7 +6298,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  2398              		.loc 1 1687 12 is_stmt 0 view .LVU752
  2399 0010 D3F80CB0 		ldr	fp, [r3, #12]
  2400              	.LVL176:
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 106
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 106
 
 
 1688:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   uint32_t esrflags = READ_REG(hcan->Instance->ESR);
@@ -6358,7 +6358,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  2438              	.LVL179:
 1683:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   uint32_t interrupts = READ_REG(hcan->Instance->IER);
  2439              		.loc 1 1683 12 is_stmt 0 view .LVU770
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 107
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 107
 
 
  2440 0048 0026     		movs	r6, #0
@@ -6418,7 +6418,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1784:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
  2480              		.loc 1 1784 7 is_stmt 1 view .LVU785
  2481 007e 2B68     		ldr	r3, [r5]
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 108
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 108
 
 
  2482 0080 4FF48032 		mov	r2, #65536
@@ -6478,7 +6478,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  2519              		.loc 1 1840 8 is_stmt 0 view .LVU802
  2520 00b6 1BF0080F 		tst	fp, #8
  2521 00ba 79D1     		bne	.L208
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 109
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 109
 
 
  2522              	.L180:
@@ -6538,7 +6538,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  2559 00e8 1AF0080F 		tst	r10, #8
  2560 00ec 6BD1     		bne	.L210
  2561              	.L183:
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 110
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 110
 
 
 1906:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   {
@@ -6598,7 +6598,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  2598              		.loc 1 1963 8 is_stmt 0 view .LVU837
  2599 011c 18F0040F 		tst	r8, #4
  2600 0120 74D0     		beq	.L188
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 111
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 111
 
 
 1966:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****           ((esrflags & CAN_ESR_EWGF) != 0U))
@@ -6658,7 +6658,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  2638              		.loc 1 1996 10 is_stmt 0 view .LVU854
  2639 0152 14F4006F 		tst	r4, #2048
  2640 0156 59D0     		beq	.L188
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 112
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 112
 
 
 1996:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****           ((esrflags & CAN_ESR_LEC) != 0U))
@@ -6718,7 +6718,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  2682              	.LVL196:
  2683 0192 71E7     		b	.L172
  2684              	.L207:
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 113
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 113
 
 
 1794:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** #endif /* USE_HAL_CAN_REGISTER_CALLBACKS */
@@ -6778,7 +6778,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 1900:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** #endif /* USE_HAL_CAN_REGISTER_CALLBACKS */
  2728              		.loc 1 1900 7 view .LVU879
  2729 01cc 2846     		mov	r0, r5
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 114
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 114
 
 
  2730 01ce FFF7FEFF 		bl	HAL_CAN_RxFifo1FullCallback
@@ -6838,7 +6838,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  2774 020a 9361     		str	r3, [r2, #24]
  2775              	.L188:
 2035:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   }
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 115
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 115
 
 
  2776              		.loc 1 2035 5 view .LVU890
@@ -6898,7 +6898,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 2019:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****             break;
  2816              		.loc 1 2019 23 is_stmt 0 view .LVU905
  2817 0236 46F08006 		orr	r6, r6, #128
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 116
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 116
 
 
  2818              	.LVL212:
@@ -6958,7 +6958,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 2325:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** 
 2326:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** /**
 2327:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   * @brief  Return the CAN state.
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 117
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 117
 
 
 2328:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   * @param  hcan pointer to a CAN_HandleTypeDef structure that contains
@@ -7018,7 +7018,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 2359:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c **** }
  2870              		.loc 1 2359 1 is_stmt 0 view .LVU921
  2871 0010 7047     		bx	lr
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 118
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 118
 
 
  2872              	.LVL217:
@@ -7078,7 +7078,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
 2363:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   * @param  hcan pointer to a CAN_HandleTypeDef structure that contains
 2364:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   *         the configuration information for the specified CAN.
 2365:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   * @retval CAN Error Code
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 119
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 119
 
 
 2366:Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_can.c ****   */
@@ -7138,7 +7138,7 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  2951              	.LVL226:
  2952              		.loc 1 2384 38 view .LVU943
  2953 0006 DBB2     		uxtb	r3, r3
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 120
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 120
 
 
  2954              		.loc 1 2384 6 view .LVU944
@@ -7198,92 +7198,92 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 1
  2989              		.file 5 "Drivers/CMSIS/Device/ST/STM32F3xx/Include/stm32f334x8.h"
  2990              		.file 6 "Drivers/CMSIS/Device/ST/STM32F3xx/Include/stm32f3xx.h"
  2991              		.file 7 "Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_def.h"
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 121
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 121
 
 
  2992              		.file 8 "Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_can.h"
  2993              		.file 9 "Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h"
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 122
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 122
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 stm32f3xx_hal_can.c
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:21     .text.HAL_CAN_MspInit:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:27     .text.HAL_CAN_MspInit:00000000 HAL_CAN_MspInit
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:42     .text.HAL_CAN_Init:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:48     .text.HAL_CAN_Init:00000000 HAL_CAN_Init
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:340    .text.HAL_CAN_MspDeInit:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:346    .text.HAL_CAN_MspDeInit:00000000 HAL_CAN_MspDeInit
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:361    .text.HAL_CAN_ConfigFilter:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:367    .text.HAL_CAN_ConfigFilter:00000000 HAL_CAN_ConfigFilter
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:583    .text.HAL_CAN_Start:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:589    .text.HAL_CAN_Start:00000000 HAL_CAN_Start
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:689    .text.HAL_CAN_Stop:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:695    .text.HAL_CAN_Stop:00000000 HAL_CAN_Stop
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:796    .text.HAL_CAN_DeInit:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:802    .text.HAL_CAN_DeInit:00000000 HAL_CAN_DeInit
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:858    .text.HAL_CAN_RequestSleep:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:864    .text.HAL_CAN_RequestSleep:00000000 HAL_CAN_RequestSleep
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:914    .text.HAL_CAN_WakeUp:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:920    .text.HAL_CAN_WakeUp:00000000 HAL_CAN_WakeUp
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1017   .text.HAL_CAN_WakeUp:00000054 $d
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1022   .text.HAL_CAN_IsSleepActive:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1028   .text.HAL_CAN_IsSleepActive:00000000 HAL_CAN_IsSleepActive
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1078   .text.HAL_CAN_AddTxMessage:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1084   .text.HAL_CAN_AddTxMessage:00000000 HAL_CAN_AddTxMessage
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1280   .text.HAL_CAN_AbortTxRequest:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1286   .text.HAL_CAN_AbortTxRequest:00000000 HAL_CAN_AbortTxRequest
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1362   .text.HAL_CAN_GetTxMailboxesFreeLevel:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1368   .text.HAL_CAN_GetTxMailboxesFreeLevel:00000000 HAL_CAN_GetTxMailboxesFreeLevel
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1439   .text.HAL_CAN_IsTxMessagePending:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1445   .text.HAL_CAN_IsTxMessagePending:00000000 HAL_CAN_IsTxMessagePending
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1502   .text.HAL_CAN_GetTxTimestamp:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1508   .text.HAL_CAN_GetTxTimestamp:00000000 HAL_CAN_GetTxTimestamp
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1581   .text.HAL_CAN_GetRxMessage:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1587   .text.HAL_CAN_GetRxMessage:00000000 HAL_CAN_GetRxMessage
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1898   .text.HAL_CAN_GetRxFifoFillLevel:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1904   .text.HAL_CAN_GetRxFifoFillLevel:00000000 HAL_CAN_GetRxFifoFillLevel
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1966   .text.HAL_CAN_ActivateNotification:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:1972   .text.HAL_CAN_ActivateNotification:00000000 HAL_CAN_ActivateNotification
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2023   .text.HAL_CAN_DeactivateNotification:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2029   .text.HAL_CAN_DeactivateNotification:00000000 HAL_CAN_DeactivateNotification
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2080   .text.HAL_CAN_TxMailbox0CompleteCallback:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2086   .text.HAL_CAN_TxMailbox0CompleteCallback:00000000 HAL_CAN_TxMailbox0CompleteCallback
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2101   .text.HAL_CAN_TxMailbox1CompleteCallback:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2107   .text.HAL_CAN_TxMailbox1CompleteCallback:00000000 HAL_CAN_TxMailbox1CompleteCallback
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2122   .text.HAL_CAN_TxMailbox2CompleteCallback:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2128   .text.HAL_CAN_TxMailbox2CompleteCallback:00000000 HAL_CAN_TxMailbox2CompleteCallback
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2143   .text.HAL_CAN_TxMailbox0AbortCallback:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2149   .text.HAL_CAN_TxMailbox0AbortCallback:00000000 HAL_CAN_TxMailbox0AbortCallback
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2164   .text.HAL_CAN_TxMailbox1AbortCallback:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2170   .text.HAL_CAN_TxMailbox1AbortCallback:00000000 HAL_CAN_TxMailbox1AbortCallback
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2185   .text.HAL_CAN_TxMailbox2AbortCallback:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2191   .text.HAL_CAN_TxMailbox2AbortCallback:00000000 HAL_CAN_TxMailbox2AbortCallback
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2206   .text.HAL_CAN_RxFifo0MsgPendingCallback:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2212   .text.HAL_CAN_RxFifo0MsgPendingCallback:00000000 HAL_CAN_RxFifo0MsgPendingCallback
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2227   .text.HAL_CAN_RxFifo0FullCallback:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2233   .text.HAL_CAN_RxFifo0FullCallback:00000000 HAL_CAN_RxFifo0FullCallback
-ARM GAS  C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s 			page 123
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:21     .text.HAL_CAN_MspInit:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:27     .text.HAL_CAN_MspInit:00000000 HAL_CAN_MspInit
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:42     .text.HAL_CAN_Init:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:48     .text.HAL_CAN_Init:00000000 HAL_CAN_Init
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:340    .text.HAL_CAN_MspDeInit:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:346    .text.HAL_CAN_MspDeInit:00000000 HAL_CAN_MspDeInit
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:361    .text.HAL_CAN_ConfigFilter:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:367    .text.HAL_CAN_ConfigFilter:00000000 HAL_CAN_ConfigFilter
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:583    .text.HAL_CAN_Start:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:589    .text.HAL_CAN_Start:00000000 HAL_CAN_Start
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:689    .text.HAL_CAN_Stop:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:695    .text.HAL_CAN_Stop:00000000 HAL_CAN_Stop
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:796    .text.HAL_CAN_DeInit:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:802    .text.HAL_CAN_DeInit:00000000 HAL_CAN_DeInit
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:858    .text.HAL_CAN_RequestSleep:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:864    .text.HAL_CAN_RequestSleep:00000000 HAL_CAN_RequestSleep
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:914    .text.HAL_CAN_WakeUp:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:920    .text.HAL_CAN_WakeUp:00000000 HAL_CAN_WakeUp
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1017   .text.HAL_CAN_WakeUp:00000054 $d
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1022   .text.HAL_CAN_IsSleepActive:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1028   .text.HAL_CAN_IsSleepActive:00000000 HAL_CAN_IsSleepActive
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1078   .text.HAL_CAN_AddTxMessage:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1084   .text.HAL_CAN_AddTxMessage:00000000 HAL_CAN_AddTxMessage
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1280   .text.HAL_CAN_AbortTxRequest:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1286   .text.HAL_CAN_AbortTxRequest:00000000 HAL_CAN_AbortTxRequest
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1362   .text.HAL_CAN_GetTxMailboxesFreeLevel:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1368   .text.HAL_CAN_GetTxMailboxesFreeLevel:00000000 HAL_CAN_GetTxMailboxesFreeLevel
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1439   .text.HAL_CAN_IsTxMessagePending:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1445   .text.HAL_CAN_IsTxMessagePending:00000000 HAL_CAN_IsTxMessagePending
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1502   .text.HAL_CAN_GetTxTimestamp:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1508   .text.HAL_CAN_GetTxTimestamp:00000000 HAL_CAN_GetTxTimestamp
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1581   .text.HAL_CAN_GetRxMessage:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1587   .text.HAL_CAN_GetRxMessage:00000000 HAL_CAN_GetRxMessage
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1898   .text.HAL_CAN_GetRxFifoFillLevel:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1904   .text.HAL_CAN_GetRxFifoFillLevel:00000000 HAL_CAN_GetRxFifoFillLevel
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1966   .text.HAL_CAN_ActivateNotification:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:1972   .text.HAL_CAN_ActivateNotification:00000000 HAL_CAN_ActivateNotification
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2023   .text.HAL_CAN_DeactivateNotification:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2029   .text.HAL_CAN_DeactivateNotification:00000000 HAL_CAN_DeactivateNotification
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2080   .text.HAL_CAN_TxMailbox0CompleteCallback:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2086   .text.HAL_CAN_TxMailbox0CompleteCallback:00000000 HAL_CAN_TxMailbox0CompleteCallback
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2101   .text.HAL_CAN_TxMailbox1CompleteCallback:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2107   .text.HAL_CAN_TxMailbox1CompleteCallback:00000000 HAL_CAN_TxMailbox1CompleteCallback
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2122   .text.HAL_CAN_TxMailbox2CompleteCallback:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2128   .text.HAL_CAN_TxMailbox2CompleteCallback:00000000 HAL_CAN_TxMailbox2CompleteCallback
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2143   .text.HAL_CAN_TxMailbox0AbortCallback:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2149   .text.HAL_CAN_TxMailbox0AbortCallback:00000000 HAL_CAN_TxMailbox0AbortCallback
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2164   .text.HAL_CAN_TxMailbox1AbortCallback:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2170   .text.HAL_CAN_TxMailbox1AbortCallback:00000000 HAL_CAN_TxMailbox1AbortCallback
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2185   .text.HAL_CAN_TxMailbox2AbortCallback:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2191   .text.HAL_CAN_TxMailbox2AbortCallback:00000000 HAL_CAN_TxMailbox2AbortCallback
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2206   .text.HAL_CAN_RxFifo0MsgPendingCallback:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2212   .text.HAL_CAN_RxFifo0MsgPendingCallback:00000000 HAL_CAN_RxFifo0MsgPendingCallback
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2227   .text.HAL_CAN_RxFifo0FullCallback:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2233   .text.HAL_CAN_RxFifo0FullCallback:00000000 HAL_CAN_RxFifo0FullCallback
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s 			page 123
 
 
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2248   .text.HAL_CAN_RxFifo1MsgPendingCallback:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2254   .text.HAL_CAN_RxFifo1MsgPendingCallback:00000000 HAL_CAN_RxFifo1MsgPendingCallback
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2269   .text.HAL_CAN_RxFifo1FullCallback:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2275   .text.HAL_CAN_RxFifo1FullCallback:00000000 HAL_CAN_RxFifo1FullCallback
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2290   .text.HAL_CAN_SleepCallback:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2296   .text.HAL_CAN_SleepCallback:00000000 HAL_CAN_SleepCallback
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2311   .text.HAL_CAN_WakeUpFromRxMsgCallback:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2317   .text.HAL_CAN_WakeUpFromRxMsgCallback:00000000 HAL_CAN_WakeUpFromRxMsgCallback
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2332   .text.HAL_CAN_ErrorCallback:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2338   .text.HAL_CAN_ErrorCallback:00000000 HAL_CAN_ErrorCallback
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2353   .text.HAL_CAN_IRQHandler:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2359   .text.HAL_CAN_IRQHandler:00000000 HAL_CAN_IRQHandler
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2838   .text.HAL_CAN_GetState:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2844   .text.HAL_CAN_GetState:00000000 HAL_CAN_GetState
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2905   .text.HAL_CAN_GetError:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2911   .text.HAL_CAN_GetError:00000000 HAL_CAN_GetError
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2929   .text.HAL_CAN_ResetError:00000000 $t
-C:\Users\31005\AppData\Local\Temp\cc0kgr2M.s:2935   .text.HAL_CAN_ResetError:00000000 HAL_CAN_ResetError
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2248   .text.HAL_CAN_RxFifo1MsgPendingCallback:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2254   .text.HAL_CAN_RxFifo1MsgPendingCallback:00000000 HAL_CAN_RxFifo1MsgPendingCallback
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2269   .text.HAL_CAN_RxFifo1FullCallback:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2275   .text.HAL_CAN_RxFifo1FullCallback:00000000 HAL_CAN_RxFifo1FullCallback
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2290   .text.HAL_CAN_SleepCallback:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2296   .text.HAL_CAN_SleepCallback:00000000 HAL_CAN_SleepCallback
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2311   .text.HAL_CAN_WakeUpFromRxMsgCallback:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2317   .text.HAL_CAN_WakeUpFromRxMsgCallback:00000000 HAL_CAN_WakeUpFromRxMsgCallback
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2332   .text.HAL_CAN_ErrorCallback:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2338   .text.HAL_CAN_ErrorCallback:00000000 HAL_CAN_ErrorCallback
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2353   .text.HAL_CAN_IRQHandler:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2359   .text.HAL_CAN_IRQHandler:00000000 HAL_CAN_IRQHandler
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2838   .text.HAL_CAN_GetState:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2844   .text.HAL_CAN_GetState:00000000 HAL_CAN_GetState
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2905   .text.HAL_CAN_GetError:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2911   .text.HAL_CAN_GetError:00000000 HAL_CAN_GetError
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2929   .text.HAL_CAN_ResetError:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccB8UGsl.s:2935   .text.HAL_CAN_ResetError:00000000 HAL_CAN_ResetError
 
 UNDEFINED SYMBOLS
 HAL_GetTick

@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 1
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -20,15 +20,14 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.file 1 "Application/wirelessrx.c"
-  20              		.section	.text.HAL_ADC_ConvCpltCallback,"ax",%progbits
+  20              		.section	.text.SOF_To_Decode,"ax",%progbits
   21              		.align	1
-  22              		.global	HAL_ADC_ConvCpltCallback
+  22              		.global	SOF_To_Decode
   23              		.syntax unified
   24              		.thumb
   25              		.thumb_func
-  27              	HAL_ADC_ConvCpltCallback:
-  28              	.LVL0:
-  29              	.LFB125:
+  27              	SOF_To_Decode:
+  28              	.LFB125:
    1:Application/wirelessrx.c **** #include "wirelessrx.h"
    2:Application/wirelessrx.c **** 
    3:Application/wirelessrx.c **** //develop brench test
@@ -39,1130 +38,1532 @@ ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 1
    8:Application/wirelessrx.c **** uint32_t DWT_Count;
    9:Application/wirelessrx.c **** float VIn_f;
   10:Application/wirelessrx.c **** float VCC_f;
-  11:Application/wirelessrx.c **** uint8_t SOF[8] = {0,1,1,1,1,0,1,0};//0是高功率，1是低功率
-  12:Application/wirelessrx.c **** uint8_t DOF[8] = {0,0,0,0,0,0,0,0};
-  13:Application/wirelessrx.c **** First_Order_Filter_t VInFilter;
-  14:Application/wirelessrx.c **** First_Order_Filter_t VCCFilter;
-  15:Application/wirelessrx.c **** enum RxStatus_t RxStatus = RxStatus_Unknow;
-  16:Application/wirelessrx.c **** 
-  17:Application/wirelessrx.c **** void WirelessInit()
-  18:Application/wirelessrx.c **** {
-  19:Application/wirelessrx.c ****     SwitchBBEN(Off);
-  20:Application/wirelessrx.c ****     SwitchENA_ENB(Off);
-  21:Application/wirelessrx.c ****     LowPower();
-  22:Application/wirelessrx.c **** 
-  23:Application/wirelessrx.c ****     DWT_Delay(0.1);
-  24:Application/wirelessrx.c ****     SwitchBBEN(On);
-  25:Application/wirelessrx.c ****     SwitchENA_ENB(On);
-  26:Application/wirelessrx.c ****     if( HAL_ADC_Start_DMA(&hadc1,ADC_values,ADC_DataSize) != HAL_OK  ||
-  27:Application/wirelessrx.c ****         HAL_ADCEx_Calibration_GetValue(&hadc1,ADC_SINGLE_ENDED) != HAL_OK)
-  28:Application/wirelessrx.c ****     {
-  29:Application/wirelessrx.c ****         Error_Handler();
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 2
+  11:Application/wirelessrx.c **** // 10100110
+  12:Application/wirelessrx.c **** // 0100110 1
+  13:Application/wirelessrx.c **** uint8_t SOF[8] = {1,0,1,0,0,1,1,0};//0是高功率，1是低功率
+  14:Application/wirelessrx.c **** uint8_t SOF_decode[16];
+  15:Application/wirelessrx.c **** uint8_t DOF[16] = {1,0,0,0,0,0,0,0};
+  16:Application/wirelessrx.c **** uint8_t DOF_decode[16];
+  17:Application/wirelessrx.c **** First_Order_Filter_t VInFilter;
+  18:Application/wirelessrx.c **** First_Order_Filter_t VCCFilter;
+  19:Application/wirelessrx.c **** enum RxStatus_t RxStatus = RxStatus_Unknow;
+  20:Application/wirelessrx.c **** 
+  21:Application/wirelessrx.c **** void WirelessInit()
+  22:Application/wirelessrx.c **** {
+  23:Application/wirelessrx.c ****     SwitchBBEN(Off);
+  24:Application/wirelessrx.c ****     SwitchENA_ENB(Off);
+  25:Application/wirelessrx.c ****     LowPower();
+  26:Application/wirelessrx.c **** 
+  27:Application/wirelessrx.c ****     DWT_Delay(0.1);
+  28:Application/wirelessrx.c ****     SwitchBBEN(On);
+  29:Application/wirelessrx.c ****     SwitchENA_ENB(On);
+  30:Application/wirelessrx.c ****     if( HAL_ADC_Start_DMA(&hadc1,ADC_values,ADC_DataSize) != HAL_OK  ||
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 2
 
 
-  30:Application/wirelessrx.c ****     }
-  31:Application/wirelessrx.c **** 
-  32:Application/wirelessrx.c ****     First_Order_Filter_Init(&VInFilter,1/97500.0f,30.0f);
-  33:Application/wirelessrx.c ****     First_Order_Filter_Init(&VCCFilter,1/97500.0f,30.0f);
-  34:Application/wirelessrx.c **** 
-  35:Application/wirelessrx.c **** }
-  36:Application/wirelessrx.c **** 
-  37:Application/wirelessrx.c **** void QITask()
-  38:Application/wirelessrx.c **** {
-  39:Application/wirelessrx.c ****     static uint8_t count_connected = 0;
-  40:Application/wirelessrx.c ****     static uint8_t count_connecting = 0;
-  41:Application/wirelessrx.c **** 
-  42:Application/wirelessrx.c ****     switch(RxStatus)
-  43:Application/wirelessrx.c ****     {
-  44:Application/wirelessrx.c ****     case RxStatus_Connecting:
-  45:Application/wirelessrx.c ****         SwitchHighOrLowPower(SOF[count_connecting%8]);
-  46:Application/wirelessrx.c ****         count_connected = 0;
-  47:Application/wirelessrx.c ****         count_connecting++;
-  48:Application/wirelessrx.c ****         break;
-  49:Application/wirelessrx.c ****     case RxStatus_Connected:
-  50:Application/wirelessrx.c ****         // 0.5ms
-  51:Application/wirelessrx.c ****         static uint8_t data = 0;
-  52:Application/wirelessrx.c **** 
-  53:Application/wirelessrx.c ****         if(count_connected < 8)
-  54:Application/wirelessrx.c ****         {
-  55:Application/wirelessrx.c ****             SwitchHighOrLowPower(SOF[count_connected]);
-  56:Application/wirelessrx.c ****             data =  (uint8_t)VIn_f;
-  57:Application/wirelessrx.c ****         }
-  58:Application/wirelessrx.c ****         else if(count_connected < 16)
-  59:Application/wirelessrx.c ****         {
-  60:Application/wirelessrx.c ****             DOF[count_connected - 8] = (data >> (15 - count_connected)) & 0x01;
-  61:Application/wirelessrx.c ****             SwitchHighOrLowPower(DOF[count_connected - 8]);
-  62:Application/wirelessrx.c ****         }
-  63:Application/wirelessrx.c ****         else if(count_connected < 200)
-  64:Application/wirelessrx.c ****         {
-  65:Application/wirelessrx.c ****             HighPower();
-  66:Application/wirelessrx.c ****         }
-  67:Application/wirelessrx.c ****         else
-  68:Application/wirelessrx.c ****         {
-  69:Application/wirelessrx.c ****             count_connected = 0;
-  70:Application/wirelessrx.c ****         }
-  71:Application/wirelessrx.c ****         count_connected++;
-  72:Application/wirelessrx.c ****         count_connecting = 0;
-  73:Application/wirelessrx.c ****         break;
-  74:Application/wirelessrx.c ****     case RxStatus_Disconnected:
-  75:Application/wirelessrx.c ****         HighPower();
-  76:Application/wirelessrx.c ****         break;
-  77:Application/wirelessrx.c ****     }
-  78:Application/wirelessrx.c ****     
-  79:Application/wirelessrx.c **** }
-  80:Application/wirelessrx.c **** void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
-  81:Application/wirelessrx.c **** {
-  30              		.loc 1 81 1 view -0
-  31              		.cfi_startproc
-  32              		@ args = 0, pretend = 0, frame = 0
-  33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		.loc 1 81 1 is_stmt 0 view .LVU1
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 3
-
-
-  35 0000 38B5     		push	{r3, r4, r5, lr}
-  36              	.LCFI0:
-  37              		.cfi_def_cfa_offset 16
-  38              		.cfi_offset 3, -16
-  39              		.cfi_offset 4, -12
-  40              		.cfi_offset 5, -8
-  41              		.cfi_offset 14, -4
-  82:Application/wirelessrx.c ****     if(hadc == &hadc1)
-  42              		.loc 1 82 5 is_stmt 1 view .LVU2
-  43              		.loc 1 82 7 is_stmt 0 view .LVU3
-  44 0002 294B     		ldr	r3, .L8
-  45 0004 8342     		cmp	r3, r0
-  46 0006 00D0     		beq	.L7
-  47              	.LVL1:
-  48              	.L1:
-  83:Application/wirelessrx.c ****     {
-  84:Application/wirelessrx.c ****         static float dt;
-  85:Application/wirelessrx.c ****         dt = DWT_GetDeltaT(&DWT_Count);
-  86:Application/wirelessrx.c **** 
-  87:Application/wirelessrx.c ****         V_values[ADCVIN] = ADC_values[ADCVIN] * ADCRatio * ADCVoltageRatio;
-  88:Application/wirelessrx.c ****         V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
-  89:Application/wirelessrx.c **** 
-  90:Application/wirelessrx.c ****         VIn_f = First_Order_Filter_Calculate(&VInFilter,V_values[ADCVIN]);
-  91:Application/wirelessrx.c ****         VCC_f = First_Order_Filter_Calculate(&VCCFilter,V_values[ADCVCC]);
-  92:Application/wirelessrx.c **** 
-  93:Application/wirelessrx.c ****         if(VIn_f > 18.0f && RxStatus != RxStatus_Connected)
-  94:Application/wirelessrx.c ****         {
-  95:Application/wirelessrx.c ****             RxStatus = RxStatus_Connecting;
-  96:Application/wirelessrx.c ****         }
-  97:Application/wirelessrx.c ****         else if(RxStatus != RxStatus_Connecting && RxStatus != RxStatus_Connected)
-  98:Application/wirelessrx.c ****         {
-  99:Application/wirelessrx.c ****             RxStatus = RxStatus_Disconnected;
- 100:Application/wirelessrx.c ****         }
- 101:Application/wirelessrx.c ****     }
- 102:Application/wirelessrx.c ****     
- 103:Application/wirelessrx.c ****     // static int time = 0;        //ADC采样次数
- 104:Application/wirelessrx.c ****     // static int framestime = 0;  //帧次数
- 105:Application/wirelessrx.c ****     // static int NumOfSOF = 0;    //帧头次数
- 106:Application/wirelessrx.c ****     // static uint32_t ceshiman = 0;
- 107:Application/wirelessrx.c **** 
- 108:Application/wirelessrx.c ****     // if(ceshiman >= 50)
- 109:Application/wirelessrx.c ****     // {
- 110:Application/wirelessrx.c ****     //     SwitchBBEN(Off);
- 111:Application/wirelessrx.c ****     // }
- 112:Application/wirelessrx.c ****     // if(hadc->Instance == ADC1)
- 113:Application/wirelessrx.c ****     // {
- 114:Application/wirelessrx.c ****     //     time++;
- 115:Application/wirelessrx.c ****     //     AdcAllValues[ADCCurrentIn] += ADC_values[ADCCurrentIn];
- 116:Application/wirelessrx.c ****     //     AdcAllValues[ADCVCC] += ADC_values[ADCVCC];
- 117:Application/wirelessrx.c **** 
- 118:Application/wirelessrx.c ****     //     if(time >= 102)
- 119:Application/wirelessrx.c ****     //     {
- 120:Application/wirelessrx.c ****     //         ADC_values_f[ADCCurrentIn] = AdcAllValues[ADCCurrentIn]/time;
- 121:Application/wirelessrx.c ****     //         ADC_values_f[ADCVCC] = AdcAllValues[ADCVCC]/time;             //2223 - 24.63V
- 122:Application/wirelessrx.c **** 
- 123:Application/wirelessrx.c ****     //         AdcAllValues[ADCCurrentIn] = 0;
- 124:Application/wirelessrx.c ****     //         AdcAllValues[ADCVCC] = 0;
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 4
-
-
- 125:Application/wirelessrx.c **** 
- 126:Application/wirelessrx.c ****     //         time = 0;
- 127:Application/wirelessrx.c ****     //         framestime++;
- 128:Application/wirelessrx.c ****             
- 129:Application/wirelessrx.c ****     //         SwitchHighOrLowPower(SOF[framestime-1]);
- 130:Application/wirelessrx.c ****     //         if(framestime == 8)
- 131:Application/wirelessrx.c ****     //         {
- 132:Application/wirelessrx.c ****     //             framestime = 0;
- 133:Application/wirelessrx.c ****     //             NumOfSOF++;
- 134:Application/wirelessrx.c ****     //         }
- 135:Application/wirelessrx.c ****     //         if(NumOfSOF >= 2)
- 136:Application/wirelessrx.c ****     //         {
- 137:Application/wirelessrx.c ****     //             NumOfSOF = 0;
- 138:Application/wirelessrx.c ****     //             DWT_Delay(0.092);
- 139:Application/wirelessrx.c ****     //             ceshiman++;
- 140:Application/wirelessrx.c ****     //         }
- 141:Application/wirelessrx.c ****     //     }
- 142:Application/wirelessrx.c ****     // }
- 143:Application/wirelessrx.c **** }
-  49              		.loc 1 143 1 view .LVU4
-  50 0008 38BD     		pop	{r3, r4, r5, pc}
-  51              	.LVL2:
-  52              	.L7:
-  53              	.LBB2:
-  84:Application/wirelessrx.c ****         dt = DWT_GetDeltaT(&DWT_Count);
-  54              		.loc 1 84 9 is_stmt 1 view .LVU5
-  85:Application/wirelessrx.c **** 
-  55              		.loc 1 85 9 view .LVU6
-  85:Application/wirelessrx.c **** 
-  56              		.loc 1 85 14 is_stmt 0 view .LVU7
-  57 000a 2848     		ldr	r0, .L8+4
-  58              	.LVL3:
-  85:Application/wirelessrx.c **** 
-  59              		.loc 1 85 14 view .LVU8
-  60 000c FFF7FEFF 		bl	DWT_GetDeltaT
-  61              	.LVL4:
-  85:Application/wirelessrx.c **** 
-  62              		.loc 1 85 12 view .LVU9
-  63 0010 274B     		ldr	r3, .L8+8
-  64 0012 83ED000A 		vstr.32	s0, [r3]
-  87:Application/wirelessrx.c ****         V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
-  65              		.loc 1 87 9 is_stmt 1 view .LVU10
-  87:Application/wirelessrx.c ****         V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
-  66              		.loc 1 87 38 is_stmt 0 view .LVU11
-  67 0016 274B     		ldr	r3, .L8+12
-  87:Application/wirelessrx.c ****         V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
-  68              		.loc 1 87 47 view .LVU12
-  69 0018 D3ED007A 		vldr.32	s15, [r3]	@ int
-  70 001c B8EE670A 		vcvt.f32.u32	s0, s15
-  71 0020 9FED256A 		vldr.32	s12, .L8+16
-  72 0024 20EE060A 		vmul.f32	s0, s0, s12
-  87:Application/wirelessrx.c ****         V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
-  73              		.loc 1 87 49 view .LVU13
-  74 0028 DFED246A 		vldr.32	s13, .L8+20
-  75 002c 20EE260A 		vmul.f32	s0, s0, s13
-  87:Application/wirelessrx.c ****         V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
-  76              		.loc 1 87 58 view .LVU14
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 5
-
-
-  77 0030 9FED237A 		vldr.32	s14, .L8+24
-  78 0034 20EE070A 		vmul.f32	s0, s0, s14
-  87:Application/wirelessrx.c ****         V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
-  79              		.loc 1 87 26 view .LVU15
-  80 0038 224C     		ldr	r4, .L8+28
-  81 003a 84ED000A 		vstr.32	s0, [r4]
-  88:Application/wirelessrx.c **** 
-  82              		.loc 1 88 9 is_stmt 1 view .LVU16
-  88:Application/wirelessrx.c **** 
-  83              		.loc 1 88 38 is_stmt 0 view .LVU17
-  84 003e D3ED017A 		vldr.32	s15, [r3, #4]	@ int
-  88:Application/wirelessrx.c **** 
-  85              		.loc 1 88 47 view .LVU18
-  86 0042 F8EE677A 		vcvt.f32.u32	s15, s15
-  87 0046 67EE867A 		vmul.f32	s15, s15, s12
-  88:Application/wirelessrx.c **** 
-  88              		.loc 1 88 49 view .LVU19
-  89 004a 67EEA67A 		vmul.f32	s15, s15, s13
-  88:Application/wirelessrx.c **** 
-  90              		.loc 1 88 58 view .LVU20
-  91 004e 67EE877A 		vmul.f32	s15, s15, s14
-  88:Application/wirelessrx.c **** 
-  92              		.loc 1 88 26 view .LVU21
-  93 0052 C4ED017A 		vstr.32	s15, [r4, #4]
-  90:Application/wirelessrx.c ****         VCC_f = First_Order_Filter_Calculate(&VCCFilter,V_values[ADCVCC]);
-  94              		.loc 1 90 9 is_stmt 1 view .LVU22
-  90:Application/wirelessrx.c ****         VCC_f = First_Order_Filter_Calculate(&VCCFilter,V_values[ADCVCC]);
-  95              		.loc 1 90 17 is_stmt 0 view .LVU23
-  96 0056 1C48     		ldr	r0, .L8+32
-  97 0058 FFF7FEFF 		bl	First_Order_Filter_Calculate
-  98              	.LVL5:
-  90:Application/wirelessrx.c ****         VCC_f = First_Order_Filter_Calculate(&VCCFilter,V_values[ADCVCC]);
-  99              		.loc 1 90 15 view .LVU24
- 100 005c 1B4D     		ldr	r5, .L8+36
- 101 005e 85ED000A 		vstr.32	s0, [r5]
-  91:Application/wirelessrx.c **** 
- 102              		.loc 1 91 9 is_stmt 1 view .LVU25
-  91:Application/wirelessrx.c **** 
- 103              		.loc 1 91 17 is_stmt 0 view .LVU26
- 104 0062 94ED010A 		vldr.32	s0, [r4, #4]
- 105 0066 1A48     		ldr	r0, .L8+40
- 106 0068 FFF7FEFF 		bl	First_Order_Filter_Calculate
- 107              	.LVL6:
-  91:Application/wirelessrx.c **** 
- 108              		.loc 1 91 15 view .LVU27
- 109 006c 194B     		ldr	r3, .L8+44
- 110 006e 83ED000A 		vstr.32	s0, [r3]
-  93:Application/wirelessrx.c ****         {
- 111              		.loc 1 93 9 is_stmt 1 view .LVU28
-  93:Application/wirelessrx.c ****         {
- 112              		.loc 1 93 18 is_stmt 0 view .LVU29
- 113 0072 95ED007A 		vldr.32	s14, [r5]
-  93:Application/wirelessrx.c ****         {
- 114              		.loc 1 93 11 view .LVU30
- 115 0076 F3EE027A 		vmov.f32	s15, #1.8e+1
- 116 007a B4EEE77A 		vcmpe.f32	s14, s15
- 117 007e F1EE10FA 		vmrs	APSR_nzcv, FPSCR
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 6
-
-
- 118 0082 07DD     		ble	.L3
-  93:Application/wirelessrx.c ****         {
- 119              		.loc 1 93 38 discriminator 1 view .LVU31
- 120 0084 144B     		ldr	r3, .L8+48
- 121 0086 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  93:Application/wirelessrx.c ****         {
- 122              		.loc 1 93 26 discriminator 1 view .LVU32
- 123 0088 032B     		cmp	r3, #3
- 124 008a 03D0     		beq	.L3
-  95:Application/wirelessrx.c ****         }
- 125              		.loc 1 95 13 is_stmt 1 view .LVU33
-  95:Application/wirelessrx.c ****         }
- 126              		.loc 1 95 22 is_stmt 0 view .LVU34
- 127 008c 124B     		ldr	r3, .L8+48
- 128 008e 0122     		movs	r2, #1
- 129 0090 1A70     		strb	r2, [r3]
- 130 0092 B9E7     		b	.L1
- 131              	.L3:
-  97:Application/wirelessrx.c ****         {
- 132              		.loc 1 97 14 is_stmt 1 view .LVU35
-  97:Application/wirelessrx.c ****         {
- 133              		.loc 1 97 26 is_stmt 0 view .LVU36
- 134 0094 104B     		ldr	r3, .L8+48
- 135 0096 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  97:Application/wirelessrx.c ****         {
- 136              		.loc 1 97 16 view .LVU37
- 137 0098 012B     		cmp	r3, #1
- 138 009a B5D0     		beq	.L1
-  97:Application/wirelessrx.c ****         {
- 139              		.loc 1 97 49 discriminator 1 view .LVU38
- 140 009c 032B     		cmp	r3, #3
- 141 009e B3D0     		beq	.L1
-  99:Application/wirelessrx.c ****         }
- 142              		.loc 1 99 13 is_stmt 1 view .LVU39
-  99:Application/wirelessrx.c ****         }
- 143              		.loc 1 99 22 is_stmt 0 view .LVU40
- 144 00a0 0D4B     		ldr	r3, .L8+48
- 145 00a2 0222     		movs	r2, #2
- 146 00a4 1A70     		strb	r2, [r3]
- 147              	.LBE2:
- 148              		.loc 1 143 1 view .LVU41
- 149 00a6 AFE7     		b	.L1
- 150              	.L9:
- 151              		.align	2
- 152              	.L8:
- 153 00a8 00000000 		.word	hadc1
- 154 00ac 00000000 		.word	DWT_Count
- 155 00b0 00000000 		.word	dt.0
- 156 00b4 00000000 		.word	ADC_values
- 157 00b8 33335340 		.word	1079194419
- 158 00bc 00008039 		.word	964689920
- 159 00c0 B0724841 		.word	1095266992
- 160 00c4 00000000 		.word	V_values
- 161 00c8 00000000 		.word	VInFilter
- 162 00cc 00000000 		.word	VIn_f
- 163 00d0 00000000 		.word	VCCFilter
- 164 00d4 00000000 		.word	VCC_f
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 7
-
-
- 165 00d8 00000000 		.word	RxStatus
- 166              		.cfi_endproc
- 167              	.LFE125:
- 169              		.section	.text.LowPower,"ax",%progbits
- 170              		.align	1
- 171              		.global	LowPower
- 172              		.syntax unified
- 173              		.thumb
- 174              		.thumb_func
- 176              	LowPower:
- 177              	.LFB126:
- 144:Application/wirelessrx.c **** 
- 145:Application/wirelessrx.c **** void LowPower()
- 146:Application/wirelessrx.c **** {
- 178              		.loc 1 146 1 is_stmt 1 view -0
- 179              		.cfi_startproc
- 180              		@ args = 0, pretend = 0, frame = 0
- 181              		@ frame_needed = 0, uses_anonymous_args = 0
- 182 0000 08B5     		push	{r3, lr}
- 183              	.LCFI1:
- 184              		.cfi_def_cfa_offset 8
- 185              		.cfi_offset 3, -8
- 186              		.cfi_offset 14, -4
- 147:Application/wirelessrx.c ****     HAL_GPIO_WritePin(PULSEA_GPIO_Port,PULSEA_Pin,GPIO_PIN_SET);
- 187              		.loc 1 147 5 view .LVU43
- 188 0002 0122     		movs	r2, #1
- 189 0004 4FF48071 		mov	r1, #256
- 190 0008 4FF09040 		mov	r0, #1207959552
- 191 000c FFF7FEFF 		bl	HAL_GPIO_WritePin
- 192              	.LVL7:
- 148:Application/wirelessrx.c ****     HAL_GPIO_WritePin(PULSEB_GPIO_Port,PULSEB_Pin,GPIO_PIN_SET);
- 193              		.loc 1 148 5 view .LVU44
- 194 0010 0122     		movs	r2, #1
- 195 0012 4FF40071 		mov	r1, #512
- 196 0016 4FF09040 		mov	r0, #1207959552
- 197 001a FFF7FEFF 		bl	HAL_GPIO_WritePin
- 198              	.LVL8:
- 149:Application/wirelessrx.c **** }
- 199              		.loc 1 149 1 is_stmt 0 view .LVU45
- 200 001e 08BD     		pop	{r3, pc}
- 201              		.cfi_endproc
- 202              	.LFE126:
- 204              		.section	.text.HighPower,"ax",%progbits
- 205              		.align	1
- 206              		.global	HighPower
- 207              		.syntax unified
- 208              		.thumb
- 209              		.thumb_func
- 211              	HighPower:
- 212              	.LFB127:
- 150:Application/wirelessrx.c **** 
- 151:Application/wirelessrx.c **** void HighPower()
- 152:Application/wirelessrx.c **** {
- 213              		.loc 1 152 1 is_stmt 1 view -0
- 214              		.cfi_startproc
- 215              		@ args = 0, pretend = 0, frame = 0
- 216              		@ frame_needed = 0, uses_anonymous_args = 0
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 8
-
-
- 217 0000 08B5     		push	{r3, lr}
- 218              	.LCFI2:
- 219              		.cfi_def_cfa_offset 8
- 220              		.cfi_offset 3, -8
- 221              		.cfi_offset 14, -4
- 153:Application/wirelessrx.c ****     HAL_GPIO_WritePin(PULSEA_GPIO_Port,PULSEA_Pin,GPIO_PIN_RESET);
- 222              		.loc 1 153 5 view .LVU47
- 223 0002 0022     		movs	r2, #0
- 224 0004 4FF48071 		mov	r1, #256
- 225 0008 4FF09040 		mov	r0, #1207959552
- 226 000c FFF7FEFF 		bl	HAL_GPIO_WritePin
- 227              	.LVL9:
- 154:Application/wirelessrx.c ****     HAL_GPIO_WritePin(PULSEB_GPIO_Port,PULSEB_Pin,GPIO_PIN_RESET);
- 228              		.loc 1 154 5 view .LVU48
- 229 0010 0022     		movs	r2, #0
- 230 0012 4FF40071 		mov	r1, #512
- 231 0016 4FF09040 		mov	r0, #1207959552
- 232 001a FFF7FEFF 		bl	HAL_GPIO_WritePin
- 233              	.LVL10:
- 155:Application/wirelessrx.c **** }
- 234              		.loc 1 155 1 is_stmt 0 view .LVU49
- 235 001e 08BD     		pop	{r3, pc}
- 236              		.cfi_endproc
- 237              	.LFE127:
- 239              		.section	.text.SwitchBBEN,"ax",%progbits
- 240              		.align	1
- 241              		.global	SwitchBBEN
- 242              		.syntax unified
- 243              		.thumb
- 244              		.thumb_func
- 246              	SwitchBBEN:
- 247              	.LVL11:
- 248              	.LFB128:
- 156:Application/wirelessrx.c **** 
- 157:Application/wirelessrx.c **** //BBEN开则电容充电，关则电容不充电
- 158:Application/wirelessrx.c **** void SwitchBBEN(int On_Off)
- 159:Application/wirelessrx.c **** {
- 249              		.loc 1 159 1 is_stmt 1 view -0
- 250              		.cfi_startproc
- 251              		@ args = 0, pretend = 0, frame = 0
- 252              		@ frame_needed = 0, uses_anonymous_args = 0
- 253              		.loc 1 159 1 is_stmt 0 view .LVU51
- 254 0000 08B5     		push	{r3, lr}
- 255              	.LCFI3:
- 256              		.cfi_def_cfa_offset 8
- 257              		.cfi_offset 3, -8
- 258              		.cfi_offset 14, -4
- 160:Application/wirelessrx.c ****     if(On_Off)
- 259              		.loc 1 160 5 is_stmt 1 view .LVU52
- 260              		.loc 1 160 7 is_stmt 0 view .LVU53
- 261 0002 30B1     		cbz	r0, .L15
- 161:Application/wirelessrx.c ****     {
- 162:Application/wirelessrx.c ****         HAL_GPIO_WritePin(BBEN_GPIO_Port,BBEN_Pin,GPIO_PIN_SET);
- 262              		.loc 1 162 9 is_stmt 1 view .LVU54
- 263 0004 0122     		movs	r2, #1
- 264 0006 8021     		movs	r1, #128
- 265 0008 4FF09040 		mov	r0, #1207959552
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 9
-
-
- 266              	.LVL12:
- 267              		.loc 1 162 9 is_stmt 0 view .LVU55
- 268 000c FFF7FEFF 		bl	HAL_GPIO_WritePin
- 269              	.LVL13:
- 270              	.L14:
- 163:Application/wirelessrx.c ****     }
- 164:Application/wirelessrx.c ****     else
- 165:Application/wirelessrx.c ****     {
- 166:Application/wirelessrx.c ****         HAL_GPIO_WritePin(BBEN_GPIO_Port,BBEN_Pin,GPIO_PIN_RESET);
- 167:Application/wirelessrx.c ****     }
- 168:Application/wirelessrx.c **** 
- 169:Application/wirelessrx.c **** }
- 271              		.loc 1 169 1 view .LVU56
- 272 0010 08BD     		pop	{r3, pc}
- 273              	.LVL14:
- 274              	.L15:
- 166:Application/wirelessrx.c ****     }
- 275              		.loc 1 166 9 is_stmt 1 view .LVU57
- 276 0012 0022     		movs	r2, #0
- 277 0014 8021     		movs	r1, #128
- 278 0016 4FF09040 		mov	r0, #1207959552
- 279              	.LVL15:
- 166:Application/wirelessrx.c ****     }
- 280              		.loc 1 166 9 is_stmt 0 view .LVU58
- 281 001a FFF7FEFF 		bl	HAL_GPIO_WritePin
- 282              	.LVL16:
- 283              		.loc 1 169 1 view .LVU59
- 284 001e F7E7     		b	.L14
- 285              		.cfi_endproc
- 286              	.LFE128:
- 288              		.section	.text.SwitchENA_ENB,"ax",%progbits
- 289              		.align	1
- 290              		.global	SwitchENA_ENB
- 291              		.syntax unified
- 292              		.thumb
- 293              		.thumb_func
- 295              	SwitchENA_ENB:
- 296              	.LVL17:
- 297              	.LFB129:
- 170:Application/wirelessrx.c **** 
- 171:Application/wirelessrx.c **** void SwitchENA_ENB(int On_Off)
- 172:Application/wirelessrx.c **** {
- 298              		.loc 1 172 1 is_stmt 1 view -0
- 299              		.cfi_startproc
- 300              		@ args = 0, pretend = 0, frame = 0
- 301              		@ frame_needed = 0, uses_anonymous_args = 0
- 302              		.loc 1 172 1 is_stmt 0 view .LVU61
- 303 0000 10B5     		push	{r4, lr}
- 304              	.LCFI4:
- 305              		.cfi_def_cfa_offset 8
- 306              		.cfi_offset 4, -8
- 307              		.cfi_offset 14, -4
- 173:Application/wirelessrx.c ****     if(On_Off)
- 308              		.loc 1 173 5 is_stmt 1 view .LVU62
- 309              		.loc 1 173 7 is_stmt 0 view .LVU63
- 310 0002 68B1     		cbz	r0, .L19
- 174:Application/wirelessrx.c ****     {
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 10
-
-
- 175:Application/wirelessrx.c ****         HAL_GPIO_WritePin(ENA_GPIO_Port,ENA_Pin,GPIO_PIN_SET);
- 311              		.loc 1 175 9 is_stmt 1 view .LVU64
- 312 0004 0D4C     		ldr	r4, .L22
- 313 0006 0122     		movs	r2, #1
- 314 0008 4FF40041 		mov	r1, #32768
- 315 000c 2046     		mov	r0, r4
- 316              	.LVL18:
- 317              		.loc 1 175 9 is_stmt 0 view .LVU65
- 318 000e FFF7FEFF 		bl	HAL_GPIO_WritePin
- 319              	.LVL19:
- 176:Application/wirelessrx.c ****         HAL_GPIO_WritePin(ENB_GPIO_Port,ENB_Pin,GPIO_PIN_SET);
- 320              		.loc 1 176 9 is_stmt 1 view .LVU66
- 321 0012 0122     		movs	r2, #1
- 322 0014 4FF48041 		mov	r1, #16384
- 323 0018 2046     		mov	r0, r4
- 324 001a FFF7FEFF 		bl	HAL_GPIO_WritePin
- 325              	.LVL20:
- 326              	.L18:
- 177:Application/wirelessrx.c ****     }
- 178:Application/wirelessrx.c ****     else
- 179:Application/wirelessrx.c ****     {
- 180:Application/wirelessrx.c ****         HAL_GPIO_WritePin(ENA_GPIO_Port,ENA_Pin,GPIO_PIN_RESET);
- 181:Application/wirelessrx.c ****         HAL_GPIO_WritePin(ENB_GPIO_Port,ENB_Pin,GPIO_PIN_RESET);
- 182:Application/wirelessrx.c ****     }
- 183:Application/wirelessrx.c **** }
- 327              		.loc 1 183 1 is_stmt 0 view .LVU67
- 328 001e 10BD     		pop	{r4, pc}
- 329              	.LVL21:
- 330              	.L19:
- 180:Application/wirelessrx.c ****         HAL_GPIO_WritePin(ENB_GPIO_Port,ENB_Pin,GPIO_PIN_RESET);
- 331              		.loc 1 180 9 is_stmt 1 view .LVU68
- 332 0020 064C     		ldr	r4, .L22
- 333 0022 0022     		movs	r2, #0
- 334 0024 4FF40041 		mov	r1, #32768
- 335 0028 2046     		mov	r0, r4
- 336              	.LVL22:
- 180:Application/wirelessrx.c ****         HAL_GPIO_WritePin(ENB_GPIO_Port,ENB_Pin,GPIO_PIN_RESET);
- 337              		.loc 1 180 9 is_stmt 0 view .LVU69
- 338 002a FFF7FEFF 		bl	HAL_GPIO_WritePin
- 339              	.LVL23:
- 181:Application/wirelessrx.c ****     }
- 340              		.loc 1 181 9 is_stmt 1 view .LVU70
- 341 002e 0022     		movs	r2, #0
- 342 0030 4FF48041 		mov	r1, #16384
- 343 0034 2046     		mov	r0, r4
- 344 0036 FFF7FEFF 		bl	HAL_GPIO_WritePin
- 345              	.LVL24:
- 346              		.loc 1 183 1 is_stmt 0 view .LVU71
- 347 003a F0E7     		b	.L18
- 348              	.L23:
- 349              		.align	2
- 350              	.L22:
- 351 003c 00040048 		.word	1207960576
- 352              		.cfi_endproc
- 353              	.LFE129:
- 355              		.section	.text.WirelessInit,"ax",%progbits
- 356              		.align	1
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 11
-
-
- 357              		.global	WirelessInit
- 358              		.syntax unified
- 359              		.thumb
- 360              		.thumb_func
- 362              	WirelessInit:
- 363              	.LFB123:
-  18:Application/wirelessrx.c ****     SwitchBBEN(Off);
- 364              		.loc 1 18 1 is_stmt 1 view -0
- 365              		.cfi_startproc
- 366              		@ args = 0, pretend = 0, frame = 0
- 367              		@ frame_needed = 0, uses_anonymous_args = 0
- 368 0000 08B5     		push	{r3, lr}
- 369              	.LCFI5:
- 370              		.cfi_def_cfa_offset 8
- 371              		.cfi_offset 3, -8
- 372              		.cfi_offset 14, -4
- 373 0002 2DED028B 		vpush.64	{d8}
- 374              	.LCFI6:
- 375              		.cfi_def_cfa_offset 16
- 376              		.cfi_offset 80, -16
- 377              		.cfi_offset 81, -12
-  19:Application/wirelessrx.c ****     SwitchENA_ENB(Off);
- 378              		.loc 1 19 5 view .LVU73
- 379 0006 0020     		movs	r0, #0
- 380 0008 FFF7FEFF 		bl	SwitchBBEN
- 381              	.LVL25:
-  20:Application/wirelessrx.c ****     LowPower();
- 382              		.loc 1 20 5 view .LVU74
- 383 000c 0020     		movs	r0, #0
- 384 000e FFF7FEFF 		bl	SwitchENA_ENB
- 385              	.LVL26:
-  21:Application/wirelessrx.c **** 
- 386              		.loc 1 21 5 view .LVU75
- 387 0012 FFF7FEFF 		bl	LowPower
- 388              	.LVL27:
-  23:Application/wirelessrx.c ****     SwitchBBEN(On);
- 389              		.loc 1 23 5 view .LVU76
- 390 0016 9FED150A 		vldr.32	s0, .L28
- 391 001a FFF7FEFF 		bl	DWT_Delay
- 392              	.LVL28:
-  24:Application/wirelessrx.c ****     SwitchENA_ENB(On);
- 393              		.loc 1 24 5 view .LVU77
- 394 001e 0120     		movs	r0, #1
- 395 0020 FFF7FEFF 		bl	SwitchBBEN
- 396              	.LVL29:
-  25:Application/wirelessrx.c ****     if( HAL_ADC_Start_DMA(&hadc1,ADC_values,ADC_DataSize) != HAL_OK  ||
- 397              		.loc 1 25 5 view .LVU78
- 398 0024 0120     		movs	r0, #1
- 399 0026 FFF7FEFF 		bl	SwitchENA_ENB
- 400              	.LVL30:
-  26:Application/wirelessrx.c ****         HAL_ADCEx_Calibration_GetValue(&hadc1,ADC_SINGLE_ENDED) != HAL_OK)
- 401              		.loc 1 26 5 view .LVU79
-  26:Application/wirelessrx.c ****         HAL_ADCEx_Calibration_GetValue(&hadc1,ADC_SINGLE_ENDED) != HAL_OK)
- 402              		.loc 1 26 9 is_stmt 0 view .LVU80
- 403 002a 0222     		movs	r2, #2
- 404 002c 1049     		ldr	r1, .L28+4
- 405 002e 1148     		ldr	r0, .L28+8
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 12
-
-
- 406 0030 FFF7FEFF 		bl	HAL_ADC_Start_DMA
- 407              	.LVL31:
-  26:Application/wirelessrx.c ****         HAL_ADCEx_Calibration_GetValue(&hadc1,ADC_SINGLE_ENDED) != HAL_OK)
- 408              		.loc 1 26 7 view .LVU81
- 409 0034 20B9     		cbnz	r0, .L25
-  27:Application/wirelessrx.c ****     {
- 410              		.loc 1 27 9 discriminator 1 view .LVU82
- 411 0036 0021     		movs	r1, #0
- 412 0038 0E48     		ldr	r0, .L28+8
- 413 003a FFF7FEFF 		bl	HAL_ADCEx_Calibration_GetValue
- 414              	.LVL32:
-  26:Application/wirelessrx.c ****         HAL_ADCEx_Calibration_GetValue(&hadc1,ADC_SINGLE_ENDED) != HAL_OK)
- 415              		.loc 1 26 70 discriminator 1 view .LVU83
- 416 003e 08B1     		cbz	r0, .L26
- 417              	.L25:
-  29:Application/wirelessrx.c ****     }
- 418              		.loc 1 29 9 is_stmt 1 view .LVU84
- 419 0040 FFF7FEFF 		bl	Error_Handler
- 420              	.LVL33:
- 421              	.L26:
-  32:Application/wirelessrx.c ****     First_Order_Filter_Init(&VCCFilter,1/97500.0f,30.0f);
- 422              		.loc 1 32 5 view .LVU85
- 423 0044 9FED0C8A 		vldr.32	s16, .L28+12
- 424 0048 F3EE0E0A 		vmov.f32	s1, #3.0e+1
- 425 004c B0EE480A 		vmov.f32	s0, s16
- 426 0050 0A48     		ldr	r0, .L28+16
- 427 0052 FFF7FEFF 		bl	First_Order_Filter_Init
- 428              	.LVL34:
-  33:Application/wirelessrx.c **** 
- 429              		.loc 1 33 5 view .LVU86
- 430 0056 F3EE0E0A 		vmov.f32	s1, #3.0e+1
- 431 005a B0EE480A 		vmov.f32	s0, s16
- 432 005e 0848     		ldr	r0, .L28+20
- 433 0060 FFF7FEFF 		bl	First_Order_Filter_Init
- 434              	.LVL35:
+  31:Application/wirelessrx.c ****         HAL_ADCEx_Calibration_GetValue(&hadc1,ADC_SINGLE_ENDED) != HAL_OK)
+  32:Application/wirelessrx.c ****     {
+  33:Application/wirelessrx.c ****         Error_Handler();
+  34:Application/wirelessrx.c ****     }
   35:Application/wirelessrx.c **** 
- 435              		.loc 1 35 1 is_stmt 0 view .LVU87
- 436 0064 BDEC028B 		vldm	sp!, {d8}
- 437              	.LCFI7:
- 438              		.cfi_restore 80
- 439              		.cfi_restore 81
- 440              		.cfi_def_cfa_offset 8
- 441 0068 08BD     		pop	{r3, pc}
- 442              	.L29:
- 443 006a 00BF     		.align	2
- 444              	.L28:
- 445 006c CDCCCC3D 		.word	1036831949
- 446 0070 00000000 		.word	ADC_values
- 447 0074 00000000 		.word	hadc1
- 448 0078 F2122C37 		.word	925635314
- 449 007c 00000000 		.word	VInFilter
- 450 0080 00000000 		.word	VCCFilter
- 451              		.cfi_endproc
- 452              	.LFE123:
- 454              		.section	.text.SwitchHighOrLowPower,"ax",%progbits
- 455              		.align	1
- 456              		.global	SwitchHighOrLowPower
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 13
-
-
- 457              		.syntax unified
- 458              		.thumb
- 459              		.thumb_func
- 461              	SwitchHighOrLowPower:
- 462              	.LVL36:
- 463              	.LFB130:
- 184:Application/wirelessrx.c **** 
- 185:Application/wirelessrx.c **** void SwitchHighOrLowPower(int On_Off)
- 186:Application/wirelessrx.c **** {
- 464              		.loc 1 186 1 is_stmt 1 view -0
- 465              		.cfi_startproc
- 466              		@ args = 0, pretend = 0, frame = 0
- 467              		@ frame_needed = 0, uses_anonymous_args = 0
- 468              		.loc 1 186 1 is_stmt 0 view .LVU89
- 469 0000 08B5     		push	{r3, lr}
- 470              	.LCFI8:
- 471              		.cfi_def_cfa_offset 8
- 472              		.cfi_offset 3, -8
- 473              		.cfi_offset 14, -4
- 187:Application/wirelessrx.c ****     if(On_Off)
- 474              		.loc 1 187 5 is_stmt 1 view .LVU90
- 475              		.loc 1 187 7 is_stmt 0 view .LVU91
- 476 0002 10B1     		cbz	r0, .L31
- 188:Application/wirelessrx.c ****     {
- 189:Application/wirelessrx.c ****         LowPower();
- 477              		.loc 1 189 9 is_stmt 1 view .LVU92
- 478 0004 FFF7FEFF 		bl	LowPower
- 479              	.LVL37:
- 480              	.L30:
- 190:Application/wirelessrx.c ****     }
- 191:Application/wirelessrx.c ****     else
- 192:Application/wirelessrx.c ****     {
- 193:Application/wirelessrx.c ****         HighPower();
- 194:Application/wirelessrx.c ****     }
- 195:Application/wirelessrx.c ****     
- 196:Application/wirelessrx.c **** }
- 481              		.loc 1 196 1 is_stmt 0 view .LVU93
- 482 0008 08BD     		pop	{r3, pc}
- 483              	.LVL38:
- 484              	.L31:
- 193:Application/wirelessrx.c ****     }
- 485              		.loc 1 193 9 is_stmt 1 view .LVU94
- 486 000a FFF7FEFF 		bl	HighPower
- 487              	.LVL39:
- 488              		.loc 1 196 1 is_stmt 0 view .LVU95
- 489 000e FBE7     		b	.L30
- 490              		.cfi_endproc
- 491              	.LFE130:
- 493              		.section	.text.QITask,"ax",%progbits
- 494              		.align	1
- 495              		.global	QITask
- 496              		.syntax unified
- 497              		.thumb
- 498              		.thumb_func
- 500              	QITask:
- 501              	.LFB124:
-  38:Application/wirelessrx.c ****     static uint8_t count_connected = 0;
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 14
-
-
- 502              		.loc 1 38 1 is_stmt 1 view -0
- 503              		.cfi_startproc
- 504              		@ args = 0, pretend = 0, frame = 0
- 505              		@ frame_needed = 0, uses_anonymous_args = 0
- 506 0000 10B5     		push	{r4, lr}
- 507              	.LCFI9:
- 508              		.cfi_def_cfa_offset 8
- 509              		.cfi_offset 4, -8
- 510              		.cfi_offset 14, -4
-  39:Application/wirelessrx.c ****     static uint8_t count_connecting = 0;
- 511              		.loc 1 39 5 view .LVU97
-  40:Application/wirelessrx.c **** 
- 512              		.loc 1 40 5 view .LVU98
-  42:Application/wirelessrx.c ****     {
- 513              		.loc 1 42 5 view .LVU99
- 514 0002 264B     		ldr	r3, .L47
- 515 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 516 0006 022B     		cmp	r3, #2
- 517 0008 44D0     		beq	.L35
- 518 000a 032B     		cmp	r3, #3
- 519 000c 11D0     		beq	.L36
- 520 000e 012B     		cmp	r3, #1
- 521 0010 00D0     		beq	.L43
- 522              	.L34:
-  79:Application/wirelessrx.c **** void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
- 523              		.loc 1 79 1 is_stmt 0 view .LVU100
- 524 0012 10BD     		pop	{r4, pc}
- 525              	.L43:
- 526              	.LBB3:
-  45:Application/wirelessrx.c ****         count_connected = 0;
- 527              		.loc 1 45 9 is_stmt 1 view .LVU101
-  45:Application/wirelessrx.c ****         count_connected = 0;
- 528              		.loc 1 45 50 is_stmt 0 view .LVU102
- 529 0014 224C     		ldr	r4, .L47+4
- 530 0016 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
- 531 0018 03F00703 		and	r3, r3, #7
-  45:Application/wirelessrx.c ****         count_connected = 0;
- 532              		.loc 1 45 9 view .LVU103
- 533 001c 214A     		ldr	r2, .L47+8
- 534 001e D05C     		ldrb	r0, [r2, r3]	@ zero_extendqisi2
- 535 0020 FFF7FEFF 		bl	SwitchHighOrLowPower
- 536              	.LVL40:
-  46:Application/wirelessrx.c ****         count_connecting++;
- 537              		.loc 1 46 9 is_stmt 1 view .LVU104
-  46:Application/wirelessrx.c ****         count_connecting++;
- 538              		.loc 1 46 25 is_stmt 0 view .LVU105
- 539 0024 204B     		ldr	r3, .L47+12
- 540 0026 0022     		movs	r2, #0
- 541 0028 1A70     		strb	r2, [r3]
-  47:Application/wirelessrx.c ****         break;
- 542              		.loc 1 47 9 is_stmt 1 view .LVU106
-  47:Application/wirelessrx.c ****         break;
- 543              		.loc 1 47 25 is_stmt 0 view .LVU107
- 544 002a 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
- 545 002c 0133     		adds	r3, r3, #1
- 546 002e 2370     		strb	r3, [r4]
-  48:Application/wirelessrx.c ****     case RxStatus_Connected:
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 15
-
-
- 547              		.loc 1 48 9 is_stmt 1 view .LVU108
- 548 0030 EFE7     		b	.L34
- 549              	.L36:
-  51:Application/wirelessrx.c **** 
- 550              		.loc 1 51 9 view .LVU109
-  53:Application/wirelessrx.c ****         {
- 551              		.loc 1 53 9 view .LVU110
-  53:Application/wirelessrx.c ****         {
- 552              		.loc 1 53 28 is_stmt 0 view .LVU111
- 553 0032 1D4B     		ldr	r3, .L47+12
- 554 0034 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  53:Application/wirelessrx.c ****         {
- 555              		.loc 1 53 11 view .LVU112
- 556 0036 072B     		cmp	r3, #7
- 557 0038 07D9     		bls	.L44
-  58:Application/wirelessrx.c ****         {
- 558              		.loc 1 58 14 is_stmt 1 view .LVU113
-  58:Application/wirelessrx.c ****         {
- 559              		.loc 1 58 16 is_stmt 0 view .LVU114
- 560 003a 0F2B     		cmp	r3, #15
- 561 003c 1AD9     		bls	.L45
-  63:Application/wirelessrx.c ****         {
- 562              		.loc 1 63 14 is_stmt 1 view .LVU115
-  63:Application/wirelessrx.c ****         {
- 563              		.loc 1 63 16 is_stmt 0 view .LVU116
- 564 003e C72B     		cmp	r3, #199
- 565 0040 25D9     		bls	.L46
-  69:Application/wirelessrx.c ****         }
- 566              		.loc 1 69 13 is_stmt 1 view .LVU117
-  69:Application/wirelessrx.c ****         }
- 567              		.loc 1 69 29 is_stmt 0 view .LVU118
- 568 0042 194B     		ldr	r3, .L47+12
- 569 0044 0022     		movs	r2, #0
- 570 0046 1A70     		strb	r2, [r3]
- 571 0048 0CE0     		b	.L39
- 572              	.L44:
-  55:Application/wirelessrx.c ****             data =  (uint8_t)VIn_f;
- 573              		.loc 1 55 13 is_stmt 1 view .LVU119
- 574 004a 164A     		ldr	r2, .L47+8
- 575 004c D05C     		ldrb	r0, [r2, r3]	@ zero_extendqisi2
- 576 004e FFF7FEFF 		bl	SwitchHighOrLowPower
- 577              	.LVL41:
-  56:Application/wirelessrx.c ****         }
- 578              		.loc 1 56 13 view .LVU120
-  56:Application/wirelessrx.c ****         }
- 579              		.loc 1 56 21 is_stmt 0 view .LVU121
- 580 0052 164B     		ldr	r3, .L47+16
- 581 0054 D3ED007A 		vldr.32	s15, [r3]
- 582 0058 FCEEE77A 		vcvt.u32.f32	s15, s15
- 583 005c 17EE903A 		vmov	r3, s15	@ int
-  56:Application/wirelessrx.c ****         }
- 584              		.loc 1 56 18 view .LVU122
- 585 0060 134A     		ldr	r2, .L47+20
- 586 0062 1370     		strb	r3, [r2]
- 587              	.L39:
-  71:Application/wirelessrx.c ****         count_connecting = 0;
- 588              		.loc 1 71 9 is_stmt 1 view .LVU123
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 16
-
-
-  71:Application/wirelessrx.c ****         count_connecting = 0;
- 589              		.loc 1 71 24 is_stmt 0 view .LVU124
- 590 0064 104A     		ldr	r2, .L47+12
- 591 0066 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
- 592 0068 0133     		adds	r3, r3, #1
- 593 006a 1370     		strb	r3, [r2]
-  72:Application/wirelessrx.c ****         break;
- 594              		.loc 1 72 9 is_stmt 1 view .LVU125
-  72:Application/wirelessrx.c ****         break;
- 595              		.loc 1 72 26 is_stmt 0 view .LVU126
- 596 006c 0C4B     		ldr	r3, .L47+4
- 597 006e 0022     		movs	r2, #0
- 598 0070 1A70     		strb	r2, [r3]
-  73:Application/wirelessrx.c ****     case RxStatus_Disconnected:
- 599              		.loc 1 73 9 is_stmt 1 view .LVU127
- 600 0072 CEE7     		b	.L34
- 601              	.L45:
-  60:Application/wirelessrx.c ****             SwitchHighOrLowPower(DOF[count_connected - 8]);
- 602              		.loc 1 60 13 view .LVU128
-  60:Application/wirelessrx.c ****             SwitchHighOrLowPower(DOF[count_connected - 8]);
- 603              		.loc 1 60 53 is_stmt 0 view .LVU129
- 604 0074 C3F10F02 		rsb	r2, r3, #15
-  60:Application/wirelessrx.c ****             SwitchHighOrLowPower(DOF[count_connected - 8]);
- 605              		.loc 1 60 46 view .LVU130
- 606 0078 0D49     		ldr	r1, .L47+20
- 607 007a 0878     		ldrb	r0, [r1]	@ zero_extendqisi2
- 608 007c 1041     		asrs	r0, r0, r2
-  60:Application/wirelessrx.c ****             SwitchHighOrLowPower(DOF[count_connected - 8]);
- 609              		.loc 1 60 33 view .LVU131
- 610 007e 083B     		subs	r3, r3, #8
-  60:Application/wirelessrx.c ****             SwitchHighOrLowPower(DOF[count_connected - 8]);
- 611              		.loc 1 60 73 view .LVU132
- 612 0080 00F00100 		and	r0, r0, #1
-  60:Application/wirelessrx.c ****             SwitchHighOrLowPower(DOF[count_connected - 8]);
- 613              		.loc 1 60 38 view .LVU133
- 614 0084 0B4A     		ldr	r2, .L47+24
- 615 0086 D054     		strb	r0, [r2, r3]
+  36:Application/wirelessrx.c ****     First_Order_Filter_Init(&VInFilter,1/97500.0f,30.0f);
+  37:Application/wirelessrx.c ****     First_Order_Filter_Init(&VCCFilter,1/97500.0f,30.0f);
+  38:Application/wirelessrx.c ****     SOF_To_Decode();
+  39:Application/wirelessrx.c **** 
+  40:Application/wirelessrx.c **** }
+  41:Application/wirelessrx.c **** 
+  42:Application/wirelessrx.c **** void QITask()
+  43:Application/wirelessrx.c **** {
+  44:Application/wirelessrx.c ****     static uint8_t data = 0;
+  45:Application/wirelessrx.c ****     static int16_t count_connected = 0;
+  46:Application/wirelessrx.c ****     static int16_t count_debug = 0;
+  47:Application/wirelessrx.c **** 
+  48:Application/wirelessrx.c ****     switch(RxStatus)
+  49:Application/wirelessrx.c ****     {
+  50:Application/wirelessrx.c ****     case RxStatus_Debug:
+  51:Application/wirelessrx.c ****         if(count_debug < 16)
+  52:Application/wirelessrx.c ****         {
+  53:Application/wirelessrx.c ****             SwitchENA_ENB(On);
+  54:Application/wirelessrx.c ****             SwitchHighOrLowPower(SOF_decode[count_debug]);
+  55:Application/wirelessrx.c ****         }
+  56:Application/wirelessrx.c ****         else if(count_debug < 32)
+  57:Application/wirelessrx.c ****         {
+  58:Application/wirelessrx.c ****             SwitchENA_ENB(On);
+  59:Application/wirelessrx.c ****             DOF_To_Decode();
+  60:Application/wirelessrx.c ****             SwitchHighOrLowPower(DOF_decode[count_debug - 16]);
   61:Application/wirelessrx.c ****         }
- 616              		.loc 1 61 13 is_stmt 1 view .LVU134
- 617 0088 FFF7FEFF 		bl	SwitchHighOrLowPower
- 618              	.LVL42:
- 619 008c EAE7     		b	.L39
- 620              	.L46:
+  62:Application/wirelessrx.c ****         else
+  63:Application/wirelessrx.c ****         {
+  64:Application/wirelessrx.c ****             count_debug = -1;
   65:Application/wirelessrx.c ****         }
- 621              		.loc 1 65 13 view .LVU135
- 622 008e FFF7FEFF 		bl	HighPower
- 623              	.LVL43:
- 624 0092 E7E7     		b	.L39
- 625              	.L35:
-  75:Application/wirelessrx.c ****         break;
- 626              		.loc 1 75 9 view .LVU136
- 627 0094 FFF7FEFF 		bl	HighPower
- 628              	.LVL44:
-  76:Application/wirelessrx.c ****     }
- 629              		.loc 1 76 9 view .LVU137
- 630              	.LBE3:
-  79:Application/wirelessrx.c **** void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 17
+  66:Application/wirelessrx.c ****         count_debug++;
+  67:Application/wirelessrx.c ****         count_connected = 0;
+  68:Application/wirelessrx.c ****         break;
+  69:Application/wirelessrx.c ****     case RxStatus_Connected:
+  70:Application/wirelessrx.c ****         // 0.25ms 4kHz
+  71:Application/wirelessrx.c ****         // 100ms 1period
+  72:Application/wirelessrx.c ****         if(count_connected < 16)
+  73:Application/wirelessrx.c ****         {
+  74:Application/wirelessrx.c ****             SwitchENA_ENB(On);
+  75:Application/wirelessrx.c ****             SwitchHighOrLowPower(SOF_decode[count_connected]);
+  76:Application/wirelessrx.c ****         }
+  77:Application/wirelessrx.c ****         else if(count_connected < 32)
+  78:Application/wirelessrx.c ****         {
+  79:Application/wirelessrx.c ****             SwitchENA_ENB(On);
+  80:Application/wirelessrx.c ****             DOF_To_Decode();
+  81:Application/wirelessrx.c ****             SwitchHighOrLowPower(DOF_decode[count_connected - 16]);
+  82:Application/wirelessrx.c ****         }
+  83:Application/wirelessrx.c ****         else if(count_connected < 400)
+  84:Application/wirelessrx.c ****         {
+  85:Application/wirelessrx.c ****             SwitchENA_ENB(Off);
+  86:Application/wirelessrx.c ****             HighPower();
+  87:Application/wirelessrx.c ****         }
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 3
 
 
- 631              		.loc 1 79 1 is_stmt 0 view .LVU138
- 632 0098 BBE7     		b	.L34
- 633              	.L48:
- 634 009a 00BF     		.align	2
- 635              	.L47:
- 636 009c 00000000 		.word	RxStatus
- 637 00a0 00000000 		.word	count_connecting.3
- 638 00a4 00000000 		.word	SOF
- 639 00a8 00000000 		.word	count_connected.2
- 640 00ac 00000000 		.word	VIn_f
- 641 00b0 00000000 		.word	data.1
- 642 00b4 00000000 		.word	DOF
- 643              		.cfi_endproc
- 644              	.LFE124:
- 646              		.section	.text.IntLimiter,"ax",%progbits
- 647              		.align	1
- 648              		.global	IntLimiter
- 649              		.syntax unified
- 650              		.thumb
- 651              		.thumb_func
- 653              	IntLimiter:
- 654              	.LVL45:
- 655              	.LFB131:
+  88:Application/wirelessrx.c ****         else
+  89:Application/wirelessrx.c ****         {
+  90:Application/wirelessrx.c ****             count_connected = -1;
+  91:Application/wirelessrx.c ****         }
+  92:Application/wirelessrx.c ****         count_connected++;
+  93:Application/wirelessrx.c ****         count_debug = 0;
+  94:Application/wirelessrx.c ****         break;
+  95:Application/wirelessrx.c ****     case RxStatus_Disconnected:
+  96:Application/wirelessrx.c ****         SwitchENA_ENB(Off);
+  97:Application/wirelessrx.c ****         HighPower();
+  98:Application/wirelessrx.c ****         break;
+  99:Application/wirelessrx.c ****     }
+ 100:Application/wirelessrx.c ****     
+ 101:Application/wirelessrx.c **** }
+ 102:Application/wirelessrx.c **** 
+ 103:Application/wirelessrx.c **** void SOF_To_Decode()
+ 104:Application/wirelessrx.c **** {
+  29              		.loc 1 104 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+ 105:Application/wirelessrx.c ****     SOF_decode[0] = 1;
+  34              		.loc 1 105 5 view .LVU1
+  35              		.loc 1 105 19 is_stmt 0 view .LVU2
+  36 0000 174A     		ldr	r2, .L8
+  37 0002 0123     		movs	r3, #1
+  38 0004 1370     		strb	r3, [r2]
+ 106:Application/wirelessrx.c ****     SOF_decode[1] = 0;
+  39              		.loc 1 106 5 is_stmt 1 view .LVU3
+  40              		.loc 1 106 19 is_stmt 0 view .LVU4
+  41 0006 0021     		movs	r1, #0
+  42 0008 5170     		strb	r1, [r2, #1]
+ 107:Application/wirelessrx.c ****     for(int i=1;i<8;i++)
+  43              		.loc 1 107 5 is_stmt 1 view .LVU5
+  44              	.LBB2:
+  45              		.loc 1 107 9 view .LVU6
+  46              	.LVL0:
+  47              		.loc 1 107 5 is_stmt 0 view .LVU7
+  48 000a 0FE0     		b	.L2
+  49              	.LVL1:
+  50              	.L7:
+ 108:Application/wirelessrx.c ****     {
+ 109:Application/wirelessrx.c ****         if(SOF[i] == 1)
+ 110:Application/wirelessrx.c ****         {
+ 111:Application/wirelessrx.c ****             SOF_decode[i*2] = !SOF_decode[i*2-1];
+  51              		.loc 1 111 13 is_stmt 1 view .LVU8
+  52              		.loc 1 111 44 is_stmt 0 view .LVU9
+  53 000c 5900     		lsls	r1, r3, #1
+  54              		.loc 1 111 46 view .LVU10
+  55 000e 01F1FF3C 		add	ip, r1, #-1
+  56              		.loc 1 111 42 view .LVU11
+  57 0012 1348     		ldr	r0, .L8
+  58 0014 10F80C20 		ldrb	r2, [r0, ip]	@ zero_extendqisi2
+  59              		.loc 1 111 31 view .LVU12
+  60 0018 B2FA82F2 		clz	r2, r2
+  61 001c 5209     		lsrs	r2, r2, #5
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 4
+
+
+  62              		.loc 1 111 29 view .LVU13
+  63 001e 00F81320 		strb	r2, [r0, r3, lsl #1]
+ 112:Application/wirelessrx.c ****             SOF_decode[i*2+1] = SOF_decode[i*2-1];       
+  64              		.loc 1 112 13 is_stmt 1 view .LVU14
+  65              		.loc 1 112 27 is_stmt 0 view .LVU15
+  66 0022 0131     		adds	r1, r1, #1
+  67              		.loc 1 112 43 view .LVU16
+  68 0024 10F80C20 		ldrb	r2, [r0, ip]	@ zero_extendqisi2
+  69              		.loc 1 112 31 view .LVU17
+  70 0028 4254     		strb	r2, [r0, r1]
+  71              	.L4:
+ 107:Application/wirelessrx.c ****     for(int i=1;i<8;i++)
+  72              		.loc 1 107 22 is_stmt 1 discriminator 2 view .LVU18
+  73 002a 0133     		adds	r3, r3, #1
+  74              	.LVL2:
+  75              	.L2:
+ 107:Application/wirelessrx.c ****     for(int i=1;i<8;i++)
+  76              		.loc 1 107 18 discriminator 1 view .LVU19
+  77 002c 072B     		cmp	r3, #7
+  78 002e 16DC     		bgt	.L6
+ 109:Application/wirelessrx.c ****         {
+  79              		.loc 1 109 9 view .LVU20
+ 109:Application/wirelessrx.c ****         {
+  80              		.loc 1 109 15 is_stmt 0 view .LVU21
+  81 0030 0C4A     		ldr	r2, .L8+4
+  82 0032 D25C     		ldrb	r2, [r2, r3]	@ zero_extendqisi2
+ 109:Application/wirelessrx.c ****         {
+  83              		.loc 1 109 11 view .LVU22
+  84 0034 012A     		cmp	r2, #1
+  85 0036 E9D0     		beq	.L7
+ 113:Application/wirelessrx.c ****         }
+ 114:Application/wirelessrx.c ****         else
+ 115:Application/wirelessrx.c ****         {
+ 116:Application/wirelessrx.c ****             SOF_decode[i*2] = !SOF_decode[i*2-1];
+  86              		.loc 1 116 13 is_stmt 1 view .LVU23
+  87              		.loc 1 116 44 is_stmt 0 view .LVU24
+  88 0038 5900     		lsls	r1, r3, #1
+  89              		.loc 1 116 46 view .LVU25
+  90 003a 01F1FF3C 		add	ip, r1, #-1
+  91              		.loc 1 116 42 view .LVU26
+  92 003e 0848     		ldr	r0, .L8
+  93 0040 10F80C20 		ldrb	r2, [r0, ip]	@ zero_extendqisi2
+  94              		.loc 1 116 31 view .LVU27
+  95 0044 B2FA82F2 		clz	r2, r2
+  96 0048 5209     		lsrs	r2, r2, #5
+  97              		.loc 1 116 29 view .LVU28
+  98 004a 00F81320 		strb	r2, [r0, r3, lsl #1]
+ 117:Application/wirelessrx.c ****             SOF_decode[i*2+1] = !SOF_decode[i*2-1];
+  99              		.loc 1 117 13 is_stmt 1 view .LVU29
+ 100              		.loc 1 117 44 is_stmt 0 view .LVU30
+ 101 004e 10F80C20 		ldrb	r2, [r0, ip]	@ zero_extendqisi2
+ 102              		.loc 1 117 27 view .LVU31
+ 103 0052 0131     		adds	r1, r1, #1
+ 104              		.loc 1 117 33 view .LVU32
+ 105 0054 B2FA82F2 		clz	r2, r2
+ 106 0058 5209     		lsrs	r2, r2, #5
+ 107              		.loc 1 117 31 view .LVU33
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 5
+
+
+ 108 005a 4254     		strb	r2, [r0, r1]
+ 109 005c E5E7     		b	.L4
+ 110              	.L6:
+ 111              	.LBE2:
+ 118:Application/wirelessrx.c ****         }
+ 119:Application/wirelessrx.c ****     }
+ 120:Application/wirelessrx.c **** }
+ 112              		.loc 1 120 1 view .LVU34
+ 113 005e 7047     		bx	lr
+ 114              	.L9:
+ 115              		.align	2
+ 116              	.L8:
+ 117 0060 00000000 		.word	SOF_decode
+ 118 0064 00000000 		.word	SOF
+ 119              		.cfi_endproc
+ 120              	.LFE125:
+ 122              		.section	.text.DOF_To_Decode,"ax",%progbits
+ 123              		.align	1
+ 124              		.global	DOF_To_Decode
+ 125              		.syntax unified
+ 126              		.thumb
+ 127              		.thumb_func
+ 129              	DOF_To_Decode:
+ 130              	.LFB126:
+ 121:Application/wirelessrx.c **** 
+ 122:Application/wirelessrx.c **** void DOF_To_Decode()
+ 123:Application/wirelessrx.c **** {
+ 131              		.loc 1 123 1 is_stmt 1 view -0
+ 132              		.cfi_startproc
+ 133              		@ args = 0, pretend = 0, frame = 0
+ 134              		@ frame_needed = 0, uses_anonymous_args = 0
+ 135              		@ link register save eliminated.
+ 124:Application/wirelessrx.c ****     if(DOF[0] == 1)
+ 136              		.loc 1 124 5 view .LVU36
+ 137              		.loc 1 124 11 is_stmt 0 view .LVU37
+ 138 0000 204B     		ldr	r3, .L20
+ 139 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 140              		.loc 1 124 7 view .LVU38
+ 141 0004 012B     		cmp	r3, #1
+ 142 0006 09D0     		beq	.L17
+ 125:Application/wirelessrx.c ****     {
+ 126:Application/wirelessrx.c ****         DOF_decode[0] = !SOF_decode[15];
+ 127:Application/wirelessrx.c ****         DOF_decode[1] = SOF_decode[15];
+ 128:Application/wirelessrx.c ****     }
+ 129:Application/wirelessrx.c ****     else
+ 130:Application/wirelessrx.c ****     {
+ 131:Application/wirelessrx.c ****         DOF_decode[0] = !SOF_decode[15];
+ 143              		.loc 1 131 9 is_stmt 1 view .LVU39
+ 144              		.loc 1 131 36 is_stmt 0 view .LVU40
+ 145 0008 1F4B     		ldr	r3, .L20+4
+ 146 000a DB7B     		ldrb	r3, [r3, #15]	@ zero_extendqisi2
+ 147              		.loc 1 131 25 view .LVU41
+ 148 000c B3FA83F3 		clz	r3, r3
+ 149 0010 5B09     		lsrs	r3, r3, #5
+ 150              		.loc 1 131 23 view .LVU42
+ 151 0012 1E4A     		ldr	r2, .L20+8
+ 152 0014 1370     		strb	r3, [r2]
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 6
+
+
+ 132:Application/wirelessrx.c ****         DOF_decode[1] = !SOF_decode[15];
+ 153              		.loc 1 132 9 is_stmt 1 view .LVU43
+ 154              		.loc 1 132 23 is_stmt 0 view .LVU44
+ 155 0016 5370     		strb	r3, [r2, #1]
+ 156              	.L13:
+ 123:Application/wirelessrx.c ****     if(DOF[0] == 1)
+ 157              		.loc 1 123 1 discriminator 1 view .LVU45
+ 158 0018 0123     		movs	r3, #1
+ 159 001a 18E0     		b	.L12
+ 160              	.L17:
+ 126:Application/wirelessrx.c ****         DOF_decode[1] = SOF_decode[15];
+ 161              		.loc 1 126 9 is_stmt 1 view .LVU46
+ 126:Application/wirelessrx.c ****         DOF_decode[1] = SOF_decode[15];
+ 162              		.loc 1 126 36 is_stmt 0 view .LVU47
+ 163 001c 1A4B     		ldr	r3, .L20+4
+ 164 001e D97B     		ldrb	r1, [r3, #15]	@ zero_extendqisi2
+ 126:Application/wirelessrx.c ****         DOF_decode[1] = SOF_decode[15];
+ 165              		.loc 1 126 25 view .LVU48
+ 166 0020 B1FA81F3 		clz	r3, r1
+ 167 0024 5B09     		lsrs	r3, r3, #5
+ 126:Application/wirelessrx.c ****         DOF_decode[1] = SOF_decode[15];
+ 168              		.loc 1 126 23 view .LVU49
+ 169 0026 194A     		ldr	r2, .L20+8
+ 170 0028 1370     		strb	r3, [r2]
+ 127:Application/wirelessrx.c ****     }
+ 171              		.loc 1 127 9 is_stmt 1 view .LVU50
+ 127:Application/wirelessrx.c ****     }
+ 172              		.loc 1 127 23 is_stmt 0 view .LVU51
+ 173 002a 5170     		strb	r1, [r2, #1]
+ 174 002c F4E7     		b	.L13
+ 175              	.LVL3:
+ 176              	.L19:
+ 177              	.LBB3:
+ 133:Application/wirelessrx.c ****     }
+ 134:Application/wirelessrx.c **** 
+ 135:Application/wirelessrx.c ****     for(int i=1;i<8;i++)
+ 136:Application/wirelessrx.c ****     {
+ 137:Application/wirelessrx.c ****         if(DOF[i] == 1)
+ 138:Application/wirelessrx.c ****         {
+ 139:Application/wirelessrx.c ****             DOF_decode[i*2] = !DOF_decode[i*2-1];
+ 178              		.loc 1 139 13 is_stmt 1 view .LVU52
+ 179              		.loc 1 139 44 is_stmt 0 view .LVU53
+ 180 002e 5900     		lsls	r1, r3, #1
+ 181              		.loc 1 139 46 view .LVU54
+ 182 0030 01F1FF3C 		add	ip, r1, #-1
+ 183              		.loc 1 139 42 view .LVU55
+ 184 0034 1548     		ldr	r0, .L20+8
+ 185 0036 10F80C20 		ldrb	r2, [r0, ip]	@ zero_extendqisi2
+ 186              		.loc 1 139 31 view .LVU56
+ 187 003a B2FA82F2 		clz	r2, r2
+ 188 003e 5209     		lsrs	r2, r2, #5
+ 189              		.loc 1 139 29 view .LVU57
+ 190 0040 00F81320 		strb	r2, [r0, r3, lsl #1]
+ 140:Application/wirelessrx.c ****             DOF_decode[i*2+1] = DOF_decode[i*2-1];       
+ 191              		.loc 1 140 13 is_stmt 1 view .LVU58
+ 192              		.loc 1 140 27 is_stmt 0 view .LVU59
+ 193 0044 0131     		adds	r1, r1, #1
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 7
+
+
+ 194              		.loc 1 140 43 view .LVU60
+ 195 0046 10F80C20 		ldrb	r2, [r0, ip]	@ zero_extendqisi2
+ 196              		.loc 1 140 31 view .LVU61
+ 197 004a 4254     		strb	r2, [r0, r1]
+ 198              	.L15:
+ 135:Application/wirelessrx.c ****     {
+ 199              		.loc 1 135 22 is_stmt 1 discriminator 2 view .LVU62
+ 200 004c 0133     		adds	r3, r3, #1
+ 201              	.LVL4:
+ 202              	.L12:
+ 135:Application/wirelessrx.c ****     {
+ 203              		.loc 1 135 18 discriminator 1 view .LVU63
+ 204 004e 072B     		cmp	r3, #7
+ 205 0050 16DC     		bgt	.L18
+ 137:Application/wirelessrx.c ****         {
+ 206              		.loc 1 137 9 view .LVU64
+ 137:Application/wirelessrx.c ****         {
+ 207              		.loc 1 137 15 is_stmt 0 view .LVU65
+ 208 0052 0C4A     		ldr	r2, .L20
+ 209 0054 D25C     		ldrb	r2, [r2, r3]	@ zero_extendqisi2
+ 137:Application/wirelessrx.c ****         {
+ 210              		.loc 1 137 11 view .LVU66
+ 211 0056 012A     		cmp	r2, #1
+ 212 0058 E9D0     		beq	.L19
+ 141:Application/wirelessrx.c ****         }
+ 142:Application/wirelessrx.c ****         else
+ 143:Application/wirelessrx.c ****         {
+ 144:Application/wirelessrx.c ****             DOF_decode[i*2] = !DOF_decode[i*2-1];
+ 213              		.loc 1 144 13 is_stmt 1 view .LVU67
+ 214              		.loc 1 144 44 is_stmt 0 view .LVU68
+ 215 005a 5900     		lsls	r1, r3, #1
+ 216              		.loc 1 144 46 view .LVU69
+ 217 005c 01F1FF3C 		add	ip, r1, #-1
+ 218              		.loc 1 144 42 view .LVU70
+ 219 0060 0A48     		ldr	r0, .L20+8
+ 220 0062 10F80C20 		ldrb	r2, [r0, ip]	@ zero_extendqisi2
+ 221              		.loc 1 144 31 view .LVU71
+ 222 0066 B2FA82F2 		clz	r2, r2
+ 223 006a 5209     		lsrs	r2, r2, #5
+ 224              		.loc 1 144 29 view .LVU72
+ 225 006c 00F81320 		strb	r2, [r0, r3, lsl #1]
+ 145:Application/wirelessrx.c ****             DOF_decode[i*2+1] = !DOF_decode[i*2-1];
+ 226              		.loc 1 145 13 is_stmt 1 view .LVU73
+ 227              		.loc 1 145 44 is_stmt 0 view .LVU74
+ 228 0070 10F80C20 		ldrb	r2, [r0, ip]	@ zero_extendqisi2
+ 229              		.loc 1 145 27 view .LVU75
+ 230 0074 0131     		adds	r1, r1, #1
+ 231              		.loc 1 145 33 view .LVU76
+ 232 0076 B2FA82F2 		clz	r2, r2
+ 233 007a 5209     		lsrs	r2, r2, #5
+ 234              		.loc 1 145 31 view .LVU77
+ 235 007c 4254     		strb	r2, [r0, r1]
+ 236 007e E5E7     		b	.L15
+ 237              	.L18:
+ 238              	.LBE3:
+ 146:Application/wirelessrx.c ****         }
+ 147:Application/wirelessrx.c ****     }
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 8
+
+
+ 148:Application/wirelessrx.c **** }
+ 239              		.loc 1 148 1 view .LVU78
+ 240 0080 7047     		bx	lr
+ 241              	.L21:
+ 242 0082 00BF     		.align	2
+ 243              	.L20:
+ 244 0084 00000000 		.word	DOF
+ 245 0088 00000000 		.word	SOF_decode
+ 246 008c 00000000 		.word	DOF_decode
+ 247              		.cfi_endproc
+ 248              	.LFE126:
+ 250              		.section	.text.HAL_ADC_ConvCpltCallback,"ax",%progbits
+ 251              		.align	1
+ 252              		.global	HAL_ADC_ConvCpltCallback
+ 253              		.syntax unified
+ 254              		.thumb
+ 255              		.thumb_func
+ 257              	HAL_ADC_ConvCpltCallback:
+ 258              	.LVL5:
+ 259              	.LFB127:
+ 149:Application/wirelessrx.c **** 
+ 150:Application/wirelessrx.c **** void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+ 151:Application/wirelessrx.c **** {
+ 260              		.loc 1 151 1 is_stmt 1 view -0
+ 261              		.cfi_startproc
+ 262              		@ args = 0, pretend = 0, frame = 0
+ 263              		@ frame_needed = 0, uses_anonymous_args = 0
+ 264              		.loc 1 151 1 is_stmt 0 view .LVU80
+ 265 0000 38B5     		push	{r3, r4, r5, lr}
+ 266              	.LCFI0:
+ 267              		.cfi_def_cfa_offset 16
+ 268              		.cfi_offset 3, -16
+ 269              		.cfi_offset 4, -12
+ 270              		.cfi_offset 5, -8
+ 271              		.cfi_offset 14, -4
+ 152:Application/wirelessrx.c ****     if(hadc == &hadc1)
+ 272              		.loc 1 152 5 is_stmt 1 view .LVU81
+ 273              		.loc 1 152 7 is_stmt 0 view .LVU82
+ 274 0002 214B     		ldr	r3, .L26
+ 275 0004 8342     		cmp	r3, r0
+ 276 0006 00D0     		beq	.L25
+ 277              	.LVL6:
+ 278              	.L22:
+ 153:Application/wirelessrx.c ****     {
+ 154:Application/wirelessrx.c ****         static float dt;
+ 155:Application/wirelessrx.c ****         dt = DWT_GetDeltaT(&DWT_Count);
+ 156:Application/wirelessrx.c **** 
+ 157:Application/wirelessrx.c ****         V_values[ADCVIN] = ADC_values[ADCVIN] * ADCRatio * ADCVoltageRatio;
+ 158:Application/wirelessrx.c ****         V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
+ 159:Application/wirelessrx.c **** 
+ 160:Application/wirelessrx.c ****         VIn_f = First_Order_Filter_Calculate(&VInFilter,V_values[ADCVIN]);
+ 161:Application/wirelessrx.c ****         VCC_f = First_Order_Filter_Calculate(&VCCFilter,V_values[ADCVCC]);
+ 162:Application/wirelessrx.c **** 
+ 163:Application/wirelessrx.c ****         VIn_f = 20.0f;
+ 164:Application/wirelessrx.c ****         if(RxStatus != RxStatus_Debug)
+ 165:Application/wirelessrx.c ****         {
+ 166:Application/wirelessrx.c ****             if(VIn_f > 19.0f)
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 9
+
+
+ 167:Application/wirelessrx.c ****             {
+ 168:Application/wirelessrx.c ****                 // RxStatus = RxStatus_Connecting;
+ 169:Application/wirelessrx.c ****                 RxStatus = RxStatus_Connected;
+ 170:Application/wirelessrx.c ****             }
+ 171:Application/wirelessrx.c ****             else if(VIn_f < 17.0f)
+ 172:Application/wirelessrx.c ****             {
+ 173:Application/wirelessrx.c ****                 RxStatus = RxStatus_Disconnected;
+ 174:Application/wirelessrx.c ****             }
+ 175:Application/wirelessrx.c ****         }
+ 176:Application/wirelessrx.c ****     }
+ 177:Application/wirelessrx.c ****     
+ 178:Application/wirelessrx.c ****     // static int time = 0;        //ADC采样次数
+ 179:Application/wirelessrx.c ****     // static int framestime = 0;  //帧次数
+ 180:Application/wirelessrx.c ****     // static int NumOfSOF = 0;    //帧头次数
+ 181:Application/wirelessrx.c ****     // static uint32_t ceshiman = 0;
+ 182:Application/wirelessrx.c **** 
+ 183:Application/wirelessrx.c ****     // if(ceshiman >= 50)
+ 184:Application/wirelessrx.c ****     // {
+ 185:Application/wirelessrx.c ****     //     SwitchBBEN(Off);
+ 186:Application/wirelessrx.c ****     // }
+ 187:Application/wirelessrx.c ****     // if(hadc->Instance == ADC1)
+ 188:Application/wirelessrx.c ****     // {
+ 189:Application/wirelessrx.c ****     //     time++;
+ 190:Application/wirelessrx.c ****     //     AdcAllValues[ADCCurrentIn] += ADC_values[ADCCurrentIn];
+ 191:Application/wirelessrx.c ****     //     AdcAllValues[ADCVCC] += ADC_values[ADCVCC];
+ 192:Application/wirelessrx.c **** 
+ 193:Application/wirelessrx.c ****     //     if(time >= 102)
+ 194:Application/wirelessrx.c ****     //     {
+ 195:Application/wirelessrx.c ****     //         ADC_values_f[ADCCurrentIn] = AdcAllValues[ADCCurrentIn]/time;
+ 196:Application/wirelessrx.c ****     //         ADC_values_f[ADCVCC] = AdcAllValues[ADCVCC]/time;             //2223 - 24.63V
  197:Application/wirelessrx.c **** 
- 198:Application/wirelessrx.c **** void IntLimiter(int num,int min,int max)
- 199:Application/wirelessrx.c **** {
- 656              		.loc 1 199 1 is_stmt 1 view -0
- 657              		.cfi_startproc
- 658              		@ args = 0, pretend = 0, frame = 0
- 659              		@ frame_needed = 0, uses_anonymous_args = 0
- 660              		@ link register save eliminated.
- 200:Application/wirelessrx.c ****     if(min < num && num < max)
- 661              		.loc 1 200 5 view .LVU140
- 201:Application/wirelessrx.c ****         return num;
- 202:Application/wirelessrx.c ****     if(num < min)
- 203:Application/wirelessrx.c ****         return min;
- 204:Application/wirelessrx.c ****     if(num > max)
- 205:Application/wirelessrx.c ****         return max;
- 206:Application/wirelessrx.c **** }...
- 662              		.loc 1 206 1 is_stmt 0 view .LVU141
- 663 0000 7047     		bx	lr
- 664              		.cfi_endproc
- 665              	.LFE131:
- 667              		.section	.bss.dt.0,"aw",%nobits
- 668              		.align	2
- 671              	dt.0:
- 672 0000 00000000 		.space	4
- 673              		.section	.bss.data.1,"aw",%nobits
- 676              	data.1:
- 677 0000 00       		.space	1
- 678              		.section	.bss.count_connected.2,"aw",%nobits
- 681              	count_connected.2:
- 682 0000 00       		.space	1
- 683              		.section	.bss.count_connecting.3,"aw",%nobits
- 686              	count_connecting.3:
- 687 0000 00       		.space	1
- 688              		.global	RxStatus
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 18
+ 198:Application/wirelessrx.c ****     //         AdcAllValues[ADCCurrentIn] = 0;
+ 199:Application/wirelessrx.c ****     //         AdcAllValues[ADCVCC] = 0;
+ 200:Application/wirelessrx.c **** 
+ 201:Application/wirelessrx.c ****     //         time = 0;
+ 202:Application/wirelessrx.c ****     //         framestime++;
+ 203:Application/wirelessrx.c ****             
+ 204:Application/wirelessrx.c ****     //         SwitchHighOrLowPower(SOF[framestime-1]);
+ 205:Application/wirelessrx.c ****     //         if(framestime == 8)
+ 206:Application/wirelessrx.c ****     //         {
+ 207:Application/wirelessrx.c ****     //             framestime = 0;
+ 208:Application/wirelessrx.c ****     //             NumOfSOF++;
+ 209:Application/wirelessrx.c ****     //         }
+ 210:Application/wirelessrx.c ****     //         if(NumOfSOF >= 2)
+ 211:Application/wirelessrx.c ****     //         {
+ 212:Application/wirelessrx.c ****     //             NumOfSOF = 0;
+ 213:Application/wirelessrx.c ****     //             DWT_Delay(0.092);
+ 214:Application/wirelessrx.c ****     //             ceshiman++;
+ 215:Application/wirelessrx.c ****     //         }
+ 216:Application/wirelessrx.c ****     //     }
+ 217:Application/wirelessrx.c ****     // }
+ 218:Application/wirelessrx.c **** }
+ 279              		.loc 1 218 1 view .LVU83
+ 280 0008 38BD     		pop	{r3, r4, r5, pc}
+ 281              	.LVL7:
+ 282              	.L25:
+ 283              	.LBB4:
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 10
 
 
- 689              		.section	.bss.RxStatus,"aw",%nobits
- 692              	RxStatus:
- 693 0000 00       		.space	1
- 694              		.global	VCCFilter
- 695              		.section	.bss.VCCFilter,"aw",%nobits
- 696              		.align	2
- 699              	VCCFilter:
- 700 0000 00000000 		.space	20
- 700      00000000 
- 700      00000000 
- 700      00000000 
- 700      00000000 
- 701              		.global	VInFilter
- 702              		.section	.bss.VInFilter,"aw",%nobits
- 703              		.align	2
- 706              	VInFilter:
- 707 0000 00000000 		.space	20
- 707      00000000 
- 707      00000000 
- 707      00000000 
- 707      00000000 
- 708              		.global	DOF
- 709              		.section	.bss.DOF,"aw",%nobits
- 710              		.align	2
- 713              	DOF:
- 714 0000 00000000 		.space	8
- 714      00000000 
- 715              		.global	SOF
- 716              		.section	.data.SOF,"aw"
- 717              		.align	2
- 720              	SOF:
- 721 0000 00010101 		.ascii	"\000\001\001\001\001\000\001\000"
- 721      01000100 
- 722              		.global	VCC_f
- 723              		.section	.bss.VCC_f,"aw",%nobits
- 724              		.align	2
- 727              	VCC_f:
- 728 0000 00000000 		.space	4
- 729              		.global	VIn_f
- 730              		.section	.bss.VIn_f,"aw",%nobits
- 731              		.align	2
- 734              	VIn_f:
- 735 0000 00000000 		.space	4
- 736              		.global	DWT_Count
- 737              		.section	.bss.DWT_Count,"aw",%nobits
- 738              		.align	2
- 741              	DWT_Count:
- 742 0000 00000000 		.space	4
- 743              		.global	V_values
- 744              		.section	.bss.V_values,"aw",%nobits
- 745              		.align	2
- 748              	V_values:
- 749 0000 00000000 		.space	8
- 749      00000000 
- 750              		.global	ADC_values
- 751              		.section	.bss.ADC_values,"aw",%nobits
- 752              		.align	2
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 19
+ 154:Application/wirelessrx.c ****         dt = DWT_GetDeltaT(&DWT_Count);
+ 284              		.loc 1 154 9 is_stmt 1 view .LVU84
+ 155:Application/wirelessrx.c **** 
+ 285              		.loc 1 155 9 view .LVU85
+ 155:Application/wirelessrx.c **** 
+ 286              		.loc 1 155 14 is_stmt 0 view .LVU86
+ 287 000a 2048     		ldr	r0, .L26+4
+ 288              	.LVL8:
+ 155:Application/wirelessrx.c **** 
+ 289              		.loc 1 155 14 view .LVU87
+ 290 000c FFF7FEFF 		bl	DWT_GetDeltaT
+ 291              	.LVL9:
+ 155:Application/wirelessrx.c **** 
+ 292              		.loc 1 155 12 view .LVU88
+ 293 0010 1F4B     		ldr	r3, .L26+8
+ 294 0012 83ED000A 		vstr.32	s0, [r3]
+ 157:Application/wirelessrx.c ****         V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
+ 295              		.loc 1 157 9 is_stmt 1 view .LVU89
+ 157:Application/wirelessrx.c ****         V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
+ 296              		.loc 1 157 38 is_stmt 0 view .LVU90
+ 297 0016 1F4B     		ldr	r3, .L26+12
+ 157:Application/wirelessrx.c ****         V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
+ 298              		.loc 1 157 47 view .LVU91
+ 299 0018 D3ED007A 		vldr.32	s15, [r3]	@ int
+ 300 001c B8EE670A 		vcvt.f32.u32	s0, s15
+ 301 0020 9FED1D6A 		vldr.32	s12, .L26+16
+ 302 0024 20EE060A 		vmul.f32	s0, s0, s12
+ 157:Application/wirelessrx.c ****         V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
+ 303              		.loc 1 157 49 view .LVU92
+ 304 0028 DFED1C6A 		vldr.32	s13, .L26+20
+ 305 002c 20EE260A 		vmul.f32	s0, s0, s13
+ 157:Application/wirelessrx.c ****         V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
+ 306              		.loc 1 157 58 view .LVU93
+ 307 0030 9FED1B7A 		vldr.32	s14, .L26+24
+ 308 0034 20EE070A 		vmul.f32	s0, s0, s14
+ 157:Application/wirelessrx.c ****         V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
+ 309              		.loc 1 157 26 view .LVU94
+ 310 0038 1A4C     		ldr	r4, .L26+28
+ 311 003a 84ED000A 		vstr.32	s0, [r4]
+ 158:Application/wirelessrx.c **** 
+ 312              		.loc 1 158 9 is_stmt 1 view .LVU95
+ 158:Application/wirelessrx.c **** 
+ 313              		.loc 1 158 38 is_stmt 0 view .LVU96
+ 314 003e D3ED017A 		vldr.32	s15, [r3, #4]	@ int
+ 158:Application/wirelessrx.c **** 
+ 315              		.loc 1 158 47 view .LVU97
+ 316 0042 F8EE677A 		vcvt.f32.u32	s15, s15
+ 317 0046 67EE867A 		vmul.f32	s15, s15, s12
+ 158:Application/wirelessrx.c **** 
+ 318              		.loc 1 158 49 view .LVU98
+ 319 004a 67EEA67A 		vmul.f32	s15, s15, s13
+ 158:Application/wirelessrx.c **** 
+ 320              		.loc 1 158 58 view .LVU99
+ 321 004e 67EE877A 		vmul.f32	s15, s15, s14
+ 158:Application/wirelessrx.c **** 
+ 322              		.loc 1 158 26 view .LVU100
+ 323 0052 C4ED017A 		vstr.32	s15, [r4, #4]
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 11
 
 
- 755              	ADC_values:
- 756 0000 00000000 		.space	8
- 756      00000000 
- 757              		.text
- 758              	.Letext0:
- 759              		.file 2 "e:\\vscode\\msys2\\mingw64\\arm-none-eabi\\include\\machine\\_default_types.h"
- 760              		.file 3 "e:\\vscode\\msys2\\mingw64\\arm-none-eabi\\include\\sys\\_stdint.h"
- 761              		.file 4 "Drivers/CMSIS/Device/ST/STM32F3xx/Include/stm32f334x8.h"
- 762              		.file 5 "Drivers/CMSIS/Device/ST/STM32F3xx/Include/stm32f3xx.h"
- 763              		.file 6 "Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_def.h"
- 764              		.file 7 "Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_gpio.h"
- 765              		.file 8 "Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_dma.h"
- 766              		.file 9 "Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_adc_ex.h"
- 767              		.file 10 "Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_adc.h"
- 768              		.file 11 "Commponents/filter32.h"
- 769              		.file 12 "Core/Inc/adc.h"
- 770              		.file 13 "Application/bsp_dwt.h"
- 771              		.file 14 "Application/wirelessrx.h"
- 772              		.file 15 "Core/Inc/main.h"
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 20
+ 160:Application/wirelessrx.c ****         VCC_f = First_Order_Filter_Calculate(&VCCFilter,V_values[ADCVCC]);
+ 324              		.loc 1 160 9 is_stmt 1 view .LVU101
+ 160:Application/wirelessrx.c ****         VCC_f = First_Order_Filter_Calculate(&VCCFilter,V_values[ADCVCC]);
+ 325              		.loc 1 160 17 is_stmt 0 view .LVU102
+ 326 0056 1448     		ldr	r0, .L26+32
+ 327 0058 FFF7FEFF 		bl	First_Order_Filter_Calculate
+ 328              	.LVL10:
+ 160:Application/wirelessrx.c ****         VCC_f = First_Order_Filter_Calculate(&VCCFilter,V_values[ADCVCC]);
+ 329              		.loc 1 160 15 view .LVU103
+ 330 005c 134D     		ldr	r5, .L26+36
+ 331 005e 85ED000A 		vstr.32	s0, [r5]
+ 161:Application/wirelessrx.c **** 
+ 332              		.loc 1 161 9 is_stmt 1 view .LVU104
+ 161:Application/wirelessrx.c **** 
+ 333              		.loc 1 161 17 is_stmt 0 view .LVU105
+ 334 0062 94ED010A 		vldr.32	s0, [r4, #4]
+ 335 0066 1248     		ldr	r0, .L26+40
+ 336 0068 FFF7FEFF 		bl	First_Order_Filter_Calculate
+ 337              	.LVL11:
+ 161:Application/wirelessrx.c **** 
+ 338              		.loc 1 161 15 view .LVU106
+ 339 006c 114B     		ldr	r3, .L26+44
+ 340 006e 83ED000A 		vstr.32	s0, [r3]
+ 163:Application/wirelessrx.c ****         if(RxStatus != RxStatus_Debug)
+ 341              		.loc 1 163 9 is_stmt 1 view .LVU107
+ 163:Application/wirelessrx.c ****         if(RxStatus != RxStatus_Debug)
+ 342              		.loc 1 163 15 is_stmt 0 view .LVU108
+ 343 0072 114B     		ldr	r3, .L26+48
+ 344 0074 2B60     		str	r3, [r5]	@ float
+ 164:Application/wirelessrx.c ****         {
+ 345              		.loc 1 164 9 is_stmt 1 view .LVU109
+ 164:Application/wirelessrx.c ****         {
+ 346              		.loc 1 164 21 is_stmt 0 view .LVU110
+ 347 0076 114B     		ldr	r3, .L26+52
+ 348 0078 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 164:Application/wirelessrx.c ****         {
+ 349              		.loc 1 164 11 view .LVU111
+ 350 007a 042B     		cmp	r3, #4
+ 351 007c C4D0     		beq	.L22
+ 166:Application/wirelessrx.c ****             {
+ 352              		.loc 1 166 13 is_stmt 1 view .LVU112
+ 169:Application/wirelessrx.c ****             }
+ 353              		.loc 1 169 17 view .LVU113
+ 169:Application/wirelessrx.c ****             }
+ 354              		.loc 1 169 26 is_stmt 0 view .LVU114
+ 355 007e 0F4B     		ldr	r3, .L26+52
+ 356 0080 0322     		movs	r2, #3
+ 357 0082 1A70     		strb	r2, [r3]
+ 358              	.LBE4:
+ 359              		.loc 1 218 1 view .LVU115
+ 360 0084 C0E7     		b	.L22
+ 361              	.L27:
+ 362 0086 00BF     		.align	2
+ 363              	.L26:
+ 364 0088 00000000 		.word	hadc1
+ 365 008c 00000000 		.word	DWT_Count
+ 366 0090 00000000 		.word	dt.0
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 12
+
+
+ 367 0094 00000000 		.word	ADC_values
+ 368 0098 33335340 		.word	1079194419
+ 369 009c 00008039 		.word	964689920
+ 370 00a0 B0724841 		.word	1095266992
+ 371 00a4 00000000 		.word	V_values
+ 372 00a8 00000000 		.word	VInFilter
+ 373 00ac 00000000 		.word	VIn_f
+ 374 00b0 00000000 		.word	VCCFilter
+ 375 00b4 00000000 		.word	VCC_f
+ 376 00b8 0000A041 		.word	1101004800
+ 377 00bc 00000000 		.word	RxStatus
+ 378              		.cfi_endproc
+ 379              	.LFE127:
+ 381              		.section	.text.LowPower,"ax",%progbits
+ 382              		.align	1
+ 383              		.global	LowPower
+ 384              		.syntax unified
+ 385              		.thumb
+ 386              		.thumb_func
+ 388              	LowPower:
+ 389              	.LFB128:
+ 219:Application/wirelessrx.c **** 
+ 220:Application/wirelessrx.c **** void LowPower()
+ 221:Application/wirelessrx.c **** {
+ 390              		.loc 1 221 1 is_stmt 1 view -0
+ 391              		.cfi_startproc
+ 392              		@ args = 0, pretend = 0, frame = 0
+ 393              		@ frame_needed = 0, uses_anonymous_args = 0
+ 394 0000 08B5     		push	{r3, lr}
+ 395              	.LCFI1:
+ 396              		.cfi_def_cfa_offset 8
+ 397              		.cfi_offset 3, -8
+ 398              		.cfi_offset 14, -4
+ 222:Application/wirelessrx.c ****     HAL_GPIO_WritePin(PULSEA_GPIO_Port,PULSEA_Pin,GPIO_PIN_SET);
+ 399              		.loc 1 222 5 view .LVU117
+ 400 0002 0122     		movs	r2, #1
+ 401 0004 4FF48071 		mov	r1, #256
+ 402 0008 4FF09040 		mov	r0, #1207959552
+ 403 000c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 404              	.LVL12:
+ 223:Application/wirelessrx.c ****     HAL_GPIO_WritePin(PULSEB_GPIO_Port,PULSEB_Pin,GPIO_PIN_SET);
+ 405              		.loc 1 223 5 view .LVU118
+ 406 0010 0122     		movs	r2, #1
+ 407 0012 4FF40071 		mov	r1, #512
+ 408 0016 4FF09040 		mov	r0, #1207959552
+ 409 001a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 410              	.LVL13:
+ 224:Application/wirelessrx.c **** }
+ 411              		.loc 1 224 1 is_stmt 0 view .LVU119
+ 412 001e 08BD     		pop	{r3, pc}
+ 413              		.cfi_endproc
+ 414              	.LFE128:
+ 416              		.section	.text.HighPower,"ax",%progbits
+ 417              		.align	1
+ 418              		.global	HighPower
+ 419              		.syntax unified
+ 420              		.thumb
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 13
+
+
+ 421              		.thumb_func
+ 423              	HighPower:
+ 424              	.LFB129:
+ 225:Application/wirelessrx.c **** 
+ 226:Application/wirelessrx.c **** void HighPower()
+ 227:Application/wirelessrx.c **** {
+ 425              		.loc 1 227 1 is_stmt 1 view -0
+ 426              		.cfi_startproc
+ 427              		@ args = 0, pretend = 0, frame = 0
+ 428              		@ frame_needed = 0, uses_anonymous_args = 0
+ 429 0000 08B5     		push	{r3, lr}
+ 430              	.LCFI2:
+ 431              		.cfi_def_cfa_offset 8
+ 432              		.cfi_offset 3, -8
+ 433              		.cfi_offset 14, -4
+ 228:Application/wirelessrx.c ****     HAL_GPIO_WritePin(PULSEA_GPIO_Port,PULSEA_Pin,GPIO_PIN_RESET);
+ 434              		.loc 1 228 5 view .LVU121
+ 435 0002 0022     		movs	r2, #0
+ 436 0004 4FF48071 		mov	r1, #256
+ 437 0008 4FF09040 		mov	r0, #1207959552
+ 438 000c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 439              	.LVL14:
+ 229:Application/wirelessrx.c ****     HAL_GPIO_WritePin(PULSEB_GPIO_Port,PULSEB_Pin,GPIO_PIN_RESET);
+ 440              		.loc 1 229 5 view .LVU122
+ 441 0010 0022     		movs	r2, #0
+ 442 0012 4FF40071 		mov	r1, #512
+ 443 0016 4FF09040 		mov	r0, #1207959552
+ 444 001a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 445              	.LVL15:
+ 230:Application/wirelessrx.c **** }
+ 446              		.loc 1 230 1 is_stmt 0 view .LVU123
+ 447 001e 08BD     		pop	{r3, pc}
+ 448              		.cfi_endproc
+ 449              	.LFE129:
+ 451              		.section	.text.SwitchBBEN,"ax",%progbits
+ 452              		.align	1
+ 453              		.global	SwitchBBEN
+ 454              		.syntax unified
+ 455              		.thumb
+ 456              		.thumb_func
+ 458              	SwitchBBEN:
+ 459              	.LVL16:
+ 460              	.LFB130:
+ 231:Application/wirelessrx.c **** 
+ 232:Application/wirelessrx.c **** //BBEN开则电容充电，关则电容不充电
+ 233:Application/wirelessrx.c **** void SwitchBBEN(int On_Off)
+ 234:Application/wirelessrx.c **** {
+ 461              		.loc 1 234 1 is_stmt 1 view -0
+ 462              		.cfi_startproc
+ 463              		@ args = 0, pretend = 0, frame = 0
+ 464              		@ frame_needed = 0, uses_anonymous_args = 0
+ 465              		.loc 1 234 1 is_stmt 0 view .LVU125
+ 466 0000 08B5     		push	{r3, lr}
+ 467              	.LCFI3:
+ 468              		.cfi_def_cfa_offset 8
+ 469              		.cfi_offset 3, -8
+ 470              		.cfi_offset 14, -4
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 14
+
+
+ 235:Application/wirelessrx.c ****     if(On_Off)
+ 471              		.loc 1 235 5 is_stmt 1 view .LVU126
+ 472              		.loc 1 235 7 is_stmt 0 view .LVU127
+ 473 0002 30B1     		cbz	r0, .L33
+ 236:Application/wirelessrx.c ****     {
+ 237:Application/wirelessrx.c ****         HAL_GPIO_WritePin(BBEN_GPIO_Port,BBEN_Pin,GPIO_PIN_SET);
+ 474              		.loc 1 237 9 is_stmt 1 view .LVU128
+ 475 0004 0122     		movs	r2, #1
+ 476 0006 8021     		movs	r1, #128
+ 477 0008 4FF09040 		mov	r0, #1207959552
+ 478              	.LVL17:
+ 479              		.loc 1 237 9 is_stmt 0 view .LVU129
+ 480 000c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 481              	.LVL18:
+ 482              	.L32:
+ 238:Application/wirelessrx.c ****     }
+ 239:Application/wirelessrx.c ****     else
+ 240:Application/wirelessrx.c ****     {
+ 241:Application/wirelessrx.c ****         HAL_GPIO_WritePin(BBEN_GPIO_Port,BBEN_Pin,GPIO_PIN_RESET);
+ 242:Application/wirelessrx.c ****     }
+ 243:Application/wirelessrx.c **** 
+ 244:Application/wirelessrx.c **** }
+ 483              		.loc 1 244 1 view .LVU130
+ 484 0010 08BD     		pop	{r3, pc}
+ 485              	.LVL19:
+ 486              	.L33:
+ 241:Application/wirelessrx.c ****     }
+ 487              		.loc 1 241 9 is_stmt 1 view .LVU131
+ 488 0012 0022     		movs	r2, #0
+ 489 0014 8021     		movs	r1, #128
+ 490 0016 4FF09040 		mov	r0, #1207959552
+ 491              	.LVL20:
+ 241:Application/wirelessrx.c ****     }
+ 492              		.loc 1 241 9 is_stmt 0 view .LVU132
+ 493 001a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 494              	.LVL21:
+ 495              		.loc 1 244 1 view .LVU133
+ 496 001e F7E7     		b	.L32
+ 497              		.cfi_endproc
+ 498              	.LFE130:
+ 500              		.section	.text.SwitchENA_ENB,"ax",%progbits
+ 501              		.align	1
+ 502              		.global	SwitchENA_ENB
+ 503              		.syntax unified
+ 504              		.thumb
+ 505              		.thumb_func
+ 507              	SwitchENA_ENB:
+ 508              	.LVL22:
+ 509              	.LFB131:
+ 245:Application/wirelessrx.c **** 
+ 246:Application/wirelessrx.c **** void SwitchENA_ENB(int On_Off)
+ 247:Application/wirelessrx.c **** {
+ 510              		.loc 1 247 1 is_stmt 1 view -0
+ 511              		.cfi_startproc
+ 512              		@ args = 0, pretend = 0, frame = 0
+ 513              		@ frame_needed = 0, uses_anonymous_args = 0
+ 514              		.loc 1 247 1 is_stmt 0 view .LVU135
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 15
+
+
+ 515 0000 10B5     		push	{r4, lr}
+ 516              	.LCFI4:
+ 517              		.cfi_def_cfa_offset 8
+ 518              		.cfi_offset 4, -8
+ 519              		.cfi_offset 14, -4
+ 248:Application/wirelessrx.c ****     if(On_Off)
+ 520              		.loc 1 248 5 is_stmt 1 view .LVU136
+ 521              		.loc 1 248 7 is_stmt 0 view .LVU137
+ 522 0002 68B1     		cbz	r0, .L37
+ 249:Application/wirelessrx.c ****     {
+ 250:Application/wirelessrx.c ****         HAL_GPIO_WritePin(ENA_GPIO_Port,ENA_Pin,GPIO_PIN_SET);
+ 523              		.loc 1 250 9 is_stmt 1 view .LVU138
+ 524 0004 0D4C     		ldr	r4, .L40
+ 525 0006 0122     		movs	r2, #1
+ 526 0008 4FF40041 		mov	r1, #32768
+ 527 000c 2046     		mov	r0, r4
+ 528              	.LVL23:
+ 529              		.loc 1 250 9 is_stmt 0 view .LVU139
+ 530 000e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 531              	.LVL24:
+ 251:Application/wirelessrx.c ****         HAL_GPIO_WritePin(ENB_GPIO_Port,ENB_Pin,GPIO_PIN_SET);
+ 532              		.loc 1 251 9 is_stmt 1 view .LVU140
+ 533 0012 0122     		movs	r2, #1
+ 534 0014 4FF48041 		mov	r1, #16384
+ 535 0018 2046     		mov	r0, r4
+ 536 001a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 537              	.LVL25:
+ 538              	.L36:
+ 252:Application/wirelessrx.c ****     }
+ 253:Application/wirelessrx.c ****     else
+ 254:Application/wirelessrx.c ****     {
+ 255:Application/wirelessrx.c ****         HAL_GPIO_WritePin(ENA_GPIO_Port,ENA_Pin,GPIO_PIN_RESET);
+ 256:Application/wirelessrx.c ****         HAL_GPIO_WritePin(ENB_GPIO_Port,ENB_Pin,GPIO_PIN_RESET);
+ 257:Application/wirelessrx.c ****     }
+ 258:Application/wirelessrx.c **** }
+ 539              		.loc 1 258 1 is_stmt 0 view .LVU141
+ 540 001e 10BD     		pop	{r4, pc}
+ 541              	.LVL26:
+ 542              	.L37:
+ 255:Application/wirelessrx.c ****         HAL_GPIO_WritePin(ENB_GPIO_Port,ENB_Pin,GPIO_PIN_RESET);
+ 543              		.loc 1 255 9 is_stmt 1 view .LVU142
+ 544 0020 064C     		ldr	r4, .L40
+ 545 0022 0022     		movs	r2, #0
+ 546 0024 4FF40041 		mov	r1, #32768
+ 547 0028 2046     		mov	r0, r4
+ 548              	.LVL27:
+ 255:Application/wirelessrx.c ****         HAL_GPIO_WritePin(ENB_GPIO_Port,ENB_Pin,GPIO_PIN_RESET);
+ 549              		.loc 1 255 9 is_stmt 0 view .LVU143
+ 550 002a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 551              	.LVL28:
+ 256:Application/wirelessrx.c ****     }
+ 552              		.loc 1 256 9 is_stmt 1 view .LVU144
+ 553 002e 0022     		movs	r2, #0
+ 554 0030 4FF48041 		mov	r1, #16384
+ 555 0034 2046     		mov	r0, r4
+ 556 0036 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 557              	.LVL29:
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 16
+
+
+ 558              		.loc 1 258 1 is_stmt 0 view .LVU145
+ 559 003a F0E7     		b	.L36
+ 560              	.L41:
+ 561              		.align	2
+ 562              	.L40:
+ 563 003c 00040048 		.word	1207960576
+ 564              		.cfi_endproc
+ 565              	.LFE131:
+ 567              		.section	.text.WirelessInit,"ax",%progbits
+ 568              		.align	1
+ 569              		.global	WirelessInit
+ 570              		.syntax unified
+ 571              		.thumb
+ 572              		.thumb_func
+ 574              	WirelessInit:
+ 575              	.LFB123:
+  22:Application/wirelessrx.c ****     SwitchBBEN(Off);
+ 576              		.loc 1 22 1 is_stmt 1 view -0
+ 577              		.cfi_startproc
+ 578              		@ args = 0, pretend = 0, frame = 0
+ 579              		@ frame_needed = 0, uses_anonymous_args = 0
+ 580 0000 08B5     		push	{r3, lr}
+ 581              	.LCFI5:
+ 582              		.cfi_def_cfa_offset 8
+ 583              		.cfi_offset 3, -8
+ 584              		.cfi_offset 14, -4
+ 585 0002 2DED028B 		vpush.64	{d8}
+ 586              	.LCFI6:
+ 587              		.cfi_def_cfa_offset 16
+ 588              		.cfi_offset 80, -16
+ 589              		.cfi_offset 81, -12
+  23:Application/wirelessrx.c ****     SwitchENA_ENB(Off);
+ 590              		.loc 1 23 5 view .LVU147
+ 591 0006 0020     		movs	r0, #0
+ 592 0008 FFF7FEFF 		bl	SwitchBBEN
+ 593              	.LVL30:
+  24:Application/wirelessrx.c ****     LowPower();
+ 594              		.loc 1 24 5 view .LVU148
+ 595 000c 0020     		movs	r0, #0
+ 596 000e FFF7FEFF 		bl	SwitchENA_ENB
+ 597              	.LVL31:
+  25:Application/wirelessrx.c **** 
+ 598              		.loc 1 25 5 view .LVU149
+ 599 0012 FFF7FEFF 		bl	LowPower
+ 600              	.LVL32:
+  27:Application/wirelessrx.c ****     SwitchBBEN(On);
+ 601              		.loc 1 27 5 view .LVU150
+ 602 0016 9FED160A 		vldr.32	s0, .L46
+ 603 001a FFF7FEFF 		bl	DWT_Delay
+ 604              	.LVL33:
+  28:Application/wirelessrx.c ****     SwitchENA_ENB(On);
+ 605              		.loc 1 28 5 view .LVU151
+ 606 001e 0120     		movs	r0, #1
+ 607 0020 FFF7FEFF 		bl	SwitchBBEN
+ 608              	.LVL34:
+  29:Application/wirelessrx.c ****     if( HAL_ADC_Start_DMA(&hadc1,ADC_values,ADC_DataSize) != HAL_OK  ||
+ 609              		.loc 1 29 5 view .LVU152
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 17
+
+
+ 610 0024 0120     		movs	r0, #1
+ 611 0026 FFF7FEFF 		bl	SwitchENA_ENB
+ 612              	.LVL35:
+  30:Application/wirelessrx.c ****         HAL_ADCEx_Calibration_GetValue(&hadc1,ADC_SINGLE_ENDED) != HAL_OK)
+ 613              		.loc 1 30 5 view .LVU153
+  30:Application/wirelessrx.c ****         HAL_ADCEx_Calibration_GetValue(&hadc1,ADC_SINGLE_ENDED) != HAL_OK)
+ 614              		.loc 1 30 9 is_stmt 0 view .LVU154
+ 615 002a 0222     		movs	r2, #2
+ 616 002c 1149     		ldr	r1, .L46+4
+ 617 002e 1248     		ldr	r0, .L46+8
+ 618 0030 FFF7FEFF 		bl	HAL_ADC_Start_DMA
+ 619              	.LVL36:
+  30:Application/wirelessrx.c ****         HAL_ADCEx_Calibration_GetValue(&hadc1,ADC_SINGLE_ENDED) != HAL_OK)
+ 620              		.loc 1 30 7 view .LVU155
+ 621 0034 20B9     		cbnz	r0, .L43
+  31:Application/wirelessrx.c ****     {
+ 622              		.loc 1 31 9 discriminator 1 view .LVU156
+ 623 0036 0021     		movs	r1, #0
+ 624 0038 0F48     		ldr	r0, .L46+8
+ 625 003a FFF7FEFF 		bl	HAL_ADCEx_Calibration_GetValue
+ 626              	.LVL37:
+  30:Application/wirelessrx.c ****         HAL_ADCEx_Calibration_GetValue(&hadc1,ADC_SINGLE_ENDED) != HAL_OK)
+ 627              		.loc 1 30 70 discriminator 1 view .LVU157
+ 628 003e 08B1     		cbz	r0, .L44
+ 629              	.L43:
+  33:Application/wirelessrx.c ****     }
+ 630              		.loc 1 33 9 is_stmt 1 view .LVU158
+ 631 0040 FFF7FEFF 		bl	Error_Handler
+ 632              	.LVL38:
+ 633              	.L44:
+  36:Application/wirelessrx.c ****     First_Order_Filter_Init(&VCCFilter,1/97500.0f,30.0f);
+ 634              		.loc 1 36 5 view .LVU159
+ 635 0044 9FED0D8A 		vldr.32	s16, .L46+12
+ 636 0048 F3EE0E0A 		vmov.f32	s1, #3.0e+1
+ 637 004c B0EE480A 		vmov.f32	s0, s16
+ 638 0050 0B48     		ldr	r0, .L46+16
+ 639 0052 FFF7FEFF 		bl	First_Order_Filter_Init
+ 640              	.LVL39:
+  37:Application/wirelessrx.c ****     SOF_To_Decode();
+ 641              		.loc 1 37 5 view .LVU160
+ 642 0056 F3EE0E0A 		vmov.f32	s1, #3.0e+1
+ 643 005a B0EE480A 		vmov.f32	s0, s16
+ 644 005e 0948     		ldr	r0, .L46+20
+ 645 0060 FFF7FEFF 		bl	First_Order_Filter_Init
+ 646              	.LVL40:
+  38:Application/wirelessrx.c **** 
+ 647              		.loc 1 38 5 view .LVU161
+ 648 0064 FFF7FEFF 		bl	SOF_To_Decode
+ 649              	.LVL41:
+  40:Application/wirelessrx.c **** 
+ 650              		.loc 1 40 1 is_stmt 0 view .LVU162
+ 651 0068 BDEC028B 		vldm	sp!, {d8}
+ 652              	.LCFI7:
+ 653              		.cfi_restore 80
+ 654              		.cfi_restore 81
+ 655              		.cfi_def_cfa_offset 8
+ 656 006c 08BD     		pop	{r3, pc}
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 18
+
+
+ 657              	.L47:
+ 658 006e 00BF     		.align	2
+ 659              	.L46:
+ 660 0070 CDCCCC3D 		.word	1036831949
+ 661 0074 00000000 		.word	ADC_values
+ 662 0078 00000000 		.word	hadc1
+ 663 007c F2122C37 		.word	925635314
+ 664 0080 00000000 		.word	VInFilter
+ 665 0084 00000000 		.word	VCCFilter
+ 666              		.cfi_endproc
+ 667              	.LFE123:
+ 669              		.section	.text.SwitchHighOrLowPower,"ax",%progbits
+ 670              		.align	1
+ 671              		.global	SwitchHighOrLowPower
+ 672              		.syntax unified
+ 673              		.thumb
+ 674              		.thumb_func
+ 676              	SwitchHighOrLowPower:
+ 677              	.LVL42:
+ 678              	.LFB132:
+ 259:Application/wirelessrx.c **** 
+ 260:Application/wirelessrx.c **** void SwitchHighOrLowPower(int On_Off)
+ 261:Application/wirelessrx.c **** {
+ 679              		.loc 1 261 1 is_stmt 1 view -0
+ 680              		.cfi_startproc
+ 681              		@ args = 0, pretend = 0, frame = 0
+ 682              		@ frame_needed = 0, uses_anonymous_args = 0
+ 683              		.loc 1 261 1 is_stmt 0 view .LVU164
+ 684 0000 08B5     		push	{r3, lr}
+ 685              	.LCFI8:
+ 686              		.cfi_def_cfa_offset 8
+ 687              		.cfi_offset 3, -8
+ 688              		.cfi_offset 14, -4
+ 262:Application/wirelessrx.c ****     if(On_Off)
+ 689              		.loc 1 262 5 is_stmt 1 view .LVU165
+ 690              		.loc 1 262 7 is_stmt 0 view .LVU166
+ 691 0002 10B1     		cbz	r0, .L49
+ 263:Application/wirelessrx.c ****     {
+ 264:Application/wirelessrx.c ****         LowPower();
+ 692              		.loc 1 264 9 is_stmt 1 view .LVU167
+ 693 0004 FFF7FEFF 		bl	LowPower
+ 694              	.LVL43:
+ 695              	.L48:
+ 265:Application/wirelessrx.c ****     }
+ 266:Application/wirelessrx.c ****     else
+ 267:Application/wirelessrx.c ****     {
+ 268:Application/wirelessrx.c ****         HighPower();
+ 269:Application/wirelessrx.c ****     }
+ 270:Application/wirelessrx.c ****     
+ 271:Application/wirelessrx.c **** }
+ 696              		.loc 1 271 1 is_stmt 0 view .LVU168
+ 697 0008 08BD     		pop	{r3, pc}
+ 698              	.LVL44:
+ 699              	.L49:
+ 268:Application/wirelessrx.c ****     }
+ 700              		.loc 1 268 9 is_stmt 1 view .LVU169
+ 701 000a FFF7FEFF 		bl	HighPower
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 19
+
+
+ 702              	.LVL45:
+ 703              		.loc 1 271 1 is_stmt 0 view .LVU170
+ 704 000e FBE7     		b	.L48
+ 705              		.cfi_endproc
+ 706              	.LFE132:
+ 708              		.section	.text.QITask,"ax",%progbits
+ 709              		.align	1
+ 710              		.global	QITask
+ 711              		.syntax unified
+ 712              		.thumb
+ 713              		.thumb_func
+ 715              	QITask:
+ 716              	.LFB124:
+  43:Application/wirelessrx.c ****     static uint8_t data = 0;
+ 717              		.loc 1 43 1 is_stmt 1 view -0
+ 718              		.cfi_startproc
+ 719              		@ args = 0, pretend = 0, frame = 0
+ 720              		@ frame_needed = 0, uses_anonymous_args = 0
+ 721 0000 08B5     		push	{r3, lr}
+ 722              	.LCFI9:
+ 723              		.cfi_def_cfa_offset 8
+ 724              		.cfi_offset 3, -8
+ 725              		.cfi_offset 14, -4
+  44:Application/wirelessrx.c ****     static int16_t count_connected = 0;
+ 726              		.loc 1 44 5 view .LVU172
+  45:Application/wirelessrx.c ****     static int16_t count_debug = 0;
+ 727              		.loc 1 45 5 view .LVU173
+  46:Application/wirelessrx.c **** 
+ 728              		.loc 1 46 5 view .LVU174
+  48:Application/wirelessrx.c ****     {
+ 729              		.loc 1 48 5 view .LVU175
+ 730 0002 384B     		ldr	r3, .L71
+ 731 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 732 0006 032B     		cmp	r3, #3
+ 733 0008 30D0     		beq	.L53
+ 734 000a 042B     		cmp	r3, #4
+ 735 000c 02D0     		beq	.L54
+ 736 000e 022B     		cmp	r3, #2
+ 737 0010 61D0     		beq	.L65
+ 738              	.L52:
+ 101:Application/wirelessrx.c **** 
+ 739              		.loc 1 101 1 is_stmt 0 view .LVU176
+ 740 0012 08BD     		pop	{r3, pc}
+ 741              	.L54:
+  51:Application/wirelessrx.c ****         {
+ 742              		.loc 1 51 9 is_stmt 1 view .LVU177
+  51:Application/wirelessrx.c ****         {
+ 743              		.loc 1 51 24 is_stmt 0 view .LVU178
+ 744 0014 344B     		ldr	r3, .L71+4
+ 745 0016 B3F90030 		ldrsh	r3, [r3]
+  51:Application/wirelessrx.c ****         {
+ 746              		.loc 1 51 11 view .LVU179
+ 747 001a 0F2B     		cmp	r3, #15
+ 748 001c 0DDD     		ble	.L66
+  56:Application/wirelessrx.c ****         {
+ 749              		.loc 1 56 14 is_stmt 1 view .LVU180
+  56:Application/wirelessrx.c ****         {
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 20
+
+
+ 750              		.loc 1 56 16 is_stmt 0 view .LVU181
+ 751 001e 1F2B     		cmp	r3, #31
+ 752 0020 16DD     		ble	.L67
+  64:Application/wirelessrx.c ****         }
+ 753              		.loc 1 64 13 is_stmt 1 view .LVU182
+  64:Application/wirelessrx.c ****         }
+ 754              		.loc 1 64 25 is_stmt 0 view .LVU183
+ 755 0022 314B     		ldr	r3, .L71+4
+ 756 0024 4FF6FF72 		movw	r2, #65535
+ 757 0028 1A80     		strh	r2, [r3]	@ movhi
+ 758              	.L58:
+  66:Application/wirelessrx.c ****         count_connected = 0;
+ 759              		.loc 1 66 9 is_stmt 1 view .LVU184
+  66:Application/wirelessrx.c ****         count_connected = 0;
+ 760              		.loc 1 66 20 is_stmt 0 view .LVU185
+ 761 002a 2F4A     		ldr	r2, .L71+4
+ 762 002c 1388     		ldrh	r3, [r2]
+ 763 002e 0133     		adds	r3, r3, #1
+ 764 0030 1380     		strh	r3, [r2]	@ movhi
+  67:Application/wirelessrx.c ****         break;
+ 765              		.loc 1 67 9 is_stmt 1 view .LVU186
+  67:Application/wirelessrx.c ****         break;
+ 766              		.loc 1 67 25 is_stmt 0 view .LVU187
+ 767 0032 2E4B     		ldr	r3, .L71+8
+ 768 0034 0022     		movs	r2, #0
+ 769 0036 1A80     		strh	r2, [r3]	@ movhi
+  68:Application/wirelessrx.c ****     case RxStatus_Connected:
+ 770              		.loc 1 68 9 is_stmt 1 view .LVU188
+ 771 0038 EBE7     		b	.L52
+ 772              	.L66:
+  53:Application/wirelessrx.c ****             SwitchHighOrLowPower(SOF_decode[count_debug]);
+ 773              		.loc 1 53 13 view .LVU189
+ 774 003a 0120     		movs	r0, #1
+ 775 003c FFF7FEFF 		bl	SwitchENA_ENB
+ 776              	.LVL46:
+  54:Application/wirelessrx.c ****         }
+ 777              		.loc 1 54 13 view .LVU190
+  54:Application/wirelessrx.c ****         }
+ 778              		.loc 1 54 44 is_stmt 0 view .LVU191
+ 779 0040 294B     		ldr	r3, .L71+4
+ 780 0042 B3F90030 		ldrsh	r3, [r3]
+  54:Application/wirelessrx.c ****         }
+ 781              		.loc 1 54 13 view .LVU192
+ 782 0046 2A4A     		ldr	r2, .L71+12
+ 783 0048 D05C     		ldrb	r0, [r2, r3]	@ zero_extendqisi2
+ 784 004a FFF7FEFF 		bl	SwitchHighOrLowPower
+ 785              	.LVL47:
+ 786 004e ECE7     		b	.L58
+ 787              	.L67:
+  58:Application/wirelessrx.c ****             DOF_To_Decode();
+ 788              		.loc 1 58 13 is_stmt 1 view .LVU193
+ 789 0050 0120     		movs	r0, #1
+ 790 0052 FFF7FEFF 		bl	SwitchENA_ENB
+ 791              	.LVL48:
+  59:Application/wirelessrx.c ****             SwitchHighOrLowPower(DOF_decode[count_debug - 16]);
+ 792              		.loc 1 59 13 view .LVU194
+ 793 0056 FFF7FEFF 		bl	DOF_To_Decode
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 21
+
+
+ 794              	.LVL49:
+  60:Application/wirelessrx.c ****         }
+ 795              		.loc 1 60 13 view .LVU195
+  60:Application/wirelessrx.c ****         }
+ 796              		.loc 1 60 57 is_stmt 0 view .LVU196
+ 797 005a 234B     		ldr	r3, .L71+4
+ 798 005c B3F90030 		ldrsh	r3, [r3]
+ 799 0060 103B     		subs	r3, r3, #16
+  60:Application/wirelessrx.c ****         }
+ 800              		.loc 1 60 13 view .LVU197
+ 801 0062 244A     		ldr	r2, .L71+16
+ 802 0064 D05C     		ldrb	r0, [r2, r3]	@ zero_extendqisi2
+ 803 0066 FFF7FEFF 		bl	SwitchHighOrLowPower
+ 804              	.LVL50:
+ 805 006a DEE7     		b	.L58
+ 806              	.L53:
+  72:Application/wirelessrx.c ****         {
+ 807              		.loc 1 72 9 is_stmt 1 view .LVU198
+  72:Application/wirelessrx.c ****         {
+ 808              		.loc 1 72 28 is_stmt 0 view .LVU199
+ 809 006c 1F4B     		ldr	r3, .L71+8
+ 810 006e B3F90030 		ldrsh	r3, [r3]
+  72:Application/wirelessrx.c ****         {
+ 811              		.loc 1 72 11 view .LVU200
+ 812 0072 0F2B     		cmp	r3, #15
+ 813 0074 09DD     		ble	.L68
+  77:Application/wirelessrx.c ****         {
+ 814              		.loc 1 77 14 is_stmt 1 view .LVU201
+  77:Application/wirelessrx.c ****         {
+ 815              		.loc 1 77 16 is_stmt 0 view .LVU202
+ 816 0076 1F2B     		cmp	r3, #31
+ 817 0078 19DD     		ble	.L69
+  83:Application/wirelessrx.c ****         {
+ 818              		.loc 1 83 14 is_stmt 1 view .LVU203
+  83:Application/wirelessrx.c ****         {
+ 819              		.loc 1 83 16 is_stmt 0 view .LVU204
+ 820 007a B3F5C87F 		cmp	r3, #400
+ 821 007e 24DB     		blt	.L70
+  90:Application/wirelessrx.c ****         }
+ 822              		.loc 1 90 13 is_stmt 1 view .LVU205
+  90:Application/wirelessrx.c ****         }
+ 823              		.loc 1 90 29 is_stmt 0 view .LVU206
+ 824 0080 1A4B     		ldr	r3, .L71+8
+ 825 0082 4FF6FF72 		movw	r2, #65535
+ 826 0086 1A80     		strh	r2, [r3]	@ movhi
+ 827 0088 09E0     		b	.L61
+ 828              	.L68:
+  74:Application/wirelessrx.c ****             SwitchHighOrLowPower(SOF_decode[count_connected]);
+ 829              		.loc 1 74 13 is_stmt 1 view .LVU207
+ 830 008a 0120     		movs	r0, #1
+ 831 008c FFF7FEFF 		bl	SwitchENA_ENB
+ 832              	.LVL51:
+  75:Application/wirelessrx.c ****         }
+ 833              		.loc 1 75 13 view .LVU208
+  75:Application/wirelessrx.c ****         }
+ 834              		.loc 1 75 44 is_stmt 0 view .LVU209
+ 835 0090 164B     		ldr	r3, .L71+8
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 22
+
+
+ 836 0092 B3F90030 		ldrsh	r3, [r3]
+  75:Application/wirelessrx.c ****         }
+ 837              		.loc 1 75 13 view .LVU210
+ 838 0096 164A     		ldr	r2, .L71+12
+ 839 0098 D05C     		ldrb	r0, [r2, r3]	@ zero_extendqisi2
+ 840 009a FFF7FEFF 		bl	SwitchHighOrLowPower
+ 841              	.LVL52:
+ 842              	.L61:
+  92:Application/wirelessrx.c ****         count_debug = 0;
+ 843              		.loc 1 92 9 is_stmt 1 view .LVU211
+  92:Application/wirelessrx.c ****         count_debug = 0;
+ 844              		.loc 1 92 24 is_stmt 0 view .LVU212
+ 845 009e 134A     		ldr	r2, .L71+8
+ 846 00a0 1388     		ldrh	r3, [r2]
+ 847 00a2 0133     		adds	r3, r3, #1
+ 848 00a4 1380     		strh	r3, [r2]	@ movhi
+  93:Application/wirelessrx.c ****         break;
+ 849              		.loc 1 93 9 is_stmt 1 view .LVU213
+  93:Application/wirelessrx.c ****         break;
+ 850              		.loc 1 93 21 is_stmt 0 view .LVU214
+ 851 00a6 104B     		ldr	r3, .L71+4
+ 852 00a8 0022     		movs	r2, #0
+ 853 00aa 1A80     		strh	r2, [r3]	@ movhi
+  94:Application/wirelessrx.c ****     case RxStatus_Disconnected:
+ 854              		.loc 1 94 9 is_stmt 1 view .LVU215
+ 855 00ac B1E7     		b	.L52
+ 856              	.L69:
+  79:Application/wirelessrx.c ****             DOF_To_Decode();
+ 857              		.loc 1 79 13 view .LVU216
+ 858 00ae 0120     		movs	r0, #1
+ 859 00b0 FFF7FEFF 		bl	SwitchENA_ENB
+ 860              	.LVL53:
+  80:Application/wirelessrx.c ****             SwitchHighOrLowPower(DOF_decode[count_connected - 16]);
+ 861              		.loc 1 80 13 view .LVU217
+ 862 00b4 FFF7FEFF 		bl	DOF_To_Decode
+ 863              	.LVL54:
+  81:Application/wirelessrx.c ****         }
+ 864              		.loc 1 81 13 view .LVU218
+  81:Application/wirelessrx.c ****         }
+ 865              		.loc 1 81 61 is_stmt 0 view .LVU219
+ 866 00b8 0C4B     		ldr	r3, .L71+8
+ 867 00ba B3F90030 		ldrsh	r3, [r3]
+ 868 00be 103B     		subs	r3, r3, #16
+  81:Application/wirelessrx.c ****         }
+ 869              		.loc 1 81 13 view .LVU220
+ 870 00c0 0C4A     		ldr	r2, .L71+16
+ 871 00c2 D05C     		ldrb	r0, [r2, r3]	@ zero_extendqisi2
+ 872 00c4 FFF7FEFF 		bl	SwitchHighOrLowPower
+ 873              	.LVL55:
+ 874 00c8 E9E7     		b	.L61
+ 875              	.L70:
+  85:Application/wirelessrx.c ****             HighPower();
+ 876              		.loc 1 85 13 is_stmt 1 view .LVU221
+ 877 00ca 0020     		movs	r0, #0
+ 878 00cc FFF7FEFF 		bl	SwitchENA_ENB
+ 879              	.LVL56:
+  86:Application/wirelessrx.c ****         }
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 23
+
+
+ 880              		.loc 1 86 13 view .LVU222
+ 881 00d0 FFF7FEFF 		bl	HighPower
+ 882              	.LVL57:
+ 883 00d4 E3E7     		b	.L61
+ 884              	.L65:
+  96:Application/wirelessrx.c ****         HighPower();
+ 885              		.loc 1 96 9 view .LVU223
+ 886 00d6 0020     		movs	r0, #0
+ 887 00d8 FFF7FEFF 		bl	SwitchENA_ENB
+ 888              	.LVL58:
+  97:Application/wirelessrx.c ****         break;
+ 889              		.loc 1 97 9 view .LVU224
+ 890 00dc FFF7FEFF 		bl	HighPower
+ 891              	.LVL59:
+  98:Application/wirelessrx.c ****     }
+ 892              		.loc 1 98 9 view .LVU225
+ 101:Application/wirelessrx.c **** 
+ 893              		.loc 1 101 1 is_stmt 0 view .LVU226
+ 894 00e0 97E7     		b	.L52
+ 895              	.L72:
+ 896 00e2 00BF     		.align	2
+ 897              	.L71:
+ 898 00e4 00000000 		.word	RxStatus
+ 899 00e8 00000000 		.word	count_debug.2
+ 900 00ec 00000000 		.word	count_connected.1
+ 901 00f0 00000000 		.word	SOF_decode
+ 902 00f4 00000000 		.word	DOF_decode
+ 903              		.cfi_endproc
+ 904              	.LFE124:
+ 906              		.section	.text.IntLimiter,"ax",%progbits
+ 907              		.align	1
+ 908              		.global	IntLimiter
+ 909              		.syntax unified
+ 910              		.thumb
+ 911              		.thumb_func
+ 913              	IntLimiter:
+ 914              	.LVL60:
+ 915              	.LFB133:
+ 272:Application/wirelessrx.c **** 
+ 273:Application/wirelessrx.c **** void IntLimiter(int num,int min,int max)
+ 274:Application/wirelessrx.c **** {
+ 916              		.loc 1 274 1 is_stmt 1 view -0
+ 917              		.cfi_startproc
+ 918              		@ args = 0, pretend = 0, frame = 0
+ 919              		@ frame_needed = 0, uses_anonymous_args = 0
+ 920              		@ link register save eliminated.
+ 275:Application/wirelessrx.c ****     if(min < num && num < max)
+ 921              		.loc 1 275 5 view .LVU228
+ 276:Application/wirelessrx.c ****         return num;
+ 277:Application/wirelessrx.c ****     if(num < min)
+ 278:Application/wirelessrx.c ****         return min;
+ 279:Application/wirelessrx.c ****     if(num > max)
+ 280:Application/wirelessrx.c ****         return max;
+ 281:Application/wirelessrx.c **** }...
+ 922              		.loc 1 281 1 is_stmt 0 view .LVU229
+ 923 0000 7047     		bx	lr
+ 924              		.cfi_endproc
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 24
+
+
+ 925              	.LFE133:
+ 927              		.section	.bss.dt.0,"aw",%nobits
+ 928              		.align	2
+ 931              	dt.0:
+ 932 0000 00000000 		.space	4
+ 933              		.section	.bss.count_connected.1,"aw",%nobits
+ 934              		.align	1
+ 937              	count_connected.1:
+ 938 0000 0000     		.space	2
+ 939              		.section	.bss.count_debug.2,"aw",%nobits
+ 940              		.align	1
+ 943              	count_debug.2:
+ 944 0000 0000     		.space	2
+ 945              		.global	RxStatus
+ 946              		.section	.bss.RxStatus,"aw",%nobits
+ 949              	RxStatus:
+ 950 0000 00       		.space	1
+ 951              		.global	VCCFilter
+ 952              		.section	.bss.VCCFilter,"aw",%nobits
+ 953              		.align	2
+ 956              	VCCFilter:
+ 957 0000 00000000 		.space	20
+ 957      00000000 
+ 957      00000000 
+ 957      00000000 
+ 957      00000000 
+ 958              		.global	VInFilter
+ 959              		.section	.bss.VInFilter,"aw",%nobits
+ 960              		.align	2
+ 963              	VInFilter:
+ 964 0000 00000000 		.space	20
+ 964      00000000 
+ 964      00000000 
+ 964      00000000 
+ 964      00000000 
+ 965              		.global	DOF_decode
+ 966              		.section	.bss.DOF_decode,"aw",%nobits
+ 967              		.align	2
+ 970              	DOF_decode:
+ 971 0000 00000000 		.space	16
+ 971      00000000 
+ 971      00000000 
+ 971      00000000 
+ 972              		.global	DOF
+ 973              		.section	.data.DOF,"aw"
+ 974              		.align	2
+ 977              	DOF:
+ 978 0000 01000000 		.ascii	"\001\000\000\000\000\000\000\000\000"
+ 978      00000000 
+ 978      00
+ 979 0009 00000000 		.space	7
+ 979      000000
+ 980              		.global	SOF_decode
+ 981              		.section	.bss.SOF_decode,"aw",%nobits
+ 982              		.align	2
+ 985              	SOF_decode:
+ 986 0000 00000000 		.space	16
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 25
+
+
+ 986      00000000 
+ 986      00000000 
+ 986      00000000 
+ 987              		.global	SOF
+ 988              		.section	.data.SOF,"aw"
+ 989              		.align	2
+ 992              	SOF:
+ 993 0000 01000100 		.ascii	"\001\000\001\000\000\001\001\000"
+ 993      00010100 
+ 994              		.global	VCC_f
+ 995              		.section	.bss.VCC_f,"aw",%nobits
+ 996              		.align	2
+ 999              	VCC_f:
+ 1000 0000 00000000 		.space	4
+ 1001              		.global	VIn_f
+ 1002              		.section	.bss.VIn_f,"aw",%nobits
+ 1003              		.align	2
+ 1006              	VIn_f:
+ 1007 0000 00000000 		.space	4
+ 1008              		.global	DWT_Count
+ 1009              		.section	.bss.DWT_Count,"aw",%nobits
+ 1010              		.align	2
+ 1013              	DWT_Count:
+ 1014 0000 00000000 		.space	4
+ 1015              		.global	V_values
+ 1016              		.section	.bss.V_values,"aw",%nobits
+ 1017              		.align	2
+ 1020              	V_values:
+ 1021 0000 00000000 		.space	8
+ 1021      00000000 
+ 1022              		.global	ADC_values
+ 1023              		.section	.bss.ADC_values,"aw",%nobits
+ 1024              		.align	2
+ 1027              	ADC_values:
+ 1028 0000 00000000 		.space	8
+ 1028      00000000 
+ 1029              		.text
+ 1030              	.Letext0:
+ 1031              		.file 2 "e:\\vscode\\msys2\\mingw64\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 1032              		.file 3 "e:\\vscode\\msys2\\mingw64\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 1033              		.file 4 "Drivers/CMSIS/Device/ST/STM32F3xx/Include/stm32f334x8.h"
+ 1034              		.file 5 "Drivers/CMSIS/Device/ST/STM32F3xx/Include/stm32f3xx.h"
+ 1035              		.file 6 "Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_def.h"
+ 1036              		.file 7 "Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_gpio.h"
+ 1037              		.file 8 "Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_dma.h"
+ 1038              		.file 9 "Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_adc_ex.h"
+ 1039              		.file 10 "Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_adc.h"
+ 1040              		.file 11 "Commponents/filter32.h"
+ 1041              		.file 12 "Core/Inc/adc.h"
+ 1042              		.file 13 "Application/bsp_dwt.h"
+ 1043              		.file 14 "Application/wirelessrx.h"
+ 1044              		.file 15 "Core/Inc/main.h"
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 26
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 wirelessrx.c
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:21     .text.HAL_ADC_ConvCpltCallback:00000000 $t
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:27     .text.HAL_ADC_ConvCpltCallback:00000000 HAL_ADC_ConvCpltCallback
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:153    .text.HAL_ADC_ConvCpltCallback:000000a8 $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:741    .bss.DWT_Count:00000000 DWT_Count
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:671    .bss.dt.0:00000000 dt.0
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:755    .bss.ADC_values:00000000 ADC_values
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:748    .bss.V_values:00000000 V_values
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:706    .bss.VInFilter:00000000 VInFilter
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:734    .bss.VIn_f:00000000 VIn_f
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:699    .bss.VCCFilter:00000000 VCCFilter
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:727    .bss.VCC_f:00000000 VCC_f
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:692    .bss.RxStatus:00000000 RxStatus
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:170    .text.LowPower:00000000 $t
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:176    .text.LowPower:00000000 LowPower
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:205    .text.HighPower:00000000 $t
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:211    .text.HighPower:00000000 HighPower
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:240    .text.SwitchBBEN:00000000 $t
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:246    .text.SwitchBBEN:00000000 SwitchBBEN
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:289    .text.SwitchENA_ENB:00000000 $t
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:295    .text.SwitchENA_ENB:00000000 SwitchENA_ENB
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:351    .text.SwitchENA_ENB:0000003c $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:356    .text.WirelessInit:00000000 $t
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:362    .text.WirelessInit:00000000 WirelessInit
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:445    .text.WirelessInit:0000006c $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:455    .text.SwitchHighOrLowPower:00000000 $t
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:461    .text.SwitchHighOrLowPower:00000000 SwitchHighOrLowPower
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:494    .text.QITask:00000000 $t
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:500    .text.QITask:00000000 QITask
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:636    .text.QITask:0000009c $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:686    .bss.count_connecting.3:00000000 count_connecting.3
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:720    .data.SOF:00000000 SOF
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:681    .bss.count_connected.2:00000000 count_connected.2
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:676    .bss.data.1:00000000 data.1
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:713    .bss.DOF:00000000 DOF
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:647    .text.IntLimiter:00000000 $t
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:653    .text.IntLimiter:00000000 IntLimiter
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:668    .bss.dt.0:00000000 $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:677    .bss.data.1:00000000 $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:682    .bss.count_connected.2:00000000 $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:687    .bss.count_connecting.3:00000000 $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:693    .bss.RxStatus:00000000 $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:696    .bss.VCCFilter:00000000 $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:703    .bss.VInFilter:00000000 $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:710    .bss.DOF:00000000 $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:717    .data.SOF:00000000 $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:724    .bss.VCC_f:00000000 $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:731    .bss.VIn_f:00000000 $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:738    .bss.DWT_Count:00000000 $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:745    .bss.V_values:00000000 $d
-C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s:752    .bss.ADC_values:00000000 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:21     .text.SOF_To_Decode:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:27     .text.SOF_To_Decode:00000000 SOF_To_Decode
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:117    .text.SOF_To_Decode:00000060 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:985    .bss.SOF_decode:00000000 SOF_decode
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:992    .data.SOF:00000000 SOF
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:123    .text.DOF_To_Decode:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:129    .text.DOF_To_Decode:00000000 DOF_To_Decode
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:244    .text.DOF_To_Decode:00000084 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:977    .data.DOF:00000000 DOF
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:970    .bss.DOF_decode:00000000 DOF_decode
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:251    .text.HAL_ADC_ConvCpltCallback:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:257    .text.HAL_ADC_ConvCpltCallback:00000000 HAL_ADC_ConvCpltCallback
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:364    .text.HAL_ADC_ConvCpltCallback:00000088 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:1013   .bss.DWT_Count:00000000 DWT_Count
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:931    .bss.dt.0:00000000 dt.0
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:1027   .bss.ADC_values:00000000 ADC_values
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:1020   .bss.V_values:00000000 V_values
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:963    .bss.VInFilter:00000000 VInFilter
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:1006   .bss.VIn_f:00000000 VIn_f
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:956    .bss.VCCFilter:00000000 VCCFilter
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:999    .bss.VCC_f:00000000 VCC_f
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:949    .bss.RxStatus:00000000 RxStatus
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:382    .text.LowPower:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:388    .text.LowPower:00000000 LowPower
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:417    .text.HighPower:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:423    .text.HighPower:00000000 HighPower
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:452    .text.SwitchBBEN:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:458    .text.SwitchBBEN:00000000 SwitchBBEN
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:501    .text.SwitchENA_ENB:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:507    .text.SwitchENA_ENB:00000000 SwitchENA_ENB
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:563    .text.SwitchENA_ENB:0000003c $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:568    .text.WirelessInit:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:574    .text.WirelessInit:00000000 WirelessInit
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:660    .text.WirelessInit:00000070 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:670    .text.SwitchHighOrLowPower:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:676    .text.SwitchHighOrLowPower:00000000 SwitchHighOrLowPower
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:709    .text.QITask:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:715    .text.QITask:00000000 QITask
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:898    .text.QITask:000000e4 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:943    .bss.count_debug.2:00000000 count_debug.2
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:937    .bss.count_connected.1:00000000 count_connected.1
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:907    .text.IntLimiter:00000000 $t
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:913    .text.IntLimiter:00000000 IntLimiter
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:928    .bss.dt.0:00000000 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:934    .bss.count_connected.1:00000000 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:940    .bss.count_debug.2:00000000 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:950    .bss.RxStatus:00000000 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:953    .bss.VCCFilter:00000000 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:960    .bss.VInFilter:00000000 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:967    .bss.DOF_decode:00000000 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:974    .data.DOF:00000000 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:982    .bss.SOF_decode:00000000 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:989    .data.SOF:00000000 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:996    .bss.VCC_f:00000000 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:1003   .bss.VIn_f:00000000 $d
+ARM GAS  C:\Users\31005\AppData\Local\Temp\ccigUiGk.s 			page 27
+
+
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:1010   .bss.DWT_Count:00000000 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:1017   .bss.V_values:00000000 $d
+C:\Users\31005\AppData\Local\Temp\ccigUiGk.s:1024   .bss.ADC_values:00000000 $d
 
 UNDEFINED SYMBOLS
 DWT_GetDeltaT
 First_Order_Filter_Calculate
 hadc1
-ARM GAS  C:\Users\31005\AppData\Local\Temp\ccZQ8Ogg.s 			page 21
-
-
 HAL_GPIO_WritePin
 DWT_Delay
 HAL_ADC_Start_DMA

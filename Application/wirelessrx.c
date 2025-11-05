@@ -9,6 +9,7 @@ uint32_t DWT_Count;
 float VIn_f;
 float VCC_f;
 // 10100110
+// 0100110 1
 uint8_t SOF[8] = {1,0,1,0,0,1,1,0};//0是高功率，1是低功率
 uint8_t SOF_decode[16];
 uint8_t DOF[16] = {1,0,0,0,0,0,0,0};
@@ -41,8 +42,8 @@ void WirelessInit()
 void QITask()
 {
     static uint8_t data = 0;
-    static uint16_t count_connected = 0;
-    static uint16_t count_debug = 0;
+    static int16_t count_connected = 0;
+    static int16_t count_debug = 0;
 
     switch(RxStatus)
     {
@@ -60,7 +61,7 @@ void QITask()
         }
         else
         {
-            count_debug = 0;
+            count_debug = -1;
         }
         count_debug++;
         count_connected = 0;
@@ -86,7 +87,7 @@ void QITask()
         }
         else
         {
-            count_connected = 0;
+            count_connected = -1;
         }
         count_connected++;
         count_debug = 0;
@@ -112,8 +113,8 @@ void SOF_To_Decode()
         }
         else
         {
-            SOF_decode[i*2] = SOF_decode[i*2-1];
-            SOF_decode[i*2+1] = SOF_decode[i*2-1];
+            SOF_decode[i*2] = !SOF_decode[i*2-1];
+            SOF_decode[i*2+1] = !SOF_decode[i*2-1];
         }
     }
 }
@@ -127,8 +128,8 @@ void DOF_To_Decode()
     }
     else
     {
-        DOF_decode[0] = SOF_decode[15];
-        DOF_decode[1] = SOF_decode[15];
+        DOF_decode[0] = !SOF_decode[15];
+        DOF_decode[1] = !SOF_decode[15];
     }
 
     for(int i=1;i<8;i++)
