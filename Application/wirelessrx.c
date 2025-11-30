@@ -2,18 +2,29 @@
 
 //develop brench test
 
+static void Debug_Task();
+static void Connected_Task();
+static void LowPower();
+static void HighPower();
+static void SwitchBBEN(int On_Off);
+static void SwitchENA_ENB(int On_Off);
+static void SwitchHighOrLowPower(uint8_t On_Off);
+
 uint32_t ADC_values[ADC_DataSize];
 float V_values[ADC_DataSize];
 // uint32_t AdcAllValues[ADC_DataSize];
-uint32_t DWT_Count;
+uint32_t Rx_DWT_Count;
+float rx_dt = 0.0f;
+float rx_t = 0.0f;
 float VIn_f;
 float VCC_f;
 // 10100110
-// 0100110 1
+// 01001101
 uint8_t SOF[8] = {1,0,1,0,0,1,1,0};//0是高功率，1是低功率
-uint8_t SOF_decode[16];
 uint8_t DOF[16] = {1,0,0,0,0,0,0,0};
-uint8_t DOF_decode[16];
+uint8_t num_0_or_1[2][5] = {{1,1,1,1,0},
+                            {1,1,0,0,0}
+                                };
 First_Order_Filter_t VInFilter;
 First_Order_Filter_t VCCFilter;
 enum RxStatus_t RxStatus = RxStatus_Unknow;
@@ -27,70 +38,31 @@ void WirelessInit()
     DWT_Delay(0.1);
     SwitchBBEN(On);
     SwitchENA_ENB(On);
-    if( HAL_ADC_Start_DMA(&hadc1,ADC_values,ADC_DataSize) != HAL_OK  ||
-        HAL_ADCEx_Calibration_GetValue(&hadc1,ADC_SINGLE_ENDED) != HAL_OK)
+    while(HAL_ADCEx_Calibration_Start(&hadc1,ADC_SINGLE_ENDED) != HAL_OK)
     {
-        Error_Handler();
+    }
+    while(HAL_ADC_Start_DMA(&hadc1,ADC_values,ADC_DataSize) != HAL_OK)
+    {
     }
 
     First_Order_Filter_Init(&VInFilter,1/97500.0f,30.0f);
     First_Order_Filter_Init(&VCCFilter,1/97500.0f,30.0f);
-    SOF_To_Decode();
+
+    RxStatus = RxStatus_Connected;
 
 }
 
-void QITask()
+void Transmit_Task()
 {
-    static uint8_t data = 0;
-    static int16_t count_connected = 0;
-    static int16_t count_debug = 0;
-
+    rx_dt = DWT_GetDeltaT(&Rx_DWT_Count);
+    rx_t += rx_dt;
     switch(RxStatus)
     {
     case RxStatus_Debug:
-        if(count_debug < 16)
-        {
-            SwitchENA_ENB(On);
-            SwitchHighOrLowPower(SOF_decode[count_debug]);
-        }
-        else if(count_debug < 32)
-        {
-            SwitchENA_ENB(On);
-            DOF_To_Decode();
-            SwitchHighOrLowPower(DOF_decode[count_debug - 16]);
-        }
-        else
-        {
-            count_debug = -1;
-        }
-        count_debug++;
-        count_connected = 0;
+        Debug_Task();
         break;
     case RxStatus_Connected:
-        // 0.25ms 4kHz
-        // 100ms 1period
-        if(count_connected < 16)
-        {
-            SwitchENA_ENB(On);
-            SwitchHighOrLowPower(SOF_decode[count_connected]);
-        }
-        else if(count_connected < 32)
-        {
-            SwitchENA_ENB(On);
-            DOF_To_Decode();
-            SwitchHighOrLowPower(DOF_decode[count_connected - 16]);
-        }
-        else if(count_connected < 400)
-        {
-            SwitchENA_ENB(Off);
-            HighPower();
-        }
-        else
-        {
-            count_connected = -1;
-        }
-        count_connected++;
-        count_debug = 0;
+        Connected_Task();
         break;
     case RxStatus_Disconnected:
         SwitchENA_ENB(Off);
@@ -100,50 +72,91 @@ void QITask()
     
 }
 
-void SOF_To_Decode()
+static void Debug_Task()
 {
-    SOF_decode[0] = 1;
-    SOF_decode[1] = 0;
-    for(int i=1;i<8;i++)
+    static uint8_t debug_frame_count = 0;
+    static uint8_t debug_byte_count = 0;
+    volatile static uint8_t debug_mode = 0;
+    uint8_t flag_debug = debug_frame_count%16;
+    
+
+    switch(debug_mode)
     {
-        if(SOF[i] == 1)
-        {
-            SOF_decode[i*2] = !SOF_decode[i*2-1];
-            SOF_decode[i*2+1] = SOF_decode[i*2-1];       
-        }
-        else
-        {
-            SOF_decode[i*2] = !SOF_decode[i*2-1];
-            SOF_decode[i*2+1] = !SOF_decode[i*2-1];
-        }
+        case 1:
+            if(flag_debug < 8)
+            {
+                SwitchENA_ENB(On);
+                SwitchHighOrLowPower(num_0_or_1[SOF[flag_debug]][debug_byte_count]);
+            }
+            else if(8 <= flag_debug && flag_debug < 16)
+            {
+                SwitchENA_ENB(Off);
+            }
+        break;
+
+        case 2:
+            if(flag_debug < 8)
+            {
+                SwitchENA_ENB(On);
+                SwitchHighOrLowPower(num_0_or_1[DOF[flag_debug]][debug_byte_count]);
+            }
+            else if(flag_debug < 16)
+            {
+                SwitchENA_ENB(Off);
+            }
+        break;
+
+        case 3:
+            SwitchENA_ENB(On);    
+            if(flag_debug < 8)
+            {
+                SwitchHighOrLowPower(num_0_or_1[SOF[flag_debug]][debug_byte_count]);
+            }
+            else if(flag_debug < 16)
+            {
+                SwitchHighOrLowPower(num_0_or_1[DOF[flag_debug]][debug_byte_count]);
+            }
+        break;
+        default:
+        
+    }
+    
+
+    debug_byte_count++;
+    if(debug_byte_count >= 5)
+    {
+        debug_byte_count = 0;
+        debug_frame_count++;
     }
 }
 
-void DOF_To_Decode()
+static void Connected_Task()
 {
-    if(DOF[0] == 1)
+    static uint8_t connected_frame_count = 0;
+    static uint8_t connected_byte_count = 0;
+
+    if(connected_frame_count < 8)
     {
-        DOF_decode[0] = !SOF_decode[15];
-        DOF_decode[1] = SOF_decode[15];
+        SwitchENA_ENB(On);    
+        SwitchHighOrLowPower(num_0_or_1[SOF[connected_frame_count]][connected_byte_count]);
+    }
+    else if(connected_frame_count < 16)
+    {
+        SwitchENA_ENB(On);    
+        SwitchHighOrLowPower(num_0_or_1[DOF[connected_frame_count - 8]][connected_byte_count]);
+    }
+    else if(connected_frame_count < 200)
+    {
+        SwitchENA_ENB(Off);   
     }
     else
-    {
-        DOF_decode[0] = !SOF_decode[15];
-        DOF_decode[1] = !SOF_decode[15];
-    }
+        connected_frame_count = 0;
 
-    for(int i=1;i<8;i++)
+    connected_byte_count++;
+    if(connected_byte_count >= 5)
     {
-        if(DOF[i] == 1)
-        {
-            DOF_decode[i*2] = !DOF_decode[i*2-1];
-            DOF_decode[i*2+1] = DOF_decode[i*2-1];       
-        }
-        else
-        {
-            DOF_decode[i*2] = !DOF_decode[i*2-1];
-            DOF_decode[i*2+1] = !DOF_decode[i*2-1];
-        }
+        connected_byte_count = 0;
+        connected_frame_count++;
     }
 }
 
@@ -151,70 +164,26 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
     if(hadc == &hadc1)
     {
-        static float dt;
-        dt = DWT_GetDeltaT(&DWT_Count);
-
         V_values[ADCVIN] = ADC_values[ADCVIN] * ADCRatio * ADCVoltageRatio;
         V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
 
         VIn_f = First_Order_Filter_Calculate(&VInFilter,V_values[ADCVIN]);
         VCC_f = First_Order_Filter_Calculate(&VCCFilter,V_values[ADCVCC]);
 
-        VIn_f = 20.0f;
+        // VIn_f = 20.0f;
         if(RxStatus != RxStatus_Debug)
         {
-            if(VIn_f > 19.0f)
-            {
-                // RxStatus = RxStatus_Connecting;
-                RxStatus = RxStatus_Connected;
-            }
-            else if(VIn_f < 17.0f)
-            {
-                RxStatus = RxStatus_Disconnected;
-            }
+            // if(VIn_f > 19.0f)
+            // {
+            //     // RxStatus = RxStatus_Connecting;
+            //     RxStatus = RxStatus_Connected;
+            // }
+            // else if(VIn_f < 17.0f)
+            // {
+            //     RxStatus = RxStatus_Disconnected;
+            // }
         }
     }
-    
-    // static int time = 0;        //ADC采样次数
-    // static int framestime = 0;  //帧次数
-    // static int NumOfSOF = 0;    //帧头次数
-    // static uint32_t ceshiman = 0;
-
-    // if(ceshiman >= 50)
-    // {
-    //     SwitchBBEN(Off);
-    // }
-    // if(hadc->Instance == ADC1)
-    // {
-    //     time++;
-    //     AdcAllValues[ADCCurrentIn] += ADC_values[ADCCurrentIn];
-    //     AdcAllValues[ADCVCC] += ADC_values[ADCVCC];
-
-    //     if(time >= 102)
-    //     {
-    //         ADC_values_f[ADCCurrentIn] = AdcAllValues[ADCCurrentIn]/time;
-    //         ADC_values_f[ADCVCC] = AdcAllValues[ADCVCC]/time;             //2223 - 24.63V
-
-    //         AdcAllValues[ADCCurrentIn] = 0;
-    //         AdcAllValues[ADCVCC] = 0;
-
-    //         time = 0;
-    //         framestime++;
-            
-    //         SwitchHighOrLowPower(SOF[framestime-1]);
-    //         if(framestime == 8)
-    //         {
-    //             framestime = 0;
-    //             NumOfSOF++;
-    //         }
-    //         if(NumOfSOF >= 2)
-    //         {
-    //             NumOfSOF = 0;
-    //             DWT_Delay(0.092);
-    //             ceshiman++;
-    //         }
-    //     }
-    // }
 }
 
 void LowPower()
@@ -257,16 +226,10 @@ void SwitchENA_ENB(int On_Off)
     }
 }
 
-void SwitchHighOrLowPower(int On_Off)
+void SwitchHighOrLowPower(uint8_t On_Off)
 {
-    if(On_Off)
-    {
-        LowPower();
-    }
-    else
-    {
-        HighPower();
-    }
+    if(On_Off){LowPower();}
+    else{HighPower();}
     
 }
 

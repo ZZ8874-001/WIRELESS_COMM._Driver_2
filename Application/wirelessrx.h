@@ -24,19 +24,9 @@ enum RxStatus_t
     RxStatus_Debug = 4,
 };
 
-
-
 void WirelessInit();
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
-void LowPower();
-void HighPower();
-void SwitchBBEN(int On_Off);
-void SwitchENA_ENB(int On_Off);
-void SwitchHighOrLowPower(int On_Off);
 void IntLimiter(int num,int min,int max);
-void QITask();
-void SOF_To_Decode();
-void DOF_To_Decode();
-
+void Transmit_Task();
 
 #endif

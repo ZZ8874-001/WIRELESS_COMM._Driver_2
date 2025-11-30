@@ -18,7 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "cmsis_os.h"
 #include "adc.h"
 #include "can.h"
 #include "dma.h"
@@ -54,7 +53,6 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -103,17 +101,6 @@ int main(void)
   WirelessInit();
   HAL_TIM_Base_Start_IT(&htim3);
   /* USER CODE END 2 */
-
-  /* Init scheduler */
-  osKernelInitialize();
-
-  /* Call init function for freertos objects (in cmsis_os2.c) */
-  MX_FREERTOS_Init();
-
-  /* Start scheduler */
-  osKernelStart();
-
-  /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -190,8 +177,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 0 */
   if(htim->Instance == TIM3)
   {
-    // 4kHz
-    QITask();
+    // 10kHz
+    Transmit_Task();
   }
   /* USER CODE END Callback 0 */
   if (htim->Instance == TIM2) {
