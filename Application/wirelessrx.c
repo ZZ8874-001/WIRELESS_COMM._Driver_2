@@ -137,7 +137,7 @@ static void Connected_Task()
 
     if(connected_frame_count < 8)
     {
-        SwitchENA_ENB(On);    
+        SwitchENA_ENB(On);
         SwitchHighOrLowPower(num_0_or_1[SOF[connected_frame_count]][connected_byte_count]);
     }
     else if(connected_frame_count < 16)
@@ -149,14 +149,16 @@ static void Connected_Task()
     {
         SwitchENA_ENB(Off);   
     }
-    else
-        connected_frame_count = 0;
+    
 
     connected_byte_count++;
     if(connected_byte_count >= 5)
     {
         connected_byte_count = 0;
-        connected_frame_count++;
+        if(connected_frame_count++ >= 200)
+        {
+            connected_frame_count = 0;
+        }
     }
 }
 
