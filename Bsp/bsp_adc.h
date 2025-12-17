@@ -11,5 +11,7 @@
 
 void Bsp_ADC_Init();
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
+void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef* hadc);
+void HAL_ADCEx_LevelOutOfWindow2Callback(ADC_HandleTypeDef* hadc);
 
 #endif

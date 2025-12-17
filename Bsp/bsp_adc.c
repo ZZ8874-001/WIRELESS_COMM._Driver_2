@@ -1,12 +1,13 @@
 #include "bsp_adc.h"
 
 #include "wirelessrx.h"
+#include "detect.h"
 #include "filter32.h"
 
 First_Order_Filter_t VInFilter;
 First_Order_Filter_t VCCFilter;
 
-uint32_t ADC_values[ADC_DataSize];
+uint16_t ADC_values[ADC_DataSize];
 float V_values[ADC_DataSize];
 
 float VIn_f;
@@ -20,6 +21,12 @@ void Bsp_ADC_Init()
     while(HAL_ADC_Start_DMA(&hadc1,ADC_values,ADC_DataSize) != HAL_OK)
     {
     }
+    ADC1->IER |= 0x100;
+    ADC1->TR1 = 4095 << 16 | 0;
+    ADC1->TR2 = 255 << 16  | 0;
+    ADC1->AWD2CR = 1 << 3;
+    DMA1_Channel1->CCR &= 0xFFFB;
+
 
     First_Order_Filter_Init(&VInFilter,1/97500.0f,30.0f);
     First_Order_Filter_Init(&VCCFilter,1/97500.0f,30.0f);
@@ -27,7 +34,7 @@ void Bsp_ADC_Init()
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
-    if(hadc == &hadc1)
+    if(hadc->Instance == ADC1)
     {
         V_values[ADCVIN] = ADC_values[ADCVIN] * ADCRatio * ADCVoltageRatio;
         V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
@@ -48,5 +55,29 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
             //     RxStatus = RxStatus_Disconnected;
             // }
         }
+    }
+}
+
+void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef* hadc)
+{
+    if(hadc->Instance == ADC1)
+    {
+        static uint16_t adcwatch1 = 0;
+        adcwatch1++;
+
+        Detect_Hook(ADC_WATCHDOG1_TOE);
+        RxStatus = RxStatus_Disconnected;
+    }
+}
+
+void HAL_ADCEx_LevelOutOfWindow2Callback(ADC_HandleTypeDef* hadc)
+{
+    if(hadc->Instance == ADC1)
+    {
+        static uint16_t adcwatch2 = 0;
+        adcwatch2++;
+        
+        Detect_Hook(ADC_WATCHDOG2_TOE);
+        RxStatus = RxStatus_Disconnected;
     }
 }

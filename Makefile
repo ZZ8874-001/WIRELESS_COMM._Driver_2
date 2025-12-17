@@ -63,6 +63,7 @@ Core/Src/dma.c \
 Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_adc.c \
 Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_adc_ex.c \
 Application/wirelessrx.c \
+Application/detect.c \
 Bsp/bsp_dwt.c \
 Bsp/bsp_adc.c \
 Commponents/filter32.c \

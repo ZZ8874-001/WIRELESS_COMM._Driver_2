@@ -28,6 +28,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "wirelessrx.h"
+#include "detect.h"
 #include "bsp_adc.h"
 #include "bsp_dwt.h"
 /* USER CODE END Includes */
@@ -101,6 +102,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   DWT_Init(72);
   Bsp_ADC_Init();
+  Detect_Init();
   WirelessInit();
   HAL_TIM_Base_Start_IT(&htim3);
   /* USER CODE END 2 */
@@ -181,6 +183,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if(htim->Instance == TIM3)
   {
     // 10kHz
+    Detect_Task();
     Transmit_Task();
   }
   /* USER CODE END Callback 0 */

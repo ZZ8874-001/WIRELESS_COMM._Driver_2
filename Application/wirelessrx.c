@@ -109,6 +109,7 @@ static void Debug_Task()
                 SwitchHighOrLowPower(num_0_or_1[DOF>>(flag_debug - 8)&1]>>debug_byte_count & 1);
             }
         break;
+        
         default:
         break;
     }
