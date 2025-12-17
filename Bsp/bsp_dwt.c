@@ -11,6 +11,7 @@
  ******************************************************************************
  */
 #include "bsp_dwt.h"
+#include "core_cm4.h"
 
 DWT_Time_t SysTime;
 static uint32_t CPU_FREQ_Hz, CPU_FREQ_Hz_ms, CPU_FREQ_Hz_us;

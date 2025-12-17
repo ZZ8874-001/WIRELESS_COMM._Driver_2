@@ -63,7 +63,8 @@ Core/Src/dma.c \
 Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_adc.c \
 Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_adc_ex.c \
 Application/wirelessrx.c \
-Application/bsp_dwt.c \
+Bsp/bsp_dwt.c \
+Bsp/bsp_adc.c \
 Commponents/filter32.c \
 Commponents/user_lib.c \
 Commponents/Controller/controller.c \
@@ -141,6 +142,7 @@ C_INCLUDES =  \
 -IDrivers/CMSIS/Device/ST/STM32F3xx/Include \
 -IDrivers/CMSIS/Include \
 -IApplication \
+-IBsp \
 -ICommponents \
 -ICommponents/Controller \
 -ICommponents/Include 

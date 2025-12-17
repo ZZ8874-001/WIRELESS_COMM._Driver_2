@@ -2,20 +2,22 @@
 GraphedExpression="VIn_f", Color=#a00909
 GraphedExpression="ADC_values[0]", DisplayFormat=DISPLAY_FORMAT_DEC, Color=#09a01b
 GraphedExpression="rx_t", Color=#09a087
+GraphedExpression="wirelessrx.c::Debug_Task::debug_byte_count", DisplayFormat=DISPLAY_FORMAT_DEC, Color=#0984a0
+GraphedExpression="wirelessrx.c::Debug_Task::debug_frame_count", DisplayFormat=DISPLAY_FORMAT_DEC, Color=#0964a0
 OpenDocument="cmsis_gcc.h", FilePath="E:/new folder/WIRELESS_COMM._Driver_2/Drivers/CMSIS/Include/cmsis_gcc.h", Line=987
 OpenDocument="startup_stm32f334x8.s", FilePath="E:/new folder/WIRELESS_COMM._Driver_2/startup_stm32f334x8.s", Line=48
-OpenDocument="wirelessrx.c", FilePath="E:/new folder/WIRELESS_COMM._Driver_2/Application/wirelessrx.c", Line=78
-OpenDocument="main.c", FilePath="E:/new folder/WIRELESS_COMM._Driver_2/Core/Src/main.c", Line=56
+OpenDocument="wirelessrx.c", FilePath="E:/new folder/WIRELESS_COMM._Driver_2/Application/wirelessrx.c", Line=98
+OpenDocument="main.c", FilePath="E:/new folder/WIRELESS_COMM._Driver_2/Core/Src/main.c", Line=59
 OpenToolbar="Debug", Floating=0, x=0, y=0
-OpenWindow="Source Files", DockArea=LEFT, x=0, y=0, w=768, h=614, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Disassembly", DockArea=RIGHT, x=0, y=0, w=809, h=374, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Watched Data 1", DockArea=LEFT, x=0, y=1, w=768, h=418, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Source Files", DockArea=LEFT, x=0, y=0, w=768, h=610, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Disassembly", DockArea=RIGHT, x=0, y=0, w=809, h=380, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Watched Data 1", DockArea=LEFT, x=0, y=1, w=768, h=422, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
 OpenWindow="Data Sampling", DockArea=BOTTOM, x=1, y=0, w=970, h=388, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, VisibleTab=0, UniformSampleSpacing=0
-OpenWindow="Timeline", DockArea=RIGHT, x=0, y=1, w=809, h=658, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=1, DataPaneShown=1, PowerPaneShown=0, CodePaneShown=0, PinCursor="Cursor Movable", TimePerDiv="100 ms / Div", TimeStampFormat="Time", DataGraphDrawAsPoints=0, DataGraphLegendShown=1, DataGraphUniformSampleSpacing=0, DataGraphLegendPosition="349;0", PowerGraphDrawAsPoints=0, PowerGraphLegendShown=0, PowerGraphAvgFilterTime=Off, PowerGraphAvgFilterLen=Off, PowerGraphUniformSampleSpacing=0, PowerGraphLegendPosition="546;-71", CodeGraphLegendShown=0, CodeGraphLegendPosition="562;0"
+OpenWindow="Timeline", DockArea=RIGHT, x=0, y=1, w=809, h=652, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=1, DataPaneShown=1, PowerPaneShown=0, CodePaneShown=0, PinCursor="Cursor Movable", TimePerDiv="100 ms / Div", TimeStampFormat="Time", DataGraphDrawAsPoints=0, DataGraphLegendShown=1, DataGraphUniformSampleSpacing=0, DataGraphLegendPosition="335;0", PowerGraphDrawAsPoints=0, PowerGraphLegendShown=0, PowerGraphAvgFilterTime=Off, PowerGraphAvgFilterLen=Off, PowerGraphUniformSampleSpacing=0, PowerGraphLegendPosition="546;-71", CodeGraphLegendShown=0, CodeGraphLegendPosition="562;0"
 OpenWindow="Console", DockArea=BOTTOM, x=0, y=0, w=1589, h=388, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
 TableHeader="Source Files", SortCol="File", SortOrder="ASCENDING", VisibleCols=["File";"Status";"Size";"#Insts";"Path"], ColWidths=[233;100;100;100;798]
-TableHeader="Data Sampling Table", SortCol="None", SortOrder="ASCENDING", VisibleCols=["Index";"Time";" VIn_f";" ADC_values[0]";" rx_t"], ColWidths=[100;100;100;100;100]
-TableHeader="Data Sampling Setup", SortCol="Min. Change", SortOrder="DESCENDING", VisibleCols=["Expression";"Type";"Value";"Min";"Max";"Average";"# Changes";"Min. Change";"Max. Change"], ColWidths=[308;144;100;100;100;100;110;126;126]
+TableHeader="Data Sampling Table", SortCol="None", SortOrder="ASCENDING", VisibleCols=["Index";"Time";" VIn_f";" ADC_values[0]";" rx_t";" wirelessrx.c::Debug_Task::debug_byte_count";" wirelessrx.c::Debug_Task::debug_frame_count"], ColWidths=[100;100;100;100;100;100;100]
+TableHeader="Data Sampling Setup", SortCol="Min. Change", SortOrder="DESCENDING", VisibleCols=["Expression";"Type";"Value";"Min";"Max";"Average";"# Changes";"Min. Change";"Max. Change"], ColWidths=[308;214;124;100;124;124;110;164;134]
 TableHeader="Power Sampling", SortCol="Index", SortOrder="ASCENDING", VisibleCols=["Index";"Time";"Ch 0"], ColWidths=[100;100;100]
 TableHeader="Watched Data 1", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Value";"Location";"Refresh"], ColWidths=[232;259;100;177]
 TableHeader="RegisterSelectionDialog", SortCol="None", SortOrder="ASCENDING", VisibleCols=[], ColWidths=[]
@@ -26,3 +28,5 @@ WatchedExpression="debug_mode", RefreshRate=2, Window=Watched Data 1
 WatchedExpression="VIn_f", RefreshRate=2, Window=Watched Data 1
 WatchedExpression="ADC_values", RefreshRate=2, Window=Watched Data 1
 WatchedExpression="rx_t", RefreshRate=2, Window=Watched Data 1
+WatchedExpression="debug_byte_count", RefreshRate=2, Window=Watched Data 1
+WatchedExpression="debug_frame_count", RefreshRate=2, Window=Watched Data 1

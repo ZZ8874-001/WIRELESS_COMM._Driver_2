@@ -1,6 +1,10 @@
 #include "wirelessrx.h"
 
-//develop brench test
+#include "main.h"
+#include "gpio.h"
+
+#include "bsp_dwt.h"
+#include "filter32.h"
 
 static void Debug_Task();
 static void Connected_Task();
@@ -10,23 +14,20 @@ static void SwitchBBEN(int On_Off);
 static void SwitchENA_ENB(int On_Off);
 static void SwitchHighOrLowPower(uint8_t On_Off);
 
-uint32_t ADC_values[ADC_DataSize];
-float V_values[ADC_DataSize];
-// uint32_t AdcAllValues[ADC_DataSize];
 uint32_t Rx_DWT_Count;
 float rx_dt = 0.0f;
 float rx_t = 0.0f;
-float VIn_f;
-float VCC_f;
+
 // 10100110
-// 01001101
-uint8_t SOF[8] = {1,0,1,0,0,1,1,0};//0是高功率，1是低功率
-uint8_t DOF[16] = {1,0,0,0,0,0,0,0};
-uint8_t num_0_or_1[2][5] = {{1,1,1,1,0},
-                            {1,1,0,0,0}
-                                };
-First_Order_Filter_t VInFilter;
-First_Order_Filter_t VCCFilter;
+// 01011001
+// 左对齐
+uint8_t SOF = 0b01100101;//0是高功率，1是低功率
+uint8_t DOF = 0b00000001;
+uint8_t num_0_or_1[2] = {
+                        0b01111,
+                        0b00011
+                    };
+
 enum RxStatus_t RxStatus = RxStatus_Unknow;
 
 void WirelessInit()
@@ -38,15 +39,6 @@ void WirelessInit()
     DWT_Delay(0.1);
     SwitchBBEN(On);
     SwitchENA_ENB(On);
-    while(HAL_ADCEx_Calibration_Start(&hadc1,ADC_SINGLE_ENDED) != HAL_OK)
-    {
-    }
-    while(HAL_ADC_Start_DMA(&hadc1,ADC_values,ADC_DataSize) != HAL_OK)
-    {
-    }
-
-    First_Order_Filter_Init(&VInFilter,1/97500.0f,30.0f);
-    First_Order_Filter_Init(&VCCFilter,1/97500.0f,30.0f);
 
     RxStatus = RxStatus_Connected;
 
@@ -86,9 +78,9 @@ static void Debug_Task()
             if(flag_debug < 8)
             {
                 SwitchENA_ENB(On);
-                SwitchHighOrLowPower(num_0_or_1[SOF[flag_debug]][debug_byte_count]);
+                SwitchHighOrLowPower(num_0_or_1[SOF>>flag_debug&1]>>debug_byte_count & 1);
             }
-            else if(8 <= flag_debug && flag_debug < 16)
+            else if(flag_debug < 16)
             {
                 SwitchENA_ENB(Off);
             }
@@ -98,7 +90,7 @@ static void Debug_Task()
             if(flag_debug < 8)
             {
                 SwitchENA_ENB(On);
-                SwitchHighOrLowPower(num_0_or_1[DOF[flag_debug]][debug_byte_count]);
+                SwitchHighOrLowPower(num_0_or_1[DOF>>flag_debug&1]>>debug_byte_count & 1);
             }
             else if(flag_debug < 16)
             {
@@ -110,15 +102,15 @@ static void Debug_Task()
             SwitchENA_ENB(On);    
             if(flag_debug < 8)
             {
-                SwitchHighOrLowPower(num_0_or_1[SOF[flag_debug]][debug_byte_count]);
+                SwitchHighOrLowPower(num_0_or_1[SOF>>flag_debug&1]>>debug_byte_count & 1);
             }
             else if(flag_debug < 16)
             {
-                SwitchHighOrLowPower(num_0_or_1[DOF[flag_debug]][debug_byte_count]);
+                SwitchHighOrLowPower(num_0_or_1[DOF>>(flag_debug - 8)&1]>>debug_byte_count & 1);
             }
         break;
         default:
-        
+        break;
     }
     
 
@@ -138,12 +130,12 @@ static void Connected_Task()
     if(connected_frame_count < 8)
     {
         SwitchENA_ENB(On);
-        SwitchHighOrLowPower(num_0_or_1[SOF[connected_frame_count]][connected_byte_count]);
+        SwitchHighOrLowPower(num_0_or_1[SOF>>(connected_frame_count)&1]>>connected_byte_count & 1);
     }
     else if(connected_frame_count < 16)
     {
         SwitchENA_ENB(On);    
-        SwitchHighOrLowPower(num_0_or_1[DOF[connected_frame_count - 8]][connected_byte_count]);
+        SwitchHighOrLowPower(num_0_or_1[DOF>>(connected_frame_count - 8)&1]>>connected_byte_count & 1);
     }
     else if(connected_frame_count < 200)
     {
@@ -158,32 +150,6 @@ static void Connected_Task()
         if(connected_frame_count++ >= 200)
         {
             connected_frame_count = 0;
-        }
-    }
-}
-
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
-{
-    if(hadc == &hadc1)
-    {
-        V_values[ADCVIN] = ADC_values[ADCVIN] * ADCRatio * ADCVoltageRatio;
-        V_values[ADCVCC] = ADC_values[ADCVCC] * ADCRatio * ADCVoltageRatio;
-
-        VIn_f = First_Order_Filter_Calculate(&VInFilter,V_values[ADCVIN]);
-        VCC_f = First_Order_Filter_Calculate(&VCCFilter,V_values[ADCVCC]);
-
-        // VIn_f = 20.0f;
-        if(RxStatus != RxStatus_Debug)
-        {
-            // if(VIn_f > 19.0f)
-            // {
-            //     // RxStatus = RxStatus_Connecting;
-            //     RxStatus = RxStatus_Connected;
-            // }
-            // else if(VIn_f < 17.0f)
-            // {
-            //     RxStatus = RxStatus_Disconnected;
-            // }
         }
     }
 }
