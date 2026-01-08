@@ -3,11 +3,12 @@
 
 #include "adc.h"
 
-#define ADC_DataSize 2
 #define ADCVIN 0
 #define ADCVCC 1
-#define ADCRatio 3.3f/4096.0f
-#define ADCVoltageRatio 12.528f
+
+extern float VIn_f;
+extern float VCC_f;
+extern float Current_f;
 
 void Bsp_ADC_Init();
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);

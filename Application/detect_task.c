@@ -1,4 +1,4 @@
-#include "detect.h"
+#include "detect_task.h"
 
 static Detect_t Detect_List[DETECT_LIST_LENGTH + 1]={0};
 
@@ -9,6 +9,7 @@ void Detect_Init()
         // ms
         1000,
         1000,
+        2000,
     };
 
     for(uint8_t i = 0;i<DETECT_LIST_LENGTH;i++)

@@ -1,5 +1,5 @@
-#ifndef __DETECT_H
-#define __DETECT_H
+#ifndef __DETECT_TASK_H
+#define __DETECT_TASK_H
 
 #include "controller.h"
 #include <stdbool.h>
@@ -25,8 +25,9 @@ typedef struct
 
 enum errorlist
 {
-    ADC_WATCHDOG1_TOE,
-    ADC_WATCHDOG2_TOE,
+    ADC1_WATCHDOG1_TOE,
+    ADC1_WATCHDOG2_TOE,
+    CONNECTING_TO_CONNECTED_TOE,
     DETECT_LIST_LENGTH,
 };
 

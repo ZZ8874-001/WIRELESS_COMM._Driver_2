@@ -3,20 +3,21 @@
 #include "main.h"
 #include "gpio.h"
 
+#include "detect_task.h"
+#include "bsp_adc.h"
 #include "bsp_dwt.h"
 #include "filter32.h"
 
-static void Debug_Task();
-static void Connected_Task();
-static void LowPower();
-static void HighPower();
+static void Debug_Task(void);
+static void Connecting_Task(void);
+static void Connected_Task(void);
+static void LowPower(void);
+static void HighPower(void);
 static void SwitchBBEN(int On_Off);
 static void SwitchENA_ENB(int On_Off);
 static void SwitchHighOrLowPower(uint8_t On_Off);
 
-uint32_t Rx_DWT_Count;
-float rx_dt = 0.0f;
-float rx_t = 0.0f;
+float Power;
 
 // 10100110
 // 01011001
@@ -30,7 +31,7 @@ uint8_t num_0_or_1[2] = {
 
 enum RxStatus_t RxStatus = RxStatus_Unknow;
 
-void WirelessInit()
+void WirelessInit(void)
 {
     SwitchBBEN(Off);
     SwitchENA_ENB(Off);
@@ -39,38 +40,46 @@ void WirelessInit()
     DWT_Delay(0.1);
     SwitchBBEN(On);
     SwitchENA_ENB(On);
-
+    
     RxStatus = RxStatus_Connected;
 
 }
 
-void Transmit_Task()
+void Transmit_Task(void)
 {
-    rx_dt = DWT_GetDeltaT(&Rx_DWT_Count);
-    rx_t += rx_dt;
+    Power = VCC_f * Current_f;
     switch(RxStatus)
     {
     case RxStatus_Debug:
         Debug_Task();
         break;
+    case RxStatus_Connecting:
+        HAL_GPIO_TogglePin(IND11_GPIO_Port,IND11_Pin);
+        Connecting_Task();
+        break;
     case RxStatus_Connected:
+        IND11_GPIO_Port->BSRR = IND11_Pin;
         Connected_Task();
         break;
     case RxStatus_Disconnected:
         SwitchENA_ENB(Off);
         HighPower();
+        IND11_GPIO_Port->BRR = IND11_Pin;
+        if(is_TOE_Overtime(ADC1_WATCHDOG1_TOE) && is_TOE_Overtime(ADC1_WATCHDOG2_TOE))
+        {
+            RxStatus = RxStatus_Connecting;
+        }
         break;
     }
     
 }
 
-static void Debug_Task()
+static void Debug_Task(void)
 {
     static uint8_t debug_frame_count = 0;
     static uint8_t debug_byte_count = 0;
     volatile static uint8_t debug_mode = 0;
     uint8_t flag_debug = debug_frame_count%16;
-    
 
     switch(debug_mode)
     {
@@ -123,26 +132,68 @@ static void Debug_Task()
     }
 }
 
-static void Connected_Task()
+static void Connecting_Task(void)
+{
+    static uint8_t connecting_frame_count = 0;
+    static uint8_t connecting_byte_count = 0;
+
+    if(connecting_frame_count < 8)
+    {
+        SwitchENA_ENB(On);
+        SwitchHighOrLowPower(num_0_or_1[SOF>>(connecting_frame_count)&1]>>connecting_byte_count & 1);
+    }
+    else if(connecting_frame_count < 16)
+    {
+        SwitchENA_ENB(On);
+        SwitchHighOrLowPower(num_0_or_1[DOF>>(connecting_frame_count - 8)&1]>>connecting_byte_count & 1);
+    }
+    else if(connecting_frame_count < 200)
+    {
+        SwitchENA_ENB(Off);
+    }
+
+    connecting_byte_count++;
+    if(connecting_byte_count >= 5)
+    {
+        connecting_byte_count = 0;
+        if(connecting_frame_count++ >= 200)
+        {
+            connecting_frame_count = 0;
+        }
+    }
+
+    if(Power < 20 || 40 < Power || VCC_f < 3.3)
+    {
+        Detect_Hook(CONNECTING_TO_CONNECTED_TOE);
+    }
+    else if(is_TOE_Overtime(CONNECTING_TO_CONNECTED_TOE))
+    {
+        RxStatus = RxStatus_Connected;
+        connecting_byte_count = 0;
+        connecting_frame_count = 0;
+    }
+    
+}
+
+static void Connected_Task(void)
 {
     static uint8_t connected_frame_count = 0;
     static uint8_t connected_byte_count = 0;
 
+    SwitchENA_ENB(On);
     if(connected_frame_count < 8)
     {
-        SwitchENA_ENB(On);
         SwitchHighOrLowPower(num_0_or_1[SOF>>(connected_frame_count)&1]>>connected_byte_count & 1);
     }
     else if(connected_frame_count < 16)
     {
-        SwitchENA_ENB(On);    
+           
         SwitchHighOrLowPower(num_0_or_1[DOF>>(connected_frame_count - 8)&1]>>connected_byte_count & 1);
     }
     else if(connected_frame_count < 200)
     {
-        SwitchENA_ENB(Off);   
+        SwitchHighOrLowPower(0);  
     }
-    
 
     connected_byte_count++;
     if(connected_byte_count >= 5)
@@ -153,18 +204,27 @@ static void Connected_Task()
             connected_frame_count = 0;
         }
     }
+
+    if(Power < 20 || 40 < Power || VCC_f < 3.3)
+    {
+        Detect_Hook(CONNECTING_TO_CONNECTED_TOE);
+        RxStatus = RxStatus_Connecting;
+
+        connected_byte_count = 0;
+        connected_frame_count = 0;
+    }
 }
 
-void LowPower()
+void LowPower(void)
 {
-    HAL_GPIO_WritePin(PULSEA_GPIO_Port,PULSEA_Pin,GPIO_PIN_SET);
-    HAL_GPIO_WritePin(PULSEB_GPIO_Port,PULSEB_Pin,GPIO_PIN_SET);
+    PULSEA_GPIO_Port->BSRR = PULSEA_Pin;
+    PULSEB_GPIO_Port->BSRR = PULSEB_Pin;
 }
 
-void HighPower()
+void HighPower(void)
 {
-    HAL_GPIO_WritePin(PULSEA_GPIO_Port,PULSEA_Pin,GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(PULSEB_GPIO_Port,PULSEB_Pin,GPIO_PIN_RESET);
+    PULSEA_GPIO_Port->BRR = PULSEA_Pin;
+    PULSEB_GPIO_Port->BRR = PULSEB_Pin;
 }
 
 //BBEN开则电容充电，关则电容不充电
@@ -172,11 +232,11 @@ void SwitchBBEN(int On_Off)
 {
     if(On_Off)
     {
-        HAL_GPIO_WritePin(BBEN_GPIO_Port,BBEN_Pin,GPIO_PIN_SET);
+        CHARGE_EN_GPIO_Port->BSRR = CHARGE_EN_Pin;
     }
     else
     {
-        HAL_GPIO_WritePin(BBEN_GPIO_Port,BBEN_Pin,GPIO_PIN_RESET);
+        CHARGE_EN_GPIO_Port->BRR = CHARGE_EN_Pin;
     }
 
 }
@@ -185,13 +245,13 @@ void SwitchENA_ENB(int On_Off)
 {
     if(On_Off)
     {
-        HAL_GPIO_WritePin(ENA_GPIO_Port,ENA_Pin,GPIO_PIN_SET);
-        HAL_GPIO_WritePin(ENB_GPIO_Port,ENB_Pin,GPIO_PIN_SET);
+        ENA_GPIO_Port->BSRR = ENA_Pin;
+        ENB_GPIO_Port->BSRR = ENB_Pin;
     }
     else
     {
-        HAL_GPIO_WritePin(ENA_GPIO_Port,ENA_Pin,GPIO_PIN_RESET);
-        HAL_GPIO_WritePin(ENB_GPIO_Port,ENB_Pin,GPIO_PIN_RESET);
+        ENA_GPIO_Port->BRR = ENA_Pin;
+        ENB_GPIO_Port->BRR = ENB_Pin;
     }
 }
 

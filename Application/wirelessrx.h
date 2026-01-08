@@ -15,8 +15,8 @@ enum RxStatus_t
 
 extern enum RxStatus_t RxStatus;
 
-void WirelessInit();
+void WirelessInit(void);
 void IntLimiter(int num,int min,int max);
-void Transmit_Task();
+void Transmit_Task(void);
 
 #endif
