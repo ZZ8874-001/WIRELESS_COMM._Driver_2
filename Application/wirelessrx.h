@@ -14,6 +14,7 @@ enum RxStatus_t
 };
 
 extern enum RxStatus_t RxStatus;
+extern enum RxStatus_t last_RxStatus;
 
 void WirelessInit(void);
 void IntLimiter(int num,int min,int max);

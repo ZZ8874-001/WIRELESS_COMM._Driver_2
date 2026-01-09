@@ -30,6 +30,7 @@ uint8_t num_0_or_1[2] = {
                     };
 
 enum RxStatus_t RxStatus = RxStatus_Unknow;
+enum RxStatus_t last_RxStatus = RxStatus_Unknow;
 
 void WirelessInit(void)
 {
@@ -41,13 +42,14 @@ void WirelessInit(void)
     SwitchBBEN(On);
     SwitchENA_ENB(On);
     
+    last_RxStatus = RxStatus_Connected;
     RxStatus = RxStatus_Connected;
 
 }
 
 void Transmit_Task(void)
 {
-    Power = VCC_f * Current_f;
+    Power = VOUT_f * Current_f;
     switch(RxStatus)
     {
     case RxStatus_Debug:
@@ -162,12 +164,13 @@ static void Connecting_Task(void)
         }
     }
 
-    if(Power < 20 || 40 < Power || VCC_f < 3.3)
+    if(Power < 20 || 40 < Power || VOUT_f < 3.3)
     {
         Detect_Hook(CONNECTING_TO_CONNECTED_TOE);
     }
     else if(is_TOE_Overtime(CONNECTING_TO_CONNECTED_TOE))
     {
+        last_RxStatus = RxStatus;
         RxStatus = RxStatus_Connected;
         connecting_byte_count = 0;
         connecting_frame_count = 0;
@@ -205,9 +208,10 @@ static void Connected_Task(void)
         }
     }
 
-    if(Power < 20 || 40 < Power || VCC_f < 3.3)
+    if(Power < 20 || 40 < Power || VOUT_f < 3.3)
     {
         Detect_Hook(CONNECTING_TO_CONNECTED_TOE);
+        last_RxStatus = RxStatus;
         RxStatus = RxStatus_Connecting;
 
         connected_byte_count = 0;

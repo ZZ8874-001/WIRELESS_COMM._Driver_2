@@ -7,7 +7,7 @@
 #define ADCVCC 1
 
 extern float VIn_f;
-extern float VCC_f;
+extern float VOUT_f;
 extern float Current_f;
 
 void Bsp_ADC_Init();
