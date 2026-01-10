@@ -69,6 +69,7 @@ void Transmit_Task(void)
         IND11_GPIO_Port->BRR = IND11_Pin;
         if(is_TOE_Overtime(ADC1_WATCHDOG1_TOE) && is_TOE_Overtime(ADC1_WATCHDOG2_TOE))
         {
+            last_RxStatus = RxStatus;
             RxStatus = RxStatus_Connecting;
         }
         break;
@@ -139,6 +140,14 @@ static void Connecting_Task(void)
     static uint8_t connecting_frame_count = 0;
     static uint8_t connecting_byte_count = 0;
 
+    if(last_RxStatus != RxStatus_Connecting)
+    {
+        connecting_byte_count = 0;
+        connecting_frame_count = 0;
+        last_RxStatus = RxStatus;
+        RxStatus = RxStatus_Connecting;
+    }
+
     if(connecting_frame_count < 8)
     {
         SwitchENA_ENB(On);
@@ -164,7 +173,7 @@ static void Connecting_Task(void)
         }
     }
 
-    if(Power < 20 || 40 < Power || VOUT_f < 3.3)
+    if(VIN_f < 8.0)
     {
         Detect_Hook(CONNECTING_TO_CONNECTED_TOE);
     }
@@ -208,7 +217,7 @@ static void Connected_Task(void)
         }
     }
 
-    if(Power < 20 || 40 < Power || VOUT_f < 3.3)
+    if(VIN_f < 8.0)
     {
         Detect_Hook(CONNECTING_TO_CONNECTED_TOE);
         last_RxStatus = RxStatus;

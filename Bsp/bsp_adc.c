@@ -6,7 +6,7 @@
 
 #define ADC_SAMPLING_FREQUENCY (12e6/74.0f)
 
-#define ADC_RATIO 2.9832f/4096.0f
+#define ADC_RATIO (2.9832f/4096.0f)
 #define ADC_RATIO_DIFF (ADC_RATIO*2)
 #define ADC_VOLTAGE_RATIO 22.227f
 #define ADC_CURRENT_RATIO 5.100f
@@ -38,7 +38,7 @@ First_Order_Filter_t CurrentFilter;
 uint16_t ADC1_values[2];
 uint16_t ADC2_values[1];
 
-float VIn_f;
+float VIN_f;
 float VOUT_f;
 float Current_f;
 
@@ -72,7 +72,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
         V_values[ADCVIN] = ADC1_values[ADCVIN] * ADC_RATIO * ADC_VOLTAGE_RATIO + VOLTAGE_OUT_OFFSET;
         V_values[ADCVCC] = ADC1_values[ADCVCC] * ADC_RATIO * ADC_VOLTAGE_RATIO + VOLTAGE_OUT_OFFSET;
 
-        VIn_f = First_Order_Filter_Calculate(&VInFilter,V_values[ADCVIN]);
+        VIN_f = First_Order_Filter_Calculate(&VInFilter,V_values[ADCVIN]);
         VOUT_f = First_Order_Filter_Calculate(&VCCFilter,V_values[ADCVCC]);
 
     }

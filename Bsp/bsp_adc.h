@@ -6,7 +6,7 @@
 #define ADCVIN 0
 #define ADCVCC 1
 
-extern float VIn_f;
+extern float VIN_f;
 extern float VOUT_f;
 extern float Current_f;
 
