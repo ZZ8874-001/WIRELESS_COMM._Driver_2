@@ -8,6 +8,8 @@
 #include "bsp_dwt.h"
 #include "filter32.h"
 
+#define VIN_CONNECTING_TO_CONNECTED 8.0f
+
 static void Debug_Task(void);
 static void Connecting_Task(void);
 static void Connected_Task(void);
@@ -173,7 +175,7 @@ static void Connecting_Task(void)
         }
     }
 
-    if(VIN_f < 8.0)
+    if(VIN_f < VIN_CONNECTING_TO_CONNECTED)
     {
         Detect_Hook(CONNECTING_TO_CONNECTED_TOE);
     }
@@ -204,7 +206,7 @@ static void Connected_Task(void)
     }
     else if(connected_frame_count < 200)
     {
-        SwitchHighOrLowPower(0);  
+        SwitchHighOrLowPower(1);  
     }
 
     connected_byte_count++;
@@ -217,7 +219,7 @@ static void Connected_Task(void)
         }
     }
 
-    if(VIN_f < 8.0)
+    if(VIN_f < VIN_CONNECTING_TO_CONNECTED)
     {
         Detect_Hook(CONNECTING_TO_CONNECTED_TOE);
         last_RxStatus = RxStatus;
