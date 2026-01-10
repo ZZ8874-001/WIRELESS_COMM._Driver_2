@@ -53,12 +53,13 @@ void Bsp_ADC_Init()
     while(HAL_ADC_Start_DMA(&hadc1,ADC1_values,sizeof(ADC1_values)/sizeof(ADC1_values[0])) != HAL_OK);
     while(HAL_ADC_Start_DMA(&hadc2,ADC2_values,sizeof(ADC2_values)/sizeof(ADC2_values[0])) != HAL_OK);
     
-    ADC1->IER |= ADC_IER_AWD1 | ADC_IER_AWD2;
-    ADC2->IER |= ADC_IER_AWD1;
     Change_ADC_AWD_Threshold(&ADC1->TR1,VIN_WATCHDOG_MIN,VIN_WATCHDOG_MAX);   //  VIN 14-48
     Change_ADC_AWD_Threshold(&ADC1->TR2,VOUT_WATCHDOG_MIN/16,VOUT_WATCHDOG_MAX/16);   //  VOUT  0-28
     Change_ADC_AWD_Threshold(&ADC2->TR1,0,4095);    //  CURRENT
     ADC1->AWD2CR = 1 << 2;
+    
+    ADC1->IER |= ADC_IER_AWD1 | ADC_IER_AWD2;
+    ADC2->IER |= ADC_IER_AWD1;
 
     DMA1_Channel1->CCR &= 0xFFFB;
     DMA1_Channel2->CCR &= 0xFFFB; 
