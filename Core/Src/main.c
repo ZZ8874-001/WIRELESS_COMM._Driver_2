@@ -98,10 +98,10 @@ int main(void)
   MX_ADC2_Init();
   /* USER CODE BEGIN 2 */
   DWT_Init(72);
-  Bsp_ADC_Init();
   Detect_Init();
-  WirelessInit();
   HAL_TIM_Base_Start_IT(&htim3);
+  Bsp_ADC_Init();
+  WirelessInit();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -154,7 +154,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC12;
-  PeriphClkInit.Adc12ClockSelection = RCC_ADC12PLLCLK_DIV6;
+  PeriphClkInit.Adc12ClockSelection = RCC_ADC12PLLCLK_DIV64;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
@@ -162,34 +162,16 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
-
-/**
-  * @brief  Period elapsed callback in non blocking mode
-  * @note   This function is called  when TIM2 interrupt took place, inside
-  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
-  * a global variable "uwTick" used as application time base.
-  * @param  htim : TIM handle
-  * @retval None
-  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  /* USER CODE BEGIN Callback 0 */
   if(htim->Instance == TIM3)
   {
     // 10kHz
     Detect_Task();
     Transmit_Task();
   }
-  /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM2) {
-    HAL_IncTick();
-  }
-  /* USER CODE BEGIN Callback 1 */
-
-  /* USER CODE END Callback 1 */
 }
+/* USER CODE END 4 */
 
 /**
   * @brief  This function is executed in case of error occurrence.

@@ -4,7 +4,7 @@
 #include "detect_task.h"
 #include "filter32.h"
 
-#define ADC_SAMPLING_FREQUENCY (12e6/74.0f)
+#define ADC_SAMPLING_FREQUENCY (1.125e6/74.0f)
 
 #define ADC_RATIO (2.9832f/4096.0f)
 #define ADC_RATIO_DIFF (ADC_RATIO*2)
@@ -58,7 +58,7 @@ void Bsp_ADC_Init()
     Change_ADC_AWD_Threshold(&ADC2->TR1,0,4095);    //  CURRENT
     ADC1->AWD2CR = 1 << 2;
     
-    ADC1->IER |= ADC_IER_AWD1 | ADC_IER_AWD2;
+    ADC1->IER |= ADC_IER_AWD1 | ADC_IER_AWD2 | ADC_IER_EOS;
     ADC2->IER |= ADC_IER_AWD1;
 
     DMA1_Channel1->CCR &= 0xFFFB;
@@ -93,6 +93,10 @@ void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef* hadc)
 
         last_RxStatus = RxStatus;
         RxStatus = RxStatus_Disconnected;
+    }
+    else if(hadc->Instance == ADC2)
+    {
+        Detect_Hook(ADC2_WATCHDOG1_TOE);
     }
 }
 
