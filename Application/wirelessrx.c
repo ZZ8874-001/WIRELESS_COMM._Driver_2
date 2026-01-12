@@ -199,19 +199,21 @@ static void Connected_Task(void)
     static uint8_t connected_frame_count = 0;
     static uint8_t connected_byte_count = 0;
 
-    SwitchENA_ENB(On);
+    
     if(connected_frame_count < 8)
     {
+        SwitchENA_ENB(On);
         SwitchHighOrLowPower(num_0_or_1[SOF>>(connected_frame_count)&1]>>connected_byte_count & 1);
     }
     else if(connected_frame_count < 16)
     {
-           
+        SwitchENA_ENB(On);
         SwitchHighOrLowPower(num_0_or_1[DOF>>(connected_frame_count - 8)&1]>>connected_byte_count & 1);
     }
     else if(connected_frame_count < 200)
     {
-        SwitchHighOrLowPower(1);  
+        SwitchENA_ENB(Off);
+        
     }
 
     connected_byte_count++;
