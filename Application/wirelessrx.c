@@ -69,6 +69,7 @@ void Transmit_Task(void)
         SwitchENA_ENB(Off);
         HighPower();
         IND11_GPIO_Port->BRR = IND11_Pin;
+        Detect_Hook(CONNECTING_TO_CONNECTED_TOE);
         if(is_TOE_Overtime(ADC1_WATCHDOG1_TOE) && is_TOE_Overtime(ADC1_WATCHDOG2_TOE))
         {
             last_RxStatus = RxStatus;
