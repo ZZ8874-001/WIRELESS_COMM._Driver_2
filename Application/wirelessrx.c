@@ -24,7 +24,7 @@ float Power;
 // 10100110
 // 01011001
 // 左对齐
-uint8_t SOF = 0b01100101;//0是高功率，1是低功率
+uint8_t SOF = ~(0b01100101);//0是高功率，1是低功率
 uint8_t DOF = 0b00000001;
 uint8_t num_0_or_1[2] = {
                         0b01111,
@@ -44,8 +44,8 @@ void WirelessInit(void)
     SwitchBBEN(On);
     SwitchENA_ENB(On);
     
-    last_RxStatus = RxStatus_Connected;
-    RxStatus = RxStatus_Connected;
+    last_RxStatus = RxStatus_Disconnected;
+    RxStatus = RxStatus_Disconnected;
 
 }
 
@@ -74,6 +74,21 @@ void Transmit_Task(void)
         {
             last_RxStatus = RxStatus;
             RxStatus = RxStatus_Connecting;
+        }
+        break;
+    case RxStatus_CurrentError:
+        SwitchENA_ENB(On);
+        PULSEA_GPIO_Port->BSRR = PULSEA_Pin;
+        PULSEB_GPIO_Port->BSRR = PULSEB_Pin;
+        static uint16_t current_error_count = 0;
+        current_error_count++;
+        if(current_error_count > 32768)
+        {
+            IND11_GPIO_Port->BSRR = IND11_Pin;
+        }
+        else
+        {
+            IND11_GPIO_Port->BRR = IND11_Pin;
         }
         break;
     default:
@@ -199,22 +214,32 @@ static void Connected_Task(void)
     static uint8_t connected_frame_count = 0;
     static uint8_t connected_byte_count = 0;
 
-    
-    if(connected_frame_count < 8)
+    static uint8_t aaa_success = 0;
+
+    if(aaa_success < 4)
     {
-        SwitchENA_ENB(On);
-        SwitchHighOrLowPower(num_0_or_1[SOF>>(connected_frame_count)&1]>>connected_byte_count & 1);
+        if(connected_frame_count < 8)
+        {
+            SwitchENA_ENB(On);
+            SwitchHighOrLowPower(num_0_or_1[SOF>>(connected_frame_count)&1]>>connected_byte_count & 1);
+        }
+        else if(connected_frame_count < 16)
+        {
+            SwitchENA_ENB(On);
+            SwitchHighOrLowPower(num_0_or_1[DOF>>(connected_frame_count - 8)&1]>>connected_byte_count & 1);
+        }
+        else if(connected_frame_count < 200)
+        {
+            SwitchENA_ENB(Off);
+            
+        }
+
     }
-    else if(connected_frame_count < 16)
-    {
-        SwitchENA_ENB(On);
-        SwitchHighOrLowPower(num_0_or_1[DOF>>(connected_frame_count - 8)&1]>>connected_byte_count & 1);
-    }
-    else if(connected_frame_count < 200)
+    else
     {
         SwitchENA_ENB(Off);
-        
     }
+    
 
     connected_byte_count++;
     if(connected_byte_count >= 5)
@@ -223,6 +248,7 @@ static void Connected_Task(void)
         if(connected_frame_count++ >= 200)
         {
             connected_frame_count = 0;
+            aaa_success++;
         }
     }
 

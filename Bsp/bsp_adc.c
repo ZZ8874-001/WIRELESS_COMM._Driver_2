@@ -79,9 +79,16 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     }
     else if(hadc->Instance == ADC2)
     {
-        float Current =(ADC2_values[0] - 2048) * ADC_RATIO_DIFF * ADC_CURRENT_RATIO + CURRENT_OUT_OFFSET;
+        static float Current;
+        Current =(ADC2_values[0] - 2048) * ADC_RATIO_DIFF * ADC_CURRENT_RATIO + CURRENT_OUT_OFFSET;
 
         Current_f = First_Order_Filter_Calculate(&CurrentFilter,Current);
+
+        if(Current < 0.8 * Current_f && RxStatus == RxStatus_Connected)
+        {
+            last_RxStatus = RxStatus;
+            RxStatus = RxStatus_CurrentError;
+        }
     }
 }
 
@@ -91,8 +98,12 @@ void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef* hadc)
     {
         Detect_Hook(ADC1_WATCHDOG1_TOE);
 
-        last_RxStatus = RxStatus;
-        RxStatus = RxStatus_Disconnected;
+        if(RxStatus != RxStatus_CurrentError)
+        {
+            last_RxStatus = RxStatus;
+            RxStatus = RxStatus_Disconnected;
+        }
+        
     }
     else if(hadc->Instance == ADC2)
     {
@@ -106,8 +117,11 @@ void HAL_ADCEx_LevelOutOfWindow2Callback(ADC_HandleTypeDef* hadc)
     {        
         Detect_Hook(ADC1_WATCHDOG2_TOE);
 
-        last_RxStatus = RxStatus;
-        RxStatus = RxStatus_Disconnected;
+        if(RxStatus != RxStatus_CurrentError)
+        {
+            last_RxStatus = RxStatus;
+            RxStatus = RxStatus_Disconnected;
+        }
     }
 }
 

@@ -7,10 +7,11 @@
 enum RxStatus_t
 {
     RxStatus_Unknow = 0,
-    RxStatus_Connecting = 1,
-    RxStatus_Disconnected = 2,
-    RxStatus_Connected = 3,
-    RxStatus_Debug = 4,
+    RxStatus_Connecting ,
+    RxStatus_Disconnected ,
+    RxStatus_Connected ,
+    RxStatus_CurrentError ,
+    RxStatus_Debug ,
 };
 
 extern enum RxStatus_t RxStatus;
