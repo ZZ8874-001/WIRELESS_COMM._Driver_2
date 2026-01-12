@@ -76,6 +76,10 @@ void Transmit_Task(void)
             RxStatus = RxStatus_Connecting;
         }
         break;
+    default:
+        last_RxStatus = RxStatus;
+        RxStatus = RxStatus_Disconnected;
+        break;
     }
     
 }
