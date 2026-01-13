@@ -19,7 +19,7 @@
 #define VIN_WATCHDOG_MAX (VIN_MAX/ADC_RATIO/ADC_VOLTAGE_RATIO)
 
 #define VOUT_MIN 0.0f
-#define VOUT_MAX 28.0f
+#define VOUT_MAX 32.0f
 #define VOUT_WATCHDOG_MIN (VOUT_MIN/ADC_RATIO/ADC_VOLTAGE_RATIO)
 #define VOUT_WATCHDOG_MAX (VOUT_MAX/ADC_RATIO/ADC_VOLTAGE_RATIO)
 
@@ -34,6 +34,8 @@ First_Order_Filter_t VInFilter;
 First_Order_Filter_t VCCFilter;
 
 First_Order_Filter_t CurrentFilter;
+First_Order_Filter_t Current_f_Filter;
+
 
 uint16_t ADC1_values[2];
 uint16_t ADC2_values[1];
@@ -41,12 +43,14 @@ uint16_t ADC2_values[1];
 float VIN_f;
 float VOUT_f;
 float Current_f;
+float Current_f_f;
 
 void Bsp_ADC_Init()
 {
-    First_Order_Filter_Init(&VInFilter,1.0f/ADC_SAMPLING_FREQUENCY,30.0f);
-    First_Order_Filter_Init(&VCCFilter,1.0f/ADC_SAMPLING_FREQUENCY,30.0f);
-    First_Order_Filter_Init(&CurrentFilter,1.0f/ADC_SAMPLING_FREQUENCY,30.0f);
+    First_Order_Filter_Init(&VInFilter,1.0f/ADC_SAMPLING_FREQUENCY,300.0f);
+    First_Order_Filter_Init(&VCCFilter,1.0f/ADC_SAMPLING_FREQUENCY,300.0f);
+    First_Order_Filter_Init(&CurrentFilter,1.0f/ADC_SAMPLING_FREQUENCY,10.0f);
+    First_Order_Filter_Init(&Current_f_Filter,1.0f/ADC_SAMPLING_FREQUENCY,1.0f);
 
     while(HAL_ADCEx_Calibration_Start(&hadc1,ADC_SINGLE_ENDED) != HAL_OK);
     while(HAL_ADCEx_Calibration_Start(&hadc2,ADC_DIFFERENTIAL_ENDED) != HAL_OK);
@@ -83,8 +87,9 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
         Current =(ADC2_values[0] - 2048) * ADC_RATIO_DIFF * ADC_CURRENT_RATIO + CURRENT_OUT_OFFSET;
 
         Current_f = First_Order_Filter_Calculate(&CurrentFilter,Current);
+        Current_f_f = First_Order_Filter_Calculate(&Current_f_Filter,Current);
 
-        if(Current < 0.8 * Current_f && RxStatus == RxStatus_Connected)
+        if(Current_f < 0.8 * Current_f_f && RxStatus == RxStatus_Connected && Current_f > 0.6f)
         {
             last_RxStatus = RxStatus;
             RxStatus = RxStatus_CurrentError;

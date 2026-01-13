@@ -21,6 +21,7 @@
 #include "adc.h"
 #include "dma.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -29,6 +30,7 @@
 #include "detect_task.h"
 #include "bsp_adc.h"
 #include "bsp_dwt.h"
+#include "bsp_usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -96,12 +98,14 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM3_Init();
   MX_ADC2_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   DWT_Init(72);
   Detect_Init();
-  HAL_TIM_Base_Start_IT(&htim3);
+  Bsp_USART_Init();
   Bsp_ADC_Init();
   WirelessInit();
+  HAL_TIM_Base_Start_IT(&htim3);
   /* USER CODE END 2 */
 
   /* Infinite loop */

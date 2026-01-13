@@ -58,14 +58,17 @@ void Transmit_Task(void)
         Debug_Task();
         break;
     case RxStatus_Connecting:
+        // GPIOB->BRR = GPIO_PIN_11;
         HAL_GPIO_TogglePin(IND11_GPIO_Port,IND11_Pin);
         Connecting_Task();
         break;
     case RxStatus_Connected:
+        // GPIOB->BSRR = GPIO_PIN_11;
         IND11_GPIO_Port->BSRR = IND11_Pin;
         Connected_Task();
         break;
     case RxStatus_Disconnected:
+        // GPIOB->BRR = GPIO_PIN_11;
         SwitchENA_ENB(Off);
         HighPower();
         IND11_GPIO_Port->BRR = IND11_Pin;
@@ -77,10 +80,13 @@ void Transmit_Task(void)
         }
         break;
     case RxStatus_CurrentError:
+        // GPIOB->BSRR = GPIO_PIN_11;
         SwitchENA_ENB(On);
         PULSEA_GPIO_Port->BSRR = PULSEA_Pin;
         PULSEB_GPIO_Port->BSRR = PULSEB_Pin;
         static uint16_t current_error_count = 0;
+        static bool currenterror_flag;
+        currenterror_flag = 1;
         current_error_count++;
         if(current_error_count > 32768)
         {
@@ -92,8 +98,16 @@ void Transmit_Task(void)
         }
         break;
     default:
-        last_RxStatus = RxStatus;
-        RxStatus = RxStatus_Disconnected;
+        if(!currenterror_flag)
+        {
+            last_RxStatus = RxStatus;
+            RxStatus = RxStatus_Disconnected;
+        }
+        else
+        {
+            last_RxStatus = RxStatus;
+            RxStatus = RxStatus_CurrentError;
+        }
         break;
     }
     
@@ -237,6 +251,7 @@ static void Connected_Task(void)
     }
     else
     {
+        aaa_success = 4;
         SwitchENA_ENB(Off);
     }
     
