@@ -1,7 +1,8 @@
 #include "bsp_usart.h"
 
+// 0xBB为关断使能，0xAA为使能
 USART_Tx_Buf_t Tx_Buf = {
-    .Head = 0xAA,
+    .Head = 0xBB,
     .Data = 0x00,
 };
 

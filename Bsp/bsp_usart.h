@@ -8,6 +8,8 @@ typedef struct{
     uint8_t Data;
 }USART_Tx_Buf_t;
 
+extern USART_Tx_Buf_t Tx_Buf;
+
 void Bsp_USART_Init(void);
 void USER_USART_InterruptCallback(UART_HandleTypeDef *huart);
 

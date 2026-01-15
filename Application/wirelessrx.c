@@ -6,6 +6,7 @@
 #include "detect_task.h"
 #include "bsp_adc.h"
 #include "bsp_dwt.h"
+#include "bsp_usart.h"
 #include "filter32.h"
 
 #define VIN_CONNECTING_TO_CONNECTED 8.0f
@@ -59,16 +60,19 @@ void Transmit_Task(void)
         break;
     case RxStatus_Connecting:
         // GPIOB->BRR = GPIO_PIN_11;
+        Tx_Buf.Head = 0xBB;
         HAL_GPIO_TogglePin(IND11_GPIO_Port,IND11_Pin);
         Connecting_Task();
         break;
     case RxStatus_Connected:
         // GPIOB->BSRR = GPIO_PIN_11;
+        Tx_Buf.Head = 0xAA;
         IND11_GPIO_Port->BSRR = IND11_Pin;
         Connected_Task();
         break;
     case RxStatus_Disconnected:
         // GPIOB->BRR = GPIO_PIN_11;
+        Tx_Buf.Head = 0xBB;
         SwitchENA_ENB(Off);
         HighPower();
         IND11_GPIO_Port->BRR = IND11_Pin;
@@ -81,6 +85,7 @@ void Transmit_Task(void)
         break;
     case RxStatus_CurrentError:
         // GPIOB->BSRR = GPIO_PIN_11;
+        Tx_Buf.Head = 0xAA;
         SwitchENA_ENB(On);
         PULSEA_GPIO_Port->BSRR = PULSEA_Pin;
         PULSEB_GPIO_Port->BSRR = PULSEB_Pin;
