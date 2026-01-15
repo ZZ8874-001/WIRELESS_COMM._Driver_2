@@ -99,6 +99,7 @@ int main(void)
   MX_TIM3_Init();
   MX_ADC2_Init();
   MX_USART3_UART_Init();
+  MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
   DWT_Init(72);
   Detect_Init();
@@ -106,6 +107,7 @@ int main(void)
   Bsp_ADC_Init();
   WirelessInit();
   HAL_TIM_Base_Start_IT(&htim3);
+  HAL_TIM_Base_Start_IT(&htim17);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -173,6 +175,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     // 10kHz
     Detect_Task();
     Transmit_Task();
+  }
+  else if(htim->Instance == TIM17)
+  {
+    // 1000Hz
+    DMA1_Channel2->CCR |= DMA_CCR_EN;
+    USART3->CR1 |= USART_CR1_TE;
   }
 }
 /* USER CODE END 4 */

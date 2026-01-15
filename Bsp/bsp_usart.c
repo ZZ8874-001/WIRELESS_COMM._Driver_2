@@ -33,10 +33,14 @@ void USER_USART_InterruptCallback(UART_HandleTypeDef *huart)
         if(USART3->ISR & USART_ISR_TC)
         {
             DMA1_Channel2->CCR &= ~DMA_CCR_EN;
+            USART3->CR1 &= ~USART_CR1_TE;
+
             DMA1_Channel2->CNDTR = sizeof(USART_Tx_Buf_t);
 
             USART3->ICR |= USART_ICR_TCCF;
-            DMA1_Channel2->CCR |= DMA_CCR_EN;
+            
+            // DMA1_Channel2->CCR |= DMA_CCR_EN;
+            // USART3->CR1 |= USART_CR1_TE;
         }
     }
 }
