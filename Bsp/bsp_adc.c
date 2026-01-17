@@ -14,7 +14,7 @@
 #define VOLTAGE_OUT_OFFSET -0.0129f
 
 #define VIN_MIN 14.0f
-#define VIN_MAX 48.0f
+#define VIN_MAX 100.0f
 #define VIN_WATCHDOG_MIN (VIN_MIN/ADC_RATIO/ADC_VOLTAGE_RATIO)
 #define VIN_WATCHDOG_MAX (VIN_MAX/ADC_RATIO/ADC_VOLTAGE_RATIO)
 
@@ -57,7 +57,7 @@ void Bsp_ADC_Init()
     while(HAL_ADC_Start_DMA(&hadc1,ADC1_values,sizeof(ADC1_values)/sizeof(ADC1_values[0])) != HAL_OK);
     while(HAL_ADC_Start_DMA(&hadc2,ADC2_values,sizeof(ADC2_values)/sizeof(ADC2_values[0])) != HAL_OK);
     
-    Change_ADC_AWD_Threshold(&ADC1->TR1,VIN_WATCHDOG_MIN,VIN_WATCHDOG_MAX);   //  VIN 14-48
+    Change_ADC_AWD_Threshold(&ADC1->TR1,VIN_WATCHDOG_MIN,(VIN_WATCHDOG_MAX > 4095 ? 4095 : VIN_WATCHDOG_MAX));   //  VIN 14-48
     Change_ADC_AWD_Threshold(&ADC1->TR2,VOUT_WATCHDOG_MIN/16,VOUT_WATCHDOG_MAX/16);   //  VOUT  0-28
     Change_ADC_AWD_Threshold(&ADC2->TR1,0,4095);    //  CURRENT
     ADC1->AWD2CR = 1 << 2;
