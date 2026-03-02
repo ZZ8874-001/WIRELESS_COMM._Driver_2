@@ -101,18 +101,29 @@ void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef* hadc)
 {
     if(hadc->Instance == ADC1)
     {
+        // VIN
         Detect_Hook(ADC1_WATCHDOG1_TOE);
 
-        if(RxStatus != RxStatus_CurrentError)
+        if(ADC1_values[ADCVIN] < ADC1->TR1 & 0xfff)
         {
-            last_RxStatus = RxStatus;
-            // RxStatus = RxStatus_Disconnected;
+            RxStatus = RxStatus_Disconnected;
+        }
+        else if(ADC1_values[ADCVIN] > ((ADC1->TR1 >> 16) & 0xfff))
+        {
             RxStatus = RxStatus_CurrentError;
         }
+
+        // if(RxStatus != RxStatus_CurrentError)
+        // {
+        //     last_RxStatus = RxStatus;
+        //     // RxStatus = RxStatus_Disconnected;
+        //     RxStatus = RxStatus_CurrentError;
+        // }
         
     }
     else if(hadc->Instance == ADC2)
     {
+        // Current
         Detect_Hook(ADC2_WATCHDOG1_TOE);
     }
 }
@@ -121,6 +132,7 @@ void HAL_ADCEx_LevelOutOfWindow2Callback(ADC_HandleTypeDef* hadc)
 {
     if(hadc->Instance == ADC1)
     {        
+        // VOUT
         Detect_Hook(ADC1_WATCHDOG2_TOE);
 
         if(RxStatus != RxStatus_CurrentError)
