@@ -106,7 +106,8 @@ void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef* hadc)
         if(RxStatus != RxStatus_CurrentError)
         {
             last_RxStatus = RxStatus;
-            RxStatus = RxStatus_Disconnected;
+            // RxStatus = RxStatus_Disconnected;
+            RxStatus = RxStatus_CurrentError;
         }
         
     }
@@ -125,7 +126,8 @@ void HAL_ADCEx_LevelOutOfWindow2Callback(ADC_HandleTypeDef* hadc)
         if(RxStatus != RxStatus_CurrentError)
         {
             last_RxStatus = RxStatus;
-            RxStatus = RxStatus_Disconnected;
+            // RxStatus = RxStatus_Disconnected;
+            RxStatus = RxStatus_CurrentError;
         }
     }
 }
