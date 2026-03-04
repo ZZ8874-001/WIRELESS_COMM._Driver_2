@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "can.h"
 #include "dma.h"
 #include "tim.h"
 #include "usart.h"
@@ -100,6 +101,7 @@ int main(void)
   MX_ADC2_Init();
   MX_USART3_UART_Init();
   MX_TIM17_Init();
+  MX_CAN_Init();
   /* USER CODE BEGIN 2 */
   DWT_Init(72);
   Detect_Init();
