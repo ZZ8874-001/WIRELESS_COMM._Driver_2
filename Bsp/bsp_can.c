@@ -3,6 +3,10 @@
 #include "main.h"
 #include "can.h"
 
+#include <string.h>
+
+uint8_t rx_data_test[8];
+
 void Bsp_CAN_Init()
 {
     CAN_FilterTypeDef can_filter;
@@ -15,12 +19,18 @@ void Bsp_CAN_Init()
     can_filter.FilterMode = CAN_FILTERMODE_IDMASK;
     can_filter.FilterScale = CAN_FILTERSCALE_32BIT;
     can_filter.FilterActivation = ENABLE;
+    can_filter.SlaveStartFilterBank = 14;
 
-    while(HAL_CAN_ConfigFilter(&hcan, &can_filter) != HAL_OK);
+    while(HAL_CAN_ConfigFilter(&hcan, &can_filter) != HAL_OK)
+    {
+    }
+    while(HAL_CAN_Start(&hcan) != HAL_OK)
+    {
+    }
+    while(HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK)
+    {
+    }
 
-    while(HAL_CAN_Start(&hcan) != HAL_OK);
-
-    while(HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK);
 }
 
 /**
@@ -40,6 +50,9 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     {
         switch(rx_header.StdId)
         {
+        case 0x200:
+            memcpy(rx_data_test,rx_data,8);
+            break;
         case 0x201:
             break;
             

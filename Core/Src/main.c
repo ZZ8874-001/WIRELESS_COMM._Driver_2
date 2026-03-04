@@ -105,6 +105,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   DWT_Init(72);
   Detect_Init();
+  Bsp_CAN_Init();
   Bsp_USART_Init();
   Bsp_ADC_Init();
   WirelessInit();
