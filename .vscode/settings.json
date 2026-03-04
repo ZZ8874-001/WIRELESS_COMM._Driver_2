@@ -15,5 +15,7 @@
         "cstdlib": "c",
         "cstdint": "c",
         "typeinfo": "c"
-    }
+    },
+    "trae.tab.enableRename": false,
+    "trae.tab.enableAutoImport": false
 }

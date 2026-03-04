@@ -14,7 +14,7 @@
 #define VOLTAGE_OUT_OFFSET -0.0129f
 
 #define VIN_MIN 14.0f
-#define VIN_MAX 100.0f
+#define VIN_MAX 32.0f
 #define VIN_WATCHDOG_MIN (VIN_MIN/ADC_RATIO/ADC_VOLTAGE_RATIO)
 #define VIN_WATCHDOG_MAX (VIN_MAX/ADC_RATIO/ADC_VOLTAGE_RATIO)
 
@@ -104,7 +104,7 @@ void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef* hadc)
         // VIN
         Detect_Hook(ADC1_WATCHDOG1_TOE);
 
-        if(ADC1_values[ADCVIN] < ADC1->TR1 & 0xfff)
+        if(ADC1_values[ADCVIN] < (ADC1->TR1 & 0xfff) && RxStatus != RxStatus_CurrentError)
         {
             RxStatus = RxStatus_Disconnected;
         }
