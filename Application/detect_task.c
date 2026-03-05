@@ -10,7 +10,7 @@ void Detect_Init()
         1000,
         1000,
         1000,
-        2000,
+        200,
     };
 
     for(uint8_t i = 0;i<DETECT_LIST_LENGTH;i++)
