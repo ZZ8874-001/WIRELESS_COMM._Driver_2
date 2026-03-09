@@ -87,6 +87,10 @@ void WirelessInit(void)
 void Transmit_Task(void)
 {
     Power = VOUT_f * Current_f;
+
+    HAL_ADC_Stop_DMA(&hadc1);
+    HAL_ADC_Stop_DMA(&hadc2);
+
     switch(RxStatus)
     {
     case RxStatus_Debug:
@@ -150,6 +154,8 @@ void Transmit_Task(void)
         break;
     }
     
+    HAL_ADC_Start_DMA(&hadc1,ADC1_values,sizeof(ADC1_values)/sizeof(ADC1_values[0]));
+    HAL_ADC_Start_DMA(&hadc2,ADC2_values,sizeof(ADC2_values)/sizeof(ADC2_values[0]));
 }
 
 static void Debug_Task(void)
