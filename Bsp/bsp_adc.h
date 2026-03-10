@@ -10,6 +10,9 @@ extern float VIN_f;
 extern float VOUT_f;
 extern float Current_f;
 
+extern uint16_t ADC1_values[2];
+extern uint16_t ADC2_values[1];
+
 void Bsp_ADC_Init();
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
 void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef* hadc);

@@ -36,7 +36,6 @@ First_Order_Filter_t VCCFilter;
 First_Order_Filter_t CurrentFilter;
 First_Order_Filter_t Current_f_Filter;
 
-
 uint16_t ADC1_values[2];
 uint16_t ADC2_values[1];
 
