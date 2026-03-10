@@ -1,24 +1,25 @@
 
 
-GraphedExpression="RxStatus", DisplayFormat=DISPLAY_FORMAT_DEC, Color=#a00909
+GraphedExpression="RxStatus", DisplayFormat=DISPLAY_FORMAT_DEC, Color=#a00909, Show=0
 GraphedExpression="VIN_f", Color=#09a01b
 GraphedExpression="VOUT_f", Color=#a0143e, Show=0
 GraphedExpression="ADC1_values[0]", DisplayFormat=DISPLAY_FORMAT_DEC, Color=#a0042e, Show=0
 GraphedExpression="ADC1_values[1]", Color=#0964a0, Show=0
-OpenDocument="wirelessrx.c", FilePath="//192.168.191.221/Shuchen's_Documents/WIRELESS_COMM._Driver_2/Application/wirelessrx.c", Line=251
+GraphedExpression="Current_f", Color=#ab7b05
 OpenDocument="startup_stm32f334x8.s", FilePath="C:/Users/Shuchen Tao/Documents/WIRELESS_COMM._Driver_2/startup_stm32f334x8.s", Line=0
 OpenDocument="main.c", FilePath="C:/Users/Shuchen Tao/Documents/WIRELESS_COMM._Driver_2/Core/Src/main.c", Line=0
+OpenDocument="wirelessrx.c", FilePath="//192.168.191.221/Shuchen's_Documents/WIRELESS_COMM._Driver_2/Application/wirelessrx.c", Line=251
 OpenToolbar="Debug", Floating=0, x=0, y=0
 OpenWindow="Source Files", DockArea=LEFT, x=0, y=1, w=768, h=615, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Disassembly", DockArea=RIGHT, x=0, y=0, w=1119, h=585, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Disassembly", DockArea=RIGHT, x=0, y=0, w=1119, h=588, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
 OpenWindow="Watched Data 1", DockArea=LEFT, x=0, y=0, w=768, h=631, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
 OpenWindow="Data Sampling", DockArea=BOTTOM, x=1, y=0, w=1580, h=388, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, VisibleTab=0, UniformSampleSpacing=0
-OpenWindow="Timeline", DockArea=RIGHT, x=0, y=1, w=1119, h=661, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=1, DataPaneShown=1, PowerPaneShown=0, CodePaneShown=0, PinCursor="Cursor Movable", TimePerDiv="500 ms / Div", TimeStampFormat="Time", DataGraphDrawAsPoints=0, DataGraphLegendShown=1, DataGraphUniformSampleSpacing=0, DataGraphLegendPosition="0;0", DataGraphShowNamesAtCursor=1, PowerGraphDrawAsPoints=0, PowerGraphLegendShown=0, PowerGraphAvgFilterTime=Off, PowerGraphAvgFilterLen=Off, PowerGraphUniformSampleSpacing=0, PowerGraphLegendPosition="535;0", CodeGraphLegendShown=0, CodeGraphLegendPosition="556;0"
+OpenWindow="Timeline", DockArea=RIGHT, x=0, y=1, w=1119, h=658, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=1, DataPaneShown=1, PowerPaneShown=0, CodePaneShown=0, PinCursor="Cursor Movable", TimePerDiv="500 ms / Div", TimeStampFormat="Time", DataGraphDrawAsPoints=0, DataGraphLegendShown=1, DataGraphUniformSampleSpacing=0, DataGraphLegendPosition="0;0", DataGraphShowNamesAtCursor=1, PowerGraphDrawAsPoints=0, PowerGraphLegendShown=0, PowerGraphAvgFilterTime=Off, PowerGraphAvgFilterLen=Off, PowerGraphUniformSampleSpacing=0, PowerGraphLegendPosition="846;0", CodeGraphLegendShown=0, CodeGraphLegendPosition="867;0"
 OpenWindow="Console", DockArea=BOTTOM, x=0, y=0, w=1155, h=388, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
 SmartViewPlugin="", Page="", Toolbar="Hidden", Window="SmartView 1"
 TableHeader="Source Files", SortCol="File", SortOrder="ASCENDING", VisibleCols=["File";"Status";"Size";"#Insts";"Path"], ColWidths=[233;100;100;100;1164]
-TableHeader="Data Sampling Table", SortCol="None", SortOrder="ASCENDING", VisibleCols=["Index";"Time";" RxStatus";" VIN_f";" VOUT_f";" ADC1_values[0]";" ADC1_values[1]"], ColWidths=[100;100;100;100;100;100;100]
-TableHeader="Data Sampling Setup", SortCol="Min. Change", SortOrder="DESCENDING", VisibleCols=["Expression";"Type";"Value";"Min";"Max";"Average";"# Changes";"Min. Change";"Max. Change"], ColWidths=[308;179;100;100;124;135;135;150;349]
+TableHeader="Data Sampling Table", SortCol="None", SortOrder="ASCENDING", VisibleCols=["Index";"Time";" RxStatus";" VIN_f";" VOUT_f";" Current_f"], ColWidths=[100;100;100;100;100;100]
+TableHeader="Data Sampling Setup", SortCol="Min. Change", SortOrder="DESCENDING", VisibleCols=["Expression";"Type";"Value";"Min";"Max";"Average";"# Changes";"Min. Change";"Max. Change"], ColWidths=[308;179;100;168;179;110;130;150;256]
 TableHeader="Power Sampling", SortCol="Index", SortOrder="ASCENDING", VisibleCols=["Index";"Time";"Ch 0"], ColWidths=[100;100;100]
 TableHeader="Watched Data 1", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Value";"Location";"Refresh"], ColWidths=[180;375;100;113]
 TableHeader="RegisterSelectionDialog", SortCol="None", SortOrder="ASCENDING", VisibleCols=[], ColWidths=[]
