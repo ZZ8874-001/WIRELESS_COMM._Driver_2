@@ -76,6 +76,11 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 
+#define BOARD_NUM 2
+#define BOARD_ID_0 { 0x00180012 , 0x00010005 }
+#define BOARD_ID_1 { 0x59304310 , 0x5130430B }
+#define BOARD_ID_2 { 0x20363852 , 0x20303157 }
+extern int8_t IDCard;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

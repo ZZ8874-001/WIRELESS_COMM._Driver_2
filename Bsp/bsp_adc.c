@@ -1,4 +1,5 @@
 #include "bsp_adc.h"
+#include "main.h"
 
 #include "wirelessrx.h"
 #include "detect_task.h"
@@ -6,27 +7,30 @@
 
 #define ADC_SAMPLING_FREQUENCY (1.125e6/74.0f)
 
-#define ADC_RATIO (2.9832f/4096.0f)
-#define ADC_RATIO_DIFF (ADC_RATIO*2)
-#define ADC_VOLTAGE_RATIO 22.227f
-#define ADC_CURRENT_RATIO 10.3341f
-#define CURRENT_OUT_OFFSET -17.1348f
-#define VOLTAGE_OUT_OFFSET -0.0129f
+//#define ADC_RATIO (2.9832f/4096.0f)
+//#define ADC_RATIO_DIFF (ADC_RATIO*2)
+//#define ADC_VOLTAGE_RATIO 22.227f
+//#define ADC_CURRENT_RATIO 10.3341f
+//#define CURRENT_OUT_OFFSET -17.1348f
+//#define VOLTAGE_OUT_OFFSET -0.0129f
+
+float ADC_RATIO[BOARD_NUM] = { 2.9832f/4096.0f, 2.9827f/4096.0f };
+float ADC_RATIO_DIFF[BOARD_NUM] = { 2.9832f/4096.0f * 2 , 2.9837f/4096.0f * 2 };
+float CURRENT_OUT_OFFSET[BOARD_NUM] = { -8.020f, -15.9082f };
+float VOLTAGE_OUT_OFFSET[BOARD_NUM] = { -0.0129f, -0.0129f };
+float ADC_VOLTAGE_RATIO[BOARD_NUM] = { 22.227f , 22.227f };
+float ADC_CURRENT_RATIO[BOARD_NUM] = { -10.200f , -20.3865f };
+
+int8_t IDCard;
 
 #define VIN_MIN 12.8f
 #define VIN_MAX 48.0f
-#define VIN_WATCHDOG_MIN (VIN_MIN/ADC_RATIO/ADC_VOLTAGE_RATIO)
-#define VIN_WATCHDOG_MAX (VIN_MAX/ADC_RATIO/ADC_VOLTAGE_RATIO)
 
 #define VOUT_MIN 0.0f
 #define VOUT_MAX 32.0f
-#define VOUT_WATCHDOG_MIN (VOUT_MIN/ADC_RATIO/ADC_VOLTAGE_RATIO)
-#define VOUT_WATCHDOG_MAX (VOUT_MAX/ADC_RATIO/ADC_VOLTAGE_RATIO)
 
 #define CURRENT_MIN 0.0f
 #define CURRENT_MAX 6.0f
-#define CURRENT_WATCHDOG_MIN (CURRENT_MIN/ADC_RATIO/ADC_VOLTAGE_RATIO)
-#define CURRENT_WATCHDOG_MAX (CURRENT_MAX/ADC_RATIO/ADC_VOLTAGE_RATIO)
 
 static void Change_ADC_AWD_Threshold(uint32_t *ADCx_TRx,uint16_t low_threshold,uint16_t high_threshold);
 
@@ -56,6 +60,16 @@ void Bsp_ADC_Init()
     while(HAL_ADC_Start_DMA(&hadc1,ADC1_values,sizeof(ADC1_values)/sizeof(ADC1_values[0])) != HAL_OK);
     while(HAL_ADC_Start_DMA(&hadc2,ADC2_values,sizeof(ADC2_values)/sizeof(ADC2_values[0])) != HAL_OK);
     
+    float VIN_WATCHDOG_MIN = VIN_MIN/ADC_RATIO[IDCard]/ADC_VOLTAGE_RATIO[IDCard];
+    float VIN_WATCHDOG_MAX = VIN_MAX/ADC_RATIO[IDCard]/ADC_VOLTAGE_RATIO[IDCard];
+
+    float VOUT_WATCHDOG_MIN = VOUT_MIN/ADC_RATIO[IDCard]/ADC_VOLTAGE_RATIO[IDCard];
+    float VOUT_WATCHDOG_MAX = VOUT_MAX/ADC_RATIO[IDCard]/ADC_VOLTAGE_RATIO[IDCard];
+
+    float CURRENT_WATCHDOG_MIN = CURRENT_MIN/ADC_RATIO[IDCard]/ADC_VOLTAGE_RATIO[IDCard];
+    float CURRENT_WATCHDOG_MAX = CURRENT_MAX/ADC_RATIO[IDCard]/ADC_VOLTAGE_RATIO[IDCard];
+
+
     Change_ADC_AWD_Threshold(&ADC1->TR1,VIN_WATCHDOG_MIN,(VIN_WATCHDOG_MAX > 4095 ? 4095 : VIN_WATCHDOG_MAX));   //  VIN 14-48
     Change_ADC_AWD_Threshold(&ADC1->TR2,VOUT_WATCHDOG_MIN/16,VOUT_WATCHDOG_MAX/16);   //  VOUT  0-28
     Change_ADC_AWD_Threshold(&ADC2->TR1,0,4095);    //  CURRENT
@@ -73,8 +87,8 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     if(hadc->Instance == ADC1)
     {
         float V_values[2];
-        V_values[ADCVIN] = ADC1_values[ADCVIN] * ADC_RATIO * ADC_VOLTAGE_RATIO + VOLTAGE_OUT_OFFSET;
-        V_values[ADCVCC] = ADC1_values[ADCVCC] * ADC_RATIO * ADC_VOLTAGE_RATIO + VOLTAGE_OUT_OFFSET;
+        V_values[ADCVIN] = ADC1_values[ADCVIN] * ADC_RATIO[IDCard] * ADC_VOLTAGE_RATIO[IDCard] + VOLTAGE_OUT_OFFSET[IDCard];
+        V_values[ADCVCC] = ADC1_values[ADCVCC] * ADC_RATIO[IDCard] * ADC_VOLTAGE_RATIO[IDCard] + VOLTAGE_OUT_OFFSET[IDCard];
 
         VIN_f = First_Order_Filter_Calculate(&VInFilter,V_values[ADCVIN]);
         VOUT_f = First_Order_Filter_Calculate(&VCCFilter,V_values[ADCVCC]);
@@ -83,7 +97,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     else if(hadc->Instance == ADC2)
     {
         static float Current;
-        Current =(ADC2_values[0] - 2048) * ADC_RATIO_DIFF * ADC_CURRENT_RATIO + CURRENT_OUT_OFFSET;
+        Current =(ADC2_values[0] - 2048) * ADC_RATIO_DIFF[IDCard] * ADC_CURRENT_RATIO[IDCard] + CURRENT_OUT_OFFSET[IDCard];
 
         Current_f = First_Order_Filter_Calculate(&CurrentFilter,Current);
         Current_f_f = First_Order_Filter_Calculate(&Current_f_Filter,Current);

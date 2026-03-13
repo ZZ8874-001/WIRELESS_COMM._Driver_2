@@ -16,7 +16,6 @@ typedef struct
 { 
     bool is_Lost;
     bool Overtime_Exit;
-
     float Overtime_ms;
     float new_time;
     float dt_ms;
