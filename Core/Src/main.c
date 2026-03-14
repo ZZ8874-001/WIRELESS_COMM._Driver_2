@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "can.h"
 #include "dma.h"
 #include "tim.h"
 #include "usart.h"
@@ -100,6 +101,7 @@ int main(void)
   MX_ADC2_Init();
   MX_USART3_UART_Init();
   MX_TIM17_Init();
+  MX_CAN_Init();
   /* USER CODE BEGIN 2 */
 
   uint32_t board_id[3];
@@ -130,6 +132,7 @@ int main(void)
 
   DWT_Init(72);
   Detect_Init();
+  Bsp_CAN_Init();
   Bsp_USART_Init();
   Bsp_ADC_Init();
   WirelessInit();
