@@ -38,6 +38,7 @@ void MX_ADC1_Init(void)
   /* USER CODE END ADC1_Init 0 */
 
   ADC_MultiModeTypeDef multimode = {0};
+  ADC_AnalogWDGConfTypeDef AnalogWDGConfig = {0};
   ADC_ChannelConfTypeDef sConfig = {0};
 
   /* USER CODE BEGIN ADC1_Init 1 */
@@ -69,6 +70,19 @@ void MX_ADC1_Init(void)
   */
   multimode.Mode = ADC_MODE_INDEPENDENT;
   if (HAL_ADCEx_MultiModeConfigChannel(&hadc1, &multimode) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Analog WatchDog 1
+  */
+  AnalogWDGConfig.WatchdogNumber = ADC_ANALOGWATCHDOG_1;
+  AnalogWDGConfig.WatchdogMode = ADC_ANALOGWATCHDOG_SINGLE_REG;
+  AnalogWDGConfig.HighThreshold = 0;
+  AnalogWDGConfig.LowThreshold = 0;
+  AnalogWDGConfig.Channel = ADC_CHANNEL_1;
+  AnalogWDGConfig.ITMode = ENABLE;
+  if (HAL_ADC_AnalogWDGConfig(&hadc1, &AnalogWDGConfig) != HAL_OK)
   {
     Error_Handler();
   }
