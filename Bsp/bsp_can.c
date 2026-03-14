@@ -3,9 +3,19 @@
 #include "main.h"
 #include "can.h"
 
+#include "detect_task.h"
+#include "wirelessrx.h"
+#include "bsp_adc.h"
+
 #include <string.h>
 
-uint8_t rx_data_test[8];
+#define BIGCUP_CAN_RX_ID 0x210
+#define BIGCUP_CAN_TX_ID 0x209
+
+BIGCUP_DATA_TX_T bigcup_data_tx;
+BIGCUP_DATA_RX_T bigcup_data_rx;
+
+static void Bigcup_Data_Update();
 
 void Bsp_CAN_Init()
 {
@@ -27,7 +37,7 @@ void Bsp_CAN_Init()
     while(HAL_CAN_Start(&hcan) != HAL_OK)
     {
     }
-    while(HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK)
+    while(HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING|CAN_IT_TX_MAILBOX_EMPTY) != HAL_OK)
     {
     }
 
@@ -50,14 +60,81 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     {
         switch(rx_header.StdId)
         {
-        case 0x200:
-            memcpy(rx_data_test,rx_data,8);
+        case BIGCUP_CAN_RX_ID:
+            bigcup_data_rx.charge_current = (float)(rx_data[0]*10000 + (rx_data[1] << 8 | rx_data[2])) / 10000.0f;
+            bigcup_data_rx.backhome_flag = rx_data[3];
+            bigcup_data_rx.charge_complete_flag = rx_data[4];
+            bigcup_data_rx.reset_flag = rx_data[5];
+
+            Detect_Hook(CAN_BIGCUP_RX_TOE);
             break;
-        case 0x201:
-            break;
-            
         default:
             break;
         }
     }
 }
+
+static void Bigcup_Data_Update()
+{
+    bigcup_data_tx.start_charge_flag = 0;
+    bigcup_data_tx.shutdown_flag = 0;
+    bigcup_data_tx.reset_success_flag = 0;
+    bigcup_data_tx.error_flag = 0;
+    switch(RxStatus)
+    {
+    case RxStatus_Connecting:
+        break;
+    case RxStatus_Connected:
+        bigcup_data_tx.start_charge_flag = 1;
+        break;
+    case RxStatus_CurrentError:
+        bigcup_data_tx.error_flag = 1;
+        break;
+    case RxStatus_Disconnected:
+        bigcup_data_tx.reset_success_flag = 1;
+        break;
+    default:
+        bigcup_data_tx.error_flag = 1;
+        break;
+    }
+}
+
+void Send_Bigcup_Data()
+{
+    uint8_t tx_data[8];
+    uint32_t tx_mailbox;
+
+    Bigcup_Data_Update();
+    uint8_t vout_integer = (uint8_t)(VOUT_f);
+    uint16_t vout_decimal = (uint16_t)(VOUT_f - vout_integer)*10000;
+    uint8_t vout_decimal1 = (uint8_t)(vout_decimal/100);
+    uint8_t vout_decimal2 = (uint8_t)(vout_decimal%100);
+
+    tx_data[0] = bigcup_data_tx.start_charge_flag;
+    tx_data[1] = bigcup_data_tx.shutdown_flag;
+    tx_data[2] = bigcup_data_tx.reset_success_flag;
+    tx_data[3] = bigcup_data_tx.error_flag;
+    tx_data[4] = vout_integer;
+    tx_data[5] = vout_decimal1;
+    tx_data[6] = vout_decimal2;
+    tx_data[7] = 0x00;
+
+    while(HAL_CAN_GetTxMailboxesFreeLevel(&hcan) == 0)
+    {
+    }
+    if(hcan.Instance->TSR & CAN_TSR_TXOK0)
+    {
+        tx_mailbox = CAN_TX_MAILBOX0;
+    }
+    else if(hcan.Instance->TSR & CAN_TSR_TXOK1)
+    {
+        tx_mailbox = CAN_TX_MAILBOX1;
+    }
+    else if(hcan.Instance->TSR & CAN_TSR_TXOK2)
+    {
+        tx_mailbox = CAN_TX_MAILBOX2;
+    }
+
+    HAL_CAN_AddTxMessage(&hcan, &(CAN_TxHeaderTypeDef){.StdId = BIGCUP_CAN_TX_ID, .ExtId = 0, .RTR = CAN_RTR_DATA, .IDE = CAN_ID_STD, .DLC = 8}, tx_data, &tx_mailbox);
+}
+

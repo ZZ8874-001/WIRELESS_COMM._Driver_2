@@ -8,9 +8,9 @@ enum RxStatus_t
 {
     RxStatus_Unknow = 0,
     RxStatus_Connecting ,
-    RxStatus_Disconnected ,
     RxStatus_Connected ,
     RxStatus_CurrentError ,
+    RxStatus_Disconnected ,
     RxStatus_Debug ,
 };
 

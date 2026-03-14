@@ -30,6 +30,7 @@
 #include "wirelessrx.h"
 #include "detect_task.h"
 #include "bsp_adc.h"
+#include "bsp_can.h"
 #include "bsp_dwt.h"
 #include "bsp_usart.h"
 /* USER CODE END Includes */
@@ -203,8 +204,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if(htim->Instance == TIM3)
   {
     // 10kHz
+    static uint32_t count_tim3 = 0;
+    count_tim3++;
     Detect_Task();
     Transmit_Task();
+    if(count_tim3%100 == 0)
+    {
+      Send_Bigcup_Data();
+    }
   }
   else if(htim->Instance == TIM17)
   {

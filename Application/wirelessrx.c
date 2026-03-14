@@ -39,6 +39,7 @@
 
 #include "detect_task.h"
 #include "bsp_adc.h"
+#include "bsp_can.h"
 #include "bsp_dwt.h"
 #include "bsp_usart.h"
 #include "filter32.h"
@@ -88,6 +89,14 @@ void Transmit_Task(void)
 {
     Power = VOUT_f * Current_f;
 
+    if(is_TOE_Overtime(CAN_BIGCUP_RX_TOE))
+    {
+        bigcup_data_rx.charge_current = 0;
+        bigcup_data_rx.backhome_flag = 0;
+        bigcup_data_rx.charge_complete_flag = 0;
+        bigcup_data_rx.reset_flag = 0;
+    }
+
     switch(RxStatus)
     {
     case RxStatus_Debug:
@@ -108,11 +117,17 @@ void Transmit_Task(void)
     case RxStatus_Disconnected:
         // GPIOB->BRR = GPIO_PIN_11;
         Tx_Buf.Head = 0xBB;
+
         SwitchENA_ENB(Off);
         HighPower();
+
         IND11_GPIO_Port->BRR = IND11_Pin;
+
         Detect_Hook(CONNECTING_TO_CONNECTED_TOE);
-        if(is_TOE_Overtime(ADC1_WATCHDOG1_TOE) && is_TOE_Overtime(ADC1_WATCHDOG2_TOE))
+
+        if(is_TOE_Overtime(ADC1_WATCHDOG1_TOE) 
+        && is_TOE_Overtime(ADC1_WATCHDOG2_TOE) 
+        && bigcup_data_rx.backhome_flag)
         {
             last_RxStatus = RxStatus;
             RxStatus = RxStatus_Connecting;
@@ -122,11 +137,14 @@ void Transmit_Task(void)
         // GPIOB->BSRR = GPIO_PIN_11;
         Tx_Buf.Head = 0xAA;
         SwitchENA_ENB(On);
+
         PULSEA_GPIO_Port->BSRR = PULSEA_Pin;
         PULSEB_GPIO_Port->BSRR = PULSEB_Pin;
+
         static uint16_t current_error_count = 0;
         static bool currenterror_flag;
         currenterror_flag = 1;
+        
         current_error_count++;
         if(current_error_count > 32768)
         {
@@ -135,6 +153,14 @@ void Transmit_Task(void)
         else
         {
             IND11_GPIO_Port->BRR = IND11_Pin;
+        }
+
+        if(bigcup_data_rx.reset_flag)
+        {
+            last_RxStatus = RxStatus;
+            RxStatus = RxStatus_Disconnected;
+
+            bigcup_data_tx.reset_success_flag = 1;
         }
         break;
     default:
@@ -307,6 +333,14 @@ static void Connected_Task(void)
         }
     }
 
+    if(bigcup_data_rx.charge_complete_flag)
+    {
+        last_RxStatus = RxStatus;
+        RxStatus = RxStatus_CurrentError;
+
+        connected_byte_count = 0;
+        connected_frame_count = 0;
+    }
     if(VIN_f < VIN_CONNECTING_TO_CONNECTED)
     {
         Detect_Hook(CONNECTING_TO_CONNECTED_TOE);
