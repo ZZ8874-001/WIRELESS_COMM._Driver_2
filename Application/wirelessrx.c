@@ -159,8 +159,6 @@ void Transmit_Task(void)
         {
             last_RxStatus = RxStatus;
             RxStatus = RxStatus_Disconnected;
-
-            bigcup_data_tx.reset_success_flag = 1;
         }
         break;
     default:

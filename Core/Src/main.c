@@ -208,7 +208,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     count_tim3++;
     Detect_Task();
     Transmit_Task();
-    if(count_tim3 >= 100)
+    if(count_tim3 >= 1000)
     {
       count_tim3 = 0;
       Send_Bigcup_Data();

@@ -101,6 +101,17 @@ static void Bigcup_Data_Update()
 
 void Send_Bigcup_Data()
 {
+    static uint8_t can_health = 0;
+    if(HAL_CAN_GetTxMailboxesFreeLevel(&hcan) == 0)
+    {
+        can_health = 0;
+        return;
+    }
+    else
+    {
+        can_health = 1;
+    }
+
     uint8_t tx_data[8];
     uint32_t tx_mailbox;
 
@@ -119,9 +130,6 @@ void Send_Bigcup_Data()
     tx_data[6] = vout_decimal2;
     tx_data[7] = 0x00;
 
-    while(HAL_CAN_GetTxMailboxesFreeLevel(&hcan) == 0)
-    {
-    }
     if(hcan.Instance->TSR & CAN_TSR_TXOK0)
     {
         tx_mailbox = CAN_TX_MAILBOX0;
