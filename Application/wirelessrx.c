@@ -46,6 +46,8 @@
 
 #define VIN_CONNECTING_TO_CONNECTED 14.0f
 
+#define DEBUG_ENABLE_NO_CAN 1
+
 static void Debug_Task(void);
 static void Connecting_Task(void);
 static void Connected_Task(void);
@@ -56,6 +58,7 @@ static void SwitchENA_ENB(int On_Off);
 static void SwitchHighOrLowPower(uint8_t On_Off);
 
 float Power;
+uint16_t tim15_arr = 500;
 
 // 10100110
 // 01011001
@@ -97,6 +100,7 @@ void Transmit_Task(void)
         bigcup_data_rx.reset_flag = 0;
     }
 
+    TIM15->ARR = tim15_arr;
     switch(RxStatus)
     {
     case RxStatus_Debug:
@@ -105,13 +109,14 @@ void Transmit_Task(void)
     case RxStatus_Connecting:
         // GPIOB->BRR = GPIO_PIN_11;
         Tx_Buf.Head = 0xBB;
-        HAL_GPIO_TogglePin(IND11_GPIO_Port,IND11_Pin);
+        tim15_arr = 500;
+        TIM15->CCR2 = 0.5 * tim15_arr;
         Connecting_Task();
         break;
     case RxStatus_Connected:
         // GPIOB->BSRR = GPIO_PIN_11;
         Tx_Buf.Head = 0xAA;
-        IND11_GPIO_Port->BSRR = IND11_Pin;
+        TIM15->CCR2 = tim15_arr;
         Connected_Task();
         break;
     case RxStatus_Disconnected:
@@ -121,13 +126,14 @@ void Transmit_Task(void)
         SwitchENA_ENB(Off);
         HighPower();
 
-        IND11_GPIO_Port->BRR = IND11_Pin;
+        TIM15->CCR2 = 0;
 
         Detect_Hook(CONNECTING_TO_CONNECTED_TOE);
 
         if(is_TOE_Overtime(ADC1_WATCHDOG1_TOE) 
         && is_TOE_Overtime(ADC1_WATCHDOG2_TOE) 
-        && bigcup_data_rx.backhome_flag)
+        && (bigcup_data_rx.backhome_flag || DEBUG_ENABLE_NO_CAN)
+        && !is_TOE_Overtime(USART3_RX_TOE))
         {
             last_RxStatus = RxStatus;
             RxStatus = RxStatus_Connecting;
@@ -137,6 +143,7 @@ void Transmit_Task(void)
         // GPIOB->BSRR = GPIO_PIN_11;
         Tx_Buf.Head = 0xAA;
         SwitchENA_ENB(On);
+        tim15_arr = 250;
 
         PULSEA_GPIO_Port->BSRR = PULSEA_Pin;
         PULSEB_GPIO_Port->BSRR = PULSEB_Pin;
@@ -148,11 +155,11 @@ void Transmit_Task(void)
         current_error_count++;
         if(current_error_count > 32768)
         {
-            IND11_GPIO_Port->BSRR = IND11_Pin;
+            TIM15->CCR2 = 0.5 * tim15_arr;
         }
         else
         {
-            IND11_GPIO_Port->BRR = IND11_Pin;
+            TIM15->CCR2 = 0;
         }
 
         if(bigcup_data_rx.reset_flag)

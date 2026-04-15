@@ -61,8 +61,8 @@ void Error_Handler(void);
 #define VIN_GPIO_Port GPIOA
 #define VOUT_Pin GPIO_PIN_1
 #define VOUT_GPIO_Port GPIOA
-#define IND11_Pin GPIO_PIN_3
-#define IND11_GPIO_Port GPIOA
+#define IND1_Pin GPIO_PIN_3
+#define IND1_GPIO_Port GPIOA
 #define ENA_Pin GPIO_PIN_14
 #define ENA_GPIO_Port GPIOB
 #define ENB_Pin GPIO_PIN_15
@@ -71,15 +71,17 @@ void Error_Handler(void);
 #define PULSEA_GPIO_Port GPIOA
 #define PULSEB_Pin GPIO_PIN_9
 #define PULSEB_GPIO_Port GPIOA
+#define SYNC_R_Pin GPIO_PIN_11
+#define SYNC_R_GPIO_Port GPIOA
 #define CHARGE_EN_Pin GPIO_PIN_3
 #define CHARGE_EN_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
-#define BOARD_NUM 2
-#define BOARD_ID_0 { 0x00180012 , 0x00010005 }
-#define BOARD_ID_1 { 0x59304310 , 0x5130430B }
-#define BOARD_ID_2 { 0x20363852 , 0x20303157 }
+#define BOARD_NUM 3
+#define BOARD_ID_0 { 0x00180012 , 0x00010005 , 0x00140014 }
+#define BOARD_ID_1 { 0x59304310 , 0x5130430B , 0x53304310 }
+#define BOARD_ID_2 { 0x20363852 , 0x20303157 , 0x20393041 }
 extern int8_t IDCard;
 /* USER CODE END Private defines */
 

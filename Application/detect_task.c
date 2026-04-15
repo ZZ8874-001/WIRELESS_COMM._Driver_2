@@ -12,6 +12,8 @@ void Detect_Init()
         1000,
         200,
         500,
+        200,
+        200,
     };
 
     for(uint8_t i = 0;i<DETECT_LIST_LENGTH;i++)

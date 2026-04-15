@@ -104,6 +104,7 @@ int main(void)
   MX_USART3_UART_Init();
   MX_TIM17_Init();
   MX_CAN_Init();
+  MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
 
   uint32_t board_id[3];
@@ -138,6 +139,7 @@ int main(void)
   Bsp_ADC_Init();
   WirelessInit();
   HAL_TIM_Base_Start_IT(&htim3);
+  HAL_TIM_PWM_Start(&htim15,TIM_CHANNEL_2);
   HAL_TIM_Base_Start_IT(&htim17);
   /* USER CODE END 2 */
 

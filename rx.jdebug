@@ -23,7 +23,7 @@ void OnProjectLoad (void) {
   // Dialog-generated settings
   //
   Project.SetDevice ("STM32F334C8");
-  Project.SetHostIF ("USB", "20750725");
+  Project.SetHostIF ("USB", "602712074");
   Project.SetTargetIF ("SWD");
   Project.SetTIFSpeed ("4 MHz");
   Project.AddPathSubstitute ("E:/new folder/WireLessChargeRx", "$(ProjectDir)");
