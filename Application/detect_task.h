@@ -31,7 +31,9 @@ enum errorlist
     CAN_BIGCUP_RX_TOE,
     USART3_TX_TOE,
     USART3_RX_TOE,
+    CONNECTED_UVLO_TIMEOUT_TOE,
     DETECT_LIST_LENGTH,
+
 };
 
 void Detect_Init();

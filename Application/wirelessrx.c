@@ -346,7 +346,13 @@ static void Connected_Task(void)
         connected_byte_count = 0;
         connected_frame_count = 0;
     }
-    if(VIN_f < VIN_CONNECTING_TO_CONNECTED)
+
+    if (VIN_f >= VIN_CONNECTING_TO_CONNECTED)
+    {
+        Detect_Hook(CONNECTED_UVLO_TIMEOUT_TOE);
+    }
+    
+    else if( is_TOE_Overtime(CONNECTED_UVLO_TIMEOUT_TOE))
     {
         Detect_Hook(CONNECTING_TO_CONNECTED_TOE);
         last_RxStatus = RxStatus;

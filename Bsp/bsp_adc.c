@@ -53,11 +53,6 @@ void Bsp_ADC_Init()
     First_Order_Filter_Init(&CurrentFilter,1.0f/ADC_SAMPLING_FREQUENCY,10.0f);
     First_Order_Filter_Init(&Current_f_Filter,1.0f/ADC_SAMPLING_FREQUENCY,1.0f);
 
-    while(HAL_ADCEx_Calibration_Start(&hadc1,ADC_SINGLE_ENDED) != HAL_OK);
-    while(HAL_ADCEx_Calibration_Start(&hadc2,ADC_DIFFERENTIAL_ENDED) != HAL_OK);
-    while(HAL_ADC_Start_DMA(&hadc1,ADC1_values,sizeof(ADC1_values)/sizeof(ADC1_values[0])) != HAL_OK);
-    while(HAL_ADC_Start_DMA(&hadc2,ADC2_values,sizeof(ADC2_values)/sizeof(ADC2_values[0])) != HAL_OK);
-    
     float VIN_WATCHDOG_MIN = VIN_MIN/ADC_RATIO[IDCard]/ADC_VOLTAGE_RATIO[IDCard];
     float VIN_WATCHDOG_MAX = VIN_MAX/ADC_RATIO[IDCard]/ADC_VOLTAGE_RATIO[IDCard];
 
@@ -67,14 +62,21 @@ void Bsp_ADC_Init()
     float CURRENT_WATCHDOG_MIN = CURRENT_MIN/ADC_RATIO[IDCard]/ADC_VOLTAGE_RATIO[IDCard];
     float CURRENT_WATCHDOG_MAX = CURRENT_MAX/ADC_RATIO[IDCard]/ADC_VOLTAGE_RATIO[IDCard];
 
+    while(HAL_ADCEx_Calibration_Start(&hadc1,ADC_SINGLE_ENDED) != HAL_OK);
+    while(HAL_ADCEx_Calibration_Start(&hadc2,ADC_DIFFERENTIAL_ENDED) != HAL_OK);
+    while(HAL_ADC_Start_DMA(&hadc1,ADC1_values,sizeof(ADC1_values)/sizeof(ADC1_values[0])) != HAL_OK);
+    while(HAL_ADC_Start_DMA(&hadc2,ADC2_values,sizeof(ADC2_values)/sizeof(ADC2_values[0])) != HAL_OK);
 
     Change_ADC_AWD_Threshold(&ADC1->TR1,VIN_WATCHDOG_MIN,(VIN_WATCHDOG_MAX > 4095 ? 4095 : VIN_WATCHDOG_MAX));   //  VIN 14-48
     Change_ADC_AWD_Threshold(&ADC1->TR2,VOUT_WATCHDOG_MIN/16,VOUT_WATCHDOG_MAX/16);   //  VOUT  0-28
     Change_ADC_AWD_Threshold(&ADC2->TR1,0,4095);    //  CURRENT
     ADC1->AWD2CR = 1 << 2;
     
+    DMA1_Channel1->CCR &= ~(DMA_CCR_HTIE | DMA_CCR_TCIE);
+    DMA1_Channel4->CCR &= ~(DMA_CCR_HTIE | DMA_CCR_TCIE);
+
     ADC1->IER |= ADC_IER_AWD1 | ADC_IER_AWD2 | ADC_IER_EOS;
-    ADC2->IER |= ADC_IER_AWD1;
+    ADC2->IER |= ADC_IER_AWD1 | ADC_IER_EOS;
 
     DMA1_Channel1->CCR &= 0xFFFB;
     DMA1_Channel2->CCR &= 0xFFFB; 
@@ -115,7 +117,7 @@ void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef* hadc)
         // VIN
         Detect_Hook(ADC1_WATCHDOG1_TOE);
 
-        if(ADC1_values[ADCVIN] < (ADC1->TR1 & 0xfff) && RxStatus != RxStatus_CurrentError)
+        if((ADC1_values[ADCVIN] < (ADC1->TR1 & 0xfff) && RxStatus != RxStatus_CurrentError) && is_TOE_Overtime(CONNECTED_UVLO_TIMEOUT_TOE))
         {
             RxStatus = RxStatus_Disconnected;
         }
