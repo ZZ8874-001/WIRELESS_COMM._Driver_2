@@ -1,31 +1,33 @@
 
 
-GraphedExpression="Current_f_f", DisplayFormat=DISPLAY_FORMAT_DEC, Color=#a00909, Show=0
-GraphedExpression="VIN_f", Color=#09a01b
-GraphedExpression="VOUT_f", Color=#769dda
-GraphedExpression="RxStatus", Color=#b14f0d
-GraphedExpression="Current", Color=#b3c38e
+Breakpoint=C:/Users/Shuchen Tao/Documents/WIRELESS_COMM._Driver_2/Application/wirelessrx.c:77, State=BP_STATE_ON
+Breakpoint=C:/Users/Shuchen Tao/Documents/WIRELESS_COMM._Driver_2/Application/wirelessrx.c:167, State=BP_STATE_ON
+Breakpoint=C:/Users/Shuchen Tao/Documents/WIRELESS_COMM._Driver_2/Application/wirelessrx.c:174, State=BP_STATE_ON
+GraphedExpression="VIN_f", DisplayFormat=DISPLAY_FORMAT_DEC, Color=#a00909
+GraphedExpression="VOUT_f", Color=#09a01b
+GraphedExpression="RxStatus", Color=#769dda
+GraphedExpression="Current_f", Color=#b14f0d
+GraphedExpression="ADC2_values[0]", Color=#b3c38e
+GraphedExpression="uvlo_timeout_flag", Color=#ab7b05
+GraphedExpression="adc1_watchdog1_sb_flag", Color=#7fd3b7
+GraphedExpression="ADC1_values[0]", Color=#50328f
+GraphedExpression="ADC1_values[1]", Color=#c587a5
+GraphedExpression="(bigcup_data_rx).charge_complete_flag", DisplayFormat=DISPLAY_FORMAT_DEC, Color=#999401
+OpenDocument="main.c", FilePath="C:/Users/Shuchen Tao/Documents/WIRELESS_COMM._Driver_2/Core/Src/main.c", Line=0
 OpenDocument="startup_stm32f334x8.s", FilePath="C:/Users/Shuchen Tao/Documents/WIRELESS_COMM._Driver_2/startup_stm32f334x8.s", Line=0
-OpenDocument="main.c", FilePath="//192.168.191.221/Shuchen's_Documents/WIRELESS_COMM._Driver_2/Core/Src/main.c", Line=104
-OpenDocument="stm32f3xx_hal_adc.c", FilePath="//192.168.191.221/Shuchen's_Documents/WIRELESS_COMM._Driver_2/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_adc.c", Line=0
-OpenDocument="stm32f3xx_it.c", FilePath="//192.168.191.221/Shuchen's_Documents/WIRELESS_COMM._Driver_2/Core/Src/stm32f3xx_it.c", Line=90
-OpenDocument="stm32f3xx_hal_adc_ex.c", FilePath="//192.168.191.221/Shuchen's_Documents/WIRELESS_COMM._Driver_2/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_adc_ex.c", Line=3063
-OpenDocument="bsp_adc.c", FilePath="//192.168.191.221/Shuchen's_Documents/WIRELESS_COMM._Driver_2/Bsp/bsp_adc.c", Line=74
 OpenToolbar="Debug", Floating=0, x=0, y=0
-OpenWindow="Source Files", DockArea=LEFT, x=0, y=1, w=838, h=591, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Disassembly", DockArea=RIGHT, x=0, y=0, w=851, h=275, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Watched Data 1", DockArea=LEFT, x=0, y=0, w=838, h=655, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Data Sampling", DockArea=BOTTOM, x=1, y=0, w=2198, h=388, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, VisibleTab=0, UniformSampleSpacing=0
-OpenWindow="Timeline", DockArea=RIGHT, x=0, y=1, w=851, h=971, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=1, DataPaneShown=1, PowerPaneShown=0, CodePaneShown=0, PinCursor="Cursor Movable", TimePerDiv="1 s / Div", TimeStampFormat="Time", DataGraphDrawAsPoints=0, DataGraphLegendShown=1, DataGraphUniformSampleSpacing=0, DataGraphLegendPosition="0;0", DataGraphShowNamesAtCursor=1, PowerGraphDrawAsPoints=0, PowerGraphLegendShown=0, PowerGraphAvgFilterTime=Off, PowerGraphAvgFilterLen=Off, PowerGraphUniformSampleSpacing=0, PowerGraphLegendPosition="578;0", CodeGraphLegendShown=0, CodeGraphLegendPosition="599;0"
-OpenWindow="Console", DockArea=BOTTOM, x=0, y=0, w=537, h=388, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-SmartViewPlugin="", Page="", Toolbar="Hidden", Window="SmartView 1"
-TableHeader="Source Files", SortCol="File", SortOrder="ASCENDING", VisibleCols=["File";"Status";"Size";"#Insts";"Path"], ColWidths=[248;100;100;100;1164]
-TableHeader="Data Sampling Table", SortCol="None", SortOrder="ASCENDING", VisibleCols=["Index";"Time";" Current_f_f";" VIN_f";" VOUT_f";" RxStatus";" Current"], ColWidths=[100;100;100;100;100;100;100]
-TableHeader="Data Sampling Setup", SortCol="Min. Change", SortOrder="DESCENDING", VisibleCols=["Expression";"Type";"Value";"Min";"Max";"Average";"# Changes";"Min. Change";"Max. Change"], ColWidths=[308;179;157;100;157;157;130;157;853]
+OpenWindow="Source Files", DockArea=LEFT, x=0, y=1, w=847, h=169, TabPos=0, TopOfStack=1, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Disassembly", DockArea=RIGHT, x=0, y=0, w=1252, h=220, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Memory 1", DockArea=LEFT, x=0, y=1, w=847, h=169, TabPos=1, TopOfStack=0, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, EditorAddress=0x20000240
+OpenWindow="Watched Data 1", DockArea=LEFT, x=0, y=0, w=847, h=1030, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Data Sampling", DockArea=BOTTOM, x=0, y=0, w=2560, h=202, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, VisibleTab=0, UniformSampleSpacing=0
+OpenWindow="Timeline", DockArea=RIGHT, x=0, y=1, w=1252, h=998, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=1, DataPaneShown=1, PowerPaneShown=0, CodePaneShown=0, PinCursor="Cursor Movable", TimePerDiv="500 ms / Div", TimeStampFormat="Time", DataGraphDrawAsPoints=0, DataGraphLegendShown=1, DataGraphUniformSampleSpacing=0, DataGraphLegendPosition="0;0", PowerGraphDrawAsPoints=0, PowerGraphLegendShown=0, PowerGraphAvgFilterTime=Off, PowerGraphAvgFilterLen=Off, PowerGraphUniformSampleSpacing=0, PowerGraphLegendPosition="482;-71", CodeGraphLegendShown=0, CodeGraphLegendPosition="498;0"
+TableHeader="Data Sampling Table", SortCol="Index", SortOrder="ASCENDING", VisibleCols=[" ADC2_values[0]";"Index";"Time";" VIN_f";" VOUT_f";" RxStatus";" Current_f";" uvlo_timeout_flag";" adc1_watchdog1_sb_flag";" ADC1_values[0]";" ADC1_values[1]";" (bigcup_data_rx).charge_complete_flag"], ColWidths=[100;100;100;100;100;100;100;100;100;100;100;100]
+TableHeader="Data Sampling Setup", SortCol="Min. Change", SortOrder="DESCENDING", VisibleCols=["Expression";"Type";"Value";"Min";"Max";"Average";"# Changes";"Min. Change";"Max. Change"], ColWidths=[308;234;100;100;100;110;130;150;1302]
 TableHeader="Power Sampling", SortCol="Index", SortOrder="ASCENDING", VisibleCols=["Index";"Time";"Ch 0"], ColWidths=[100;100;100]
-TableHeader="Watched Data 1", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Value";"Location";"Refresh"], ColWidths=[180;421;100;107]
+TableHeader="Watched Data 1", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Value";"Location";"Refresh"], ColWidths=[180;421;100;146]
 TableHeader="RegisterSelectionDialog", SortCol="None", SortOrder="ASCENDING", VisibleCols=[], ColWidths=[]
-TableHeader="TargetExceptionDialog", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Value";"Address";"Description"], ColWidths=[200;196;191;850]
+TableHeader="Source Files", SortCol="File", SortOrder="ASCENDING", VisibleCols=["File";"Status";"Size";"#Insts";"Path"], ColWidths=[248;100;100;100;934]
 WatchedExpression="hadc1", RefreshRate=2, Window=Watched Data 1
 WatchedExpression="hadc2", RefreshRate=2, Window=Watched Data 1
 WatchedExpression="ADC1_values", RefreshRate=2, Window=Watched Data 1
@@ -55,3 +57,6 @@ WatchedExpression="board_id", RefreshRate=5, DisplayFormat=DISPLAY_FORMAT_HEX, W
 WatchedExpression="htim15", RefreshRate=5, Window=Watched Data 1
 WatchedExpression="Rx_Buf", RefreshRate=5, Window=Watched Data 1
 WatchedExpression="tim15_arr", RefreshRate=5, Window=Watched Data 1
+WatchedExpression="uvlo_timeout_flag", RefreshRate=2, Window=Watched Data 1
+WatchedExpression="adc1_watchdog1_sb_flag", RefreshRate=2, Window=Watched Data 1
+WatchedExpression="adc1_watchdog2_sb_flag", RefreshRate=2, Window=Watched Data 1

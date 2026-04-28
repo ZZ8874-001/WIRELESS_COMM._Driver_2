@@ -5,7 +5,7 @@
 #include "detect_task.h"
 #include "filter32.h"
 
-#define ADC_SAMPLING_FREQUENCY (1.125e6/74.0f)
+#define ADC_SAMPLING_FREQUENCY (12.5e3)
 
 //#define ADC_RATIO (2.9832f/4096.0f)
 //#define ADC_RATIO_DIFF (ADC_RATIO*2)
@@ -16,12 +16,12 @@
 
 float ADC_RATIO[BOARD_NUM] = { 2.9832f/4096.0f, 2.9827f/4096.0f, 2.9845f/4096.0f };
 float ADC_RATIO_DIFF[BOARD_NUM] = { 2.9832f/4096.0f * 2 , 2.9837f/4096.0f * 2 , 2.9845f/4096.0f * 2 };
-float CURRENT_OUT_OFFSET[BOARD_NUM] = { -8.3960f, -17.1348f , -1.6298f };
+float CURRENT_OUT_OFFSET[BOARD_NUM] = { -8.3960f, -17.1348f , -12.6225f };
 float VOLTAGE_OUT_OFFSET[BOARD_NUM] = { -0.012900f, -0.012900f , 0.037000f };
 float ADC_VOLTAGE_RATIO[BOARD_NUM] = { 22.227f , 22.227f , 20.134f };
-float ADC_CURRENT_RATIO[BOARD_NUM] = { 5.100f , 10.3341f , 1.0f };
+float ADC_CURRENT_RATIO[BOARD_NUM] = { 5.100f , 10.3341f , 7.6570f };
 
-#define VIN_MIN 12.8f
+#define VIN_MIN 4.8f
 #define VIN_MAX 48.0f
 
 #define VOUT_MIN 0.0f
@@ -48,10 +48,10 @@ float Current_f_f;
 
 void Bsp_ADC_Init()
 {
-    First_Order_Filter_Init(&VInFilter,1.0f/ADC_SAMPLING_FREQUENCY,300.0f);
-    First_Order_Filter_Init(&VCCFilter,1.0f/ADC_SAMPLING_FREQUENCY,300.0f);
-    First_Order_Filter_Init(&CurrentFilter,1.0f/ADC_SAMPLING_FREQUENCY,10.0f);
-    First_Order_Filter_Init(&Current_f_Filter,1.0f/ADC_SAMPLING_FREQUENCY,1.0f);
+    First_Order_Filter_Init(&VInFilter,1.0f/ADC_SAMPLING_FREQUENCY,8000.0f);
+    First_Order_Filter_Init(&VCCFilter,1.0f/ADC_SAMPLING_FREQUENCY,8000.0f);
+    First_Order_Filter_Init(&CurrentFilter,1.0f/ADC_SAMPLING_FREQUENCY,8000.0f);
+    First_Order_Filter_Init(&Current_f_Filter,1.0f/ADC_SAMPLING_FREQUENCY,10.0f);
 
     float VIN_WATCHDOG_MIN = VIN_MIN/ADC_RATIO[IDCard]/ADC_VOLTAGE_RATIO[IDCard];
     float VIN_WATCHDOG_MAX = VIN_MAX/ADC_RATIO[IDCard]/ADC_VOLTAGE_RATIO[IDCard];
@@ -116,10 +116,14 @@ void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef* hadc)
     {
         // VIN
         Detect_Hook(ADC1_WATCHDOG1_TOE);
-
-        if((ADC1_values[ADCVIN] < (ADC1->TR1 & 0xfff) && RxStatus != RxStatus_CurrentError) && is_TOE_Overtime(CONNECTED_UVLO_TIMEOUT_TOE))
+        static uint8_t uvlo_timeout_flag,adc1_watchdog1_sb_flag;
+        //static uint32_t adc1_watchdog2_sb_flag;
+        uvlo_timeout_flag = (is_TOE_Overtime(CONNECTED_UVLO_TIMEOUT_TOE) && Current_f <= 0.2f);
+        adc1_watchdog1_sb_flag = (ADC1_values[ADCVIN] < (ADC1->TR1 & 0xfff) && RxStatus != RxStatus_CurrentError ) && uvlo_timeout_flag;
+        if(RxStatus != RxStatus_Connecting && adc1_watchdog1_sb_flag)
         {
             RxStatus = RxStatus_Disconnected;
+            //adc1_watchdog2_sb_flag = HAL_GetTick();
         }
         else if(ADC1_values[ADCVIN] > ((ADC1->TR1 >> 16) & 0xfff))
         {
