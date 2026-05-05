@@ -62,12 +62,13 @@ uint16_t tim15_arr = 500;
 
 // 10100110
 // 01011001
+
 // 左对齐
-uint8_t SOF = ~(0b01100101);//0是高功率，1是低功率
+uint8_t SOF = 0b01100101;//0是高功率，1是低功率
 uint8_t DOF = 0b00000001;
 uint8_t num_0_or_1[2] = {
-                        0b01111,
-                        0b00011
+                        0b00011,
+                        0b01111
                     };
 
 enum RxStatus_t RxStatus = RxStatus_Unknow;
@@ -246,24 +247,33 @@ static void Connecting_Task(void)
 {
     static uint8_t connecting_frame_count = 0;
     static uint8_t connecting_byte_count = 0;
+    static float first_into_connecting_time_ms = 0;
 
     if(last_RxStatus != RxStatus_Connecting)
     {
         connecting_byte_count = 0;
         connecting_frame_count = 0;
+
+        first_into_connecting_time_ms = USER_GetTick();
+
         last_RxStatus = RxStatus;
         RxStatus = RxStatus_Connecting;
     }
 
-    if(connecting_frame_count < 8)
+    if(connecting_frame_count == 0)
     {
         SwitchENA_ENB(On);
-        SwitchHighOrLowPower(num_0_or_1[SOF>>(connecting_frame_count)&1]>>connecting_byte_count & 1);
+        SwitchHighOrLowPower(num_0_or_1[1]>>connecting_byte_count & 1);
     }
-    else if(connecting_frame_count < 16)
+    else if(connecting_frame_count < 8+1)
     {
         SwitchENA_ENB(On);
-        SwitchHighOrLowPower(num_0_or_1[DOF>>(connecting_frame_count - 8)&1]>>connecting_byte_count & 1);
+        SwitchHighOrLowPower(num_0_or_1[SOF>>(connecting_frame_count - 1)&1]>>connecting_byte_count & 1);
+    }
+    else if(connecting_frame_count < 16+1)
+    {
+        SwitchENA_ENB(On);
+        SwitchHighOrLowPower(num_0_or_1[DOF>>(connecting_frame_count - 9)&1]>>connecting_byte_count & 1);
     }
     else if(connecting_frame_count < 200)
     {
@@ -283,6 +293,11 @@ static void Connecting_Task(void)
     if(VIN_f < VIN_CONNECTING_TO_CONNECTED)
     {
         Detect_Hook(CONNECTING_TO_CONNECTED_TOE);
+        if(DWT_GetTimeline_ms() - first_into_connecting_time_ms > 1000)
+        {
+            last_RxStatus = RxStatus;
+            RxStatus = RxStatus_Disconnected;
+        }
     }
     else if(is_TOE_Overtime(CONNECTING_TO_CONNECTED_TOE))
     {
@@ -303,15 +318,20 @@ static void Connected_Task(void)
 
     if(aaa_success < 4)
     {
-        if(connected_frame_count < 8)
+        if(connected_frame_count == 0)
         {
             SwitchENA_ENB(On);
-            SwitchHighOrLowPower(num_0_or_1[SOF>>(connected_frame_count)&1]>>connected_byte_count & 1);
+            SwitchHighOrLowPower(num_0_or_1[1]>>connected_byte_count & 1);
         }
-        else if(connected_frame_count < 16)
+        if(connected_frame_count < 8+1)
         {
             SwitchENA_ENB(On);
-            SwitchHighOrLowPower(num_0_or_1[DOF>>(connected_frame_count - 8)&1]>>connected_byte_count & 1);
+            SwitchHighOrLowPower(num_0_or_1[SOF>>(connected_frame_count - 1)&1]>>connected_byte_count & 1);
+        }
+        else if(connected_frame_count < 16+1)
+        {
+            SwitchENA_ENB(On);
+            SwitchHighOrLowPower(num_0_or_1[DOF>>(connected_frame_count - 9)&1]>>connected_byte_count & 1);
         }
         else if(connected_frame_count < 200)
         {
@@ -345,13 +365,14 @@ static void Connected_Task(void)
 
         connected_byte_count = 0;
         connected_frame_count = 0;
-    }
+        aaa_success = 0;
+    } 
 
-    if (VIN_f >= VIN_CONNECTING_TO_CONNECTED || Current_f > 0.2)
+    if (VIN_f >= VIN_CONNECTING_TO_CONNECTED)
     {
         Detect_Hook(CONNECTED_UVLO_TIMEOUT_TOE);
     }
-    else if( is_TOE_Overtime(CONNECTED_UVLO_TIMEOUT_TOE))
+    else if( is_TOE_Overtime(CONNECTED_UVLO_TIMEOUT_TOE) && Current_f < 0.2f)
     {
         Detect_Hook(CONNECTING_TO_CONNECTED_TOE);
         last_RxStatus = RxStatus;
@@ -359,6 +380,7 @@ static void Connected_Task(void)
 
         connected_byte_count = 0;
         connected_frame_count = 0;
+        aaa_success = 0;
     }
 }
 
@@ -404,8 +426,8 @@ void SwitchENA_ENB(int On_Off)
 
 void SwitchHighOrLowPower(uint8_t On_Off)
 {
-    if(On_Off){LowPower();}
-    else{HighPower();}
+    if(On_Off == 1){LowPower();}
+    else if(On_Off == 0){HighPower();}
     
 }
 

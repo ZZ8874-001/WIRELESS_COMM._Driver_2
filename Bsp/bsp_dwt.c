@@ -125,12 +125,23 @@ static void DWT_CNT_Update(void)
     CYCCNT_LAST = cnt_now;
 }
 
+// 单位s
 void DWT_Delay(float Delay)
 {
     uint32_t tickstart = DWT->CYCCNT;
     float wait = Delay;
 
     while ((DWT->CYCCNT - tickstart) < wait * (float)CPU_FREQ_Hz)
+    {
+    }
+}
+
+void DWT_Delay_ms(float Delay)
+{
+    uint32_t tickstart = DWT->CYCCNT;
+    float wait = Delay;
+
+    while ((DWT->CYCCNT - tickstart) < wait * (float)CPU_FREQ_Hz_ms)
     {
     }
 }
