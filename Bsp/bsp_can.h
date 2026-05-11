@@ -9,7 +9,7 @@ typedef struct
     // 2.回家信号，准备充电
     // 3.充电完成信号
     // 4.复位信号，将无线充从关断保护状态切换到待命状态
-    float charge_current;
+    float Cap_Voltage_REM;
     uint8_t backhome_flag;
     uint8_t charge_complete_flag;
     uint8_t reset_flag;

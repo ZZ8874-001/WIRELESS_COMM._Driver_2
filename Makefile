@@ -64,6 +64,7 @@ Core/Src/system_stm32f3xx.c \
 Core/Src/sysmem.c \
 Core/Src/syscalls.c \
 Application/detect_task.c \
+Application/board_id.c \
 Application/wirelessrx.c \
 Bsp/bsp_adc.c \
 Bsp/bsp_can.c \

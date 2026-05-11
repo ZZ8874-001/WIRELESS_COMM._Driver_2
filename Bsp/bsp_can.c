@@ -61,7 +61,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
         switch(rx_header.StdId)
         {
         case BIGCUP_CAN_RX_ID:
-            bigcup_data_rx.charge_current = (float)(rx_data[0]*10000 + (rx_data[1] << 8 | rx_data[2])) / 10000.0f;
+            bigcup_data_rx.Cap_Voltage_REM = rx_data[0] / 5.0f;
             bigcup_data_rx.backhome_flag = rx_data[3];
             bigcup_data_rx.charge_complete_flag = rx_data[4];
             bigcup_data_rx.reset_flag = rx_data[5];

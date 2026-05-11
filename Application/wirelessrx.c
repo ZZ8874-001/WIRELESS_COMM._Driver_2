@@ -95,7 +95,7 @@ void Transmit_Task(void)
 
     if(is_TOE_Overtime(CAN_BIGCUP_RX_TOE))
     {
-        bigcup_data_rx.charge_current = 0;
+        bigcup_data_rx.Cap_Voltage_REM = 0;
         bigcup_data_rx.backhome_flag = 0;
         bigcup_data_rx.charge_complete_flag = 0;
         bigcup_data_rx.reset_flag = 0;
