@@ -11,6 +11,7 @@ static const BoardID_t kKnownBoardIDs[BOARD_NUM] =
     {BOARD_UID_1},
     {BOARD_UID_2},
     {BOARD_UID_3},
+    {BOARD_UID_4},
 };
 
 static bool BoardID_Equals(const BoardID_t *lhs, const BoardID_t *rhs)

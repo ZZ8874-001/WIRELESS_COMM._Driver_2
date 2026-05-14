@@ -46,7 +46,7 @@
 
 #define VIN_CONNECTING_TO_CONNECTED 14.0f
 
-#define DEBUG_ENABLE_NO_CAN 1
+#define DEBUG_ENABLE_NO_CAN true
 
 static void Debug_Task(void);
 static void Connecting_Task(void);
@@ -117,7 +117,8 @@ void Transmit_Task(void)
     case RxStatus_Connected:
         // GPIOB->BSRR = GPIO_PIN_11;
         Tx_Buf.Head = 0xAA;
-        TIM15->CCR2 = tim15_arr;
+        tim15_arr = 800;
+        TIM15->CCR2 = 0.2 * tim15_arr;
         Connected_Task();
         break;
     case RxStatus_Disconnected:
@@ -126,7 +127,8 @@ void Transmit_Task(void)
 
         SwitchENA_ENB(Off);
         HighPower();
-
+        
+        tim15_arr = 500;
         TIM15->CCR2 = 0;
 
         Detect_Hook(CONNECTING_TO_CONNECTED_TOE);
@@ -134,7 +136,8 @@ void Transmit_Task(void)
         if(is_TOE_Overtime(ADC1_WATCHDOG1_TOE) 
         && is_TOE_Overtime(ADC1_WATCHDOG2_TOE) 
         && (bigcup_data_rx.backhome_flag || DEBUG_ENABLE_NO_CAN)
-        && !is_TOE_Overtime(USART3_RX_TOE))
+        && !is_TOE_Overtime(USART3_RX_TOE)
+        && (VOUT_f <= (VIN_f * BUCK_OUTPUT_OVERVOLT_RELEASE_RATIO)))
         {
             last_RxStatus = RxStatus;
             RxStatus = RxStatus_Connecting;

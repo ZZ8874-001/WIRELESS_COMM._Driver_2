@@ -78,12 +78,13 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 
-#define BOARD_NUM 4
+#define BOARD_NUM 5
 #define BOARD_UID_WORDS 3
 #define BOARD_UID_0 { 0x00180012 , 0x59304310 , 0x20363852 }
 #define BOARD_UID_1 { 0x00010005 , 0x5130430B , 0x20303157 }
 #define BOARD_UID_2 { 0x00140014 , 0x53304310 , 0x20393041 }
 #define BOARD_UID_3 { 0x0016000A , 0x51304316 , 0x20313142 }
+#define BOARD_UID_4 { 0x80040013 , 0x3131430A , 0x20333047 }
 extern int8_t IDCard;
 /* USER CODE END Private defines */
 
