@@ -31,6 +31,7 @@ typedef struct
 
 extern BIGCUP_DATA_TX_T bigcup_data_tx;
 extern BIGCUP_DATA_RX_T bigcup_data_rx;
+extern BIGCUP_DATA_RX_T miao_data_rx;
 
 void Bsp_CAN_Init();
 void Send_Bigcup_Data();

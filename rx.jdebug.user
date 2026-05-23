@@ -2,7 +2,7 @@
 
 
 Breakpoint=C:/Users/Shuchen Tao/Documents/WIRELESS_COMM._Driver_2/Application/wirelessrx.c:78:1, State=BP_STATE_DISABLED
-Breakpoint=C:/Users/Shuchen Tao/Documents/WIRELESS_COMM._Driver_2/Application/wirelessrx.c:171:13, State=BP_STATE_ON
+Breakpoint=C:/Users/Shuchen Tao/Documents/WIRELESS_COMM._Driver_2/Application/wirelessrx.c:172:13, State=BP_STATE_DISABLED
 Breakpoint=C:/Users/Shuchen Tao/Documents/WIRELESS_COMM._Driver_2/Application/wirelessrx.c:178:13, State=BP_STATE_ON
 Breakpoint=C:/Users/Shuchen Tao/Documents/WIRELESS_COMM._Driver_2/Core/Src/stm32f3xx_it.c:234, State=BP_STATE_ON
 Breakpoint=C:/Users/Shuchen Tao/Documents/WIRELESS_COMM._Driver_2/Bsp/bsp_adc.c:153, State=BP_STATE_ON
@@ -16,23 +16,24 @@ GraphedExpression="adc1_watchdog1_sb_flag", Color=#7fd3b7, Show=0
 GraphedExpression="ADC1_values[0]", Color=#50328f, Show=0
 GraphedExpression="ADC1_values[1]", Color=#c587a5, Show=0
 GraphedExpression="(bigcup_data_rx).charge_complete_flag", Color=#999401, Show=0
+OpenDocument="startup_stm32f334x8.s", FilePath="C:/Users/Shuchen Tao/Documents/WIRELESS_COMM._Driver_2/startup_stm32f334x8.s", Line=0
 OpenDocument="bsp_usart.c", FilePath="//192.168.191.221/Shuchen's_Documents/WIRELESS_COMM._Driver_2/Bsp/bsp_usart.c", Line=0
 OpenDocument="bsp_adc.c", FilePath="//192.168.191.221/Shuchen's_Documents/WIRELESS_COMM._Driver_2/Bsp/bsp_adc.c", Line=94
-OpenDocument="main.c", FilePath="//192.168.191.221/Shuchen's_Documents/WIRELESS_COMM._Driver_2/Core/Src/main.c", Line=63
-OpenDocument="stm32f3xx_it.c", FilePath="//192.168.191.221/Shuchen's_Documents/WIRELESS_COMM._Driver_2/Core/Src/stm32f3xx_it.c", Line=90
+OpenDocument="main.c", FilePath="//192.168.191.221/Shuchen's_Documents/WIRELESS_COMM._Driver_2/Core/Src/main.c", Line=66
+OpenDocument="stm32f3xx_it.c", FilePath="//192.168.191.221/Shuchen's_Documents/WIRELESS_COMM._Driver_2/Core/Src/stm32f3xx_it.c", Line=93
 OpenToolbar="Debug", Floating=0, x=0, y=0
-OpenWindow="Source Files", DockArea=LEFT, x=0, y=1, w=1021, h=434, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Disassembly", DockArea=RIGHT, x=0, y=0, w=928, h=328, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Watched Data 1", DockArea=LEFT, x=0, y=0, w=1021, h=812, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Data Sampling", DockArea=BOTTOM, x=1, y=0, w=2600, h=388, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, VisibleTab=0, UniformSampleSpacing=0
-OpenWindow="Timeline", DockArea=RIGHT, x=0, y=1, w=928, h=918, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=1, DataPaneShown=1, PowerPaneShown=0, CodePaneShown=0, PinCursor="Cursor Movable", TimePerDiv="200 ms / Div", TimeStampFormat="Time", DataGraphDrawAsPoints=0, DataGraphLegendShown=1, DataGraphUniformSampleSpacing=0, DataGraphLegendPosition="0;0", DataGraphShowNamesAtCursor=1, PowerGraphDrawAsPoints=0, PowerGraphLegendShown=0, PowerGraphAvgFilterTime=Off, PowerGraphAvgFilterLen=Off, PowerGraphUniformSampleSpacing=0, PowerGraphLegendPosition="655;0", CodeGraphLegendShown=0, CodeGraphLegendPosition="676;0"
-OpenWindow="Console", DockArea=BOTTOM, x=0, y=0, w=135, h=388, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Source Files", DockArea=LEFT, x=0, y=1, w=867, h=574, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Disassembly", DockArea=RIGHT, x=0, y=0, w=928, h=294, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Watched Data 1", DockArea=LEFT, x=0, y=0, w=867, h=423, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Data Sampling", DockArea=BOTTOM, x=1, y=0, w=2395, h=388, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, VisibleTab=0, UniformSampleSpacing=0
+OpenWindow="Timeline", DockArea=RIGHT, x=0, y=1, w=928, h=703, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=1, DataPaneShown=1, PowerPaneShown=0, CodePaneShown=0, PinCursor="Cursor Movable", TimePerDiv="500 ms / Div", TimeStampFormat="Time", DataGraphDrawAsPoints=0, DataGraphLegendShown=1, DataGraphUniformSampleSpacing=0, DataGraphLegendPosition="0;0", DataGraphShowNamesAtCursor=1, PowerGraphDrawAsPoints=0, PowerGraphLegendShown=0, PowerGraphAvgFilterTime=Off, PowerGraphAvgFilterLen=Off, PowerGraphUniformSampleSpacing=0, PowerGraphLegendPosition="979;0", CodeGraphLegendShown=0, CodeGraphLegendPosition="1000;0"
+OpenWindow="Console", DockArea=BOTTOM, x=0, y=0, w=124, h=388, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
 SmartViewPlugin="", Page="", Toolbar="Hidden", Window="SmartView 1"
 TableHeader="Source Files", SortCol="File", SortOrder="ASCENDING", VisibleCols=["File";"Status";"Size";"#Insts";"Path"], ColWidths=[248;100;100;100;1164]
-TableHeader="Data Sampling Table", SortCol="None", SortOrder="ASCENDING", VisibleCols=["Index";"Time";" VIN_f";" VOUT_f";" RxStatus";" Current_f";" uvlo_timeout_flag";" adc1_watchdog1_sb_flag";" (bigcup_data_rx).charge_complete_flag"], ColWidths=[100;100;100;100;100;100;100;100;100]
-TableHeader="Data Sampling Setup", SortCol="Min. Change", SortOrder="DESCENDING", VisibleCols=["Expression";"Type";"Value";"Min";"Max";"Average";"# Changes";"Min. Change";"Max. Change"], ColWidths=[308;234;157;146;146;157;130;150;1172]
+TableHeader="Data Sampling Table", SortCol="None", SortOrder="ASCENDING", VisibleCols=["Index";"Time";" VIN_f";" VOUT_f";" RxStatus";" Current_f";" ADC2_values[0]";" uvlo_timeout_flag";" adc1_watchdog1_sb_flag";" ADC1_values[0]";" ADC1_values[1]";" (bigcup_data_rx).charge_complete_flag"], ColWidths=[100;100;100;100;100;100;100;100;100;100;100;100]
+TableHeader="Data Sampling Setup", SortCol="Min. Change", SortOrder="DESCENDING", VisibleCols=["Expression";"Type";"Value";"Min";"Max";"Average";"# Changes";"Min. Change";"Max. Change"], ColWidths=[308;234;135;157;124;135;130;150;1022]
 TableHeader="Power Sampling", SortCol="Index", SortOrder="ASCENDING", VisibleCols=["Index";"Time";"Ch 0"], ColWidths=[100;100;100]
-TableHeader="Watched Data 1", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Value";"Location";"Refresh"], ColWidths=[180;421;100;290]
+TableHeader="Watched Data 1", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Value";"Location";"Refresh"], ColWidths=[180;421;100;136]
 TableHeader="RegisterSelectionDialog", SortCol="None", SortOrder="ASCENDING", VisibleCols=[], ColWidths=[]
 TableHeader="TargetExceptionDialog", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Value";"Address";"Description"], ColWidths=[200;196;191;850]
 WatchedExpression="hadc1", RefreshRate=2, Window=Watched Data 1
@@ -57,6 +58,7 @@ WatchedExpression="huart3", RefreshRate=2, Window=Watched Data 1
 WatchedExpression="Tx_Buf", RefreshRate=2, Window=Watched Data 1
 WatchedExpression="bigcup_data_tx", RefreshRate=2, Window=Watched Data 1
 WatchedExpression="bigcup_data_rx", RefreshRate=5, Window=Watched Data 1
+WatchedExpression="miao_data_rx", RefreshRate=2, Window=Watched Data 1
 WatchedExpression="hcan", RefreshRate=2, Window=Watched Data 1
 WatchedExpression="count_tim3", RefreshRate=2, Window=Watched Data 1
 WatchedExpression="htim3", RefreshRate=2, Window=Watched Data 1

@@ -11,10 +11,11 @@ void Detect_Init()
         1000,   // ADC1_WATCHDOG2_TOE: VOUT analog watchdog timeout
         1000,   // ADC2_WATCHDOG1_TOE: current analog watchdog timeout
         400,    // CONNECTING_TO_CONNECTED_TOE: delay before switching to Connected
-        500,    // CAN_BIGCUP_RX_TOE: CAN receive timeout
+        120,    // CAN_BIGCUP_RX_TOE: CAN receive timeout
         200,    // USART3_TX_TOE: USART3 transmit completion timeout
         400,    // USART3_RX_TOE: USART3 receive timeout
         5000,   // Connected_UVLO_timeout: timeout for undervoltage lockout in Connected state
+        120,    // CAN_MIAO_RX_TOE: CAN receive timeout for Miao
     };
 
     for(uint8_t i = 0;i<DETECT_LIST_LENGTH;i++)

@@ -11,22 +11,24 @@
 
 #define BIGCUP_CAN_RX_ID 0x210
 #define BIGCUP_CAN_TX_ID 0x209
+#define MIAO_CAN_RX_ID 0x170
 
 BIGCUP_DATA_TX_T bigcup_data_tx;
 BIGCUP_DATA_RX_T bigcup_data_rx;
+BIGCUP_DATA_RX_T miao_data_rx;
 
 static void Bigcup_Data_Update();
 
 void Bsp_CAN_Init()
 {
     CAN_FilterTypeDef can_filter;
-    can_filter.FilterIdHigh = 0x0000;
+    can_filter.FilterIdHigh = BIGCUP_CAN_RX_ID << 5;
     can_filter.FilterIdLow = 0x0000;
-    can_filter.FilterMaskIdHigh = 0x0000;
+    can_filter.FilterMaskIdHigh = MIAO_CAN_RX_ID << 5;
     can_filter.FilterMaskIdLow = 0x0000;
     can_filter.FilterFIFOAssignment = CAN_FILTER_FIFO0;
     can_filter.FilterBank = 0;
-    can_filter.FilterMode = CAN_FILTERMODE_IDMASK;
+    can_filter.FilterMode = CAN_FILTERMODE_IDLIST;
     can_filter.FilterScale = CAN_FILTERSCALE_32BIT;
     can_filter.FilterActivation = ENABLE;
     can_filter.SlaveStartFilterBank = 14;
@@ -65,8 +67,14 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
             bigcup_data_rx.backhome_flag = rx_data[3];
             bigcup_data_rx.charge_complete_flag = rx_data[4];
             bigcup_data_rx.reset_flag = rx_data[5];
-
+            
             Detect_Hook(CAN_BIGCUP_RX_TOE);
+            break;
+        case MIAO_CAN_RX_ID:
+            miao_data_rx.backhome_flag = rx_data[4];
+            miao_data_rx.reset_flag = rx_data[5];
+
+            Detect_Hook(CAN_MIAO_RX_TOE);
             break;
         default:
             break;

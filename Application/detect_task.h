@@ -32,6 +32,7 @@ enum errorlist
     USART3_TX_TOE,
     USART3_RX_TOE,
     CONNECTED_UVLO_TIMEOUT_TOE,
+    CAN_MIAO_RX_TOE,
     DETECT_LIST_LENGTH,
 
 };

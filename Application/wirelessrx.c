@@ -46,7 +46,7 @@
 
 #define VIN_CONNECTING_TO_CONNECTED 14.0f
 
-#define DEBUG_ENABLE_NO_CAN true
+#define DEBUG_ENABLE_NO_CAN false
 
 static void Debug_Task(void);
 static void Connecting_Task(void);
@@ -101,6 +101,12 @@ void Transmit_Task(void)
         bigcup_data_rx.reset_flag = 0;
     }
 
+    if(is_TOE_Overtime(CAN_MIAO_RX_TOE))
+    {
+        miao_data_rx.backhome_flag = 0;
+        miao_data_rx.reset_flag = 0;
+    }
+
     TIM15->ARR = tim15_arr;
     switch(RxStatus)
     {
@@ -135,7 +141,7 @@ void Transmit_Task(void)
 
         if(is_TOE_Overtime(ADC1_WATCHDOG1_TOE) 
         && is_TOE_Overtime(ADC1_WATCHDOG2_TOE) 
-        && (bigcup_data_rx.backhome_flag || DEBUG_ENABLE_NO_CAN)
+        && (bigcup_data_rx.backhome_flag || DEBUG_ENABLE_NO_CAN  || miao_data_rx.backhome_flag)
         && !is_TOE_Overtime(USART3_RX_TOE)
         && (VOUT_f <= (VIN_f * BUCK_OUTPUT_OVERVOLT_RELEASE_RATIO)))
         {
@@ -166,7 +172,7 @@ void Transmit_Task(void)
             TIM15->CCR2 = 0;
         }
 
-        if(bigcup_data_rx.reset_flag)
+        if(bigcup_data_rx.reset_flag || miao_data_rx.reset_flag)
         {
             last_RxStatus = RxStatus;
             RxStatus = RxStatus_Disconnected;
