@@ -10,10 +10,10 @@
 enum RxStatus_t
 {
     RxStatus_Unknow = 0,
-    RxStatus_Connecting ,
-    RxStatus_Connected ,
-    RxStatus_CurrentError ,
-    RxStatus_Disconnected ,
+    RxStatus_Connecting ,// charging
+    RxStatus_Connected ,//  charging
+    RxStatus_CurrentError ,//   error
+    RxStatus_Disconnected ,//   stayby
     RxStatus_Debug ,
 };
 

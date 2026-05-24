@@ -107,7 +107,7 @@ static void Bigcup_Data_Update()
     }
 }
 
-void Send_Bigcup_Data()
+HAL_StatusTypeDef Send_Bigcup_Data()
 {
     static uint8_t can_health = 0;
     if(HAL_CAN_GetTxMailboxesFreeLevel(&hcan) == 0)
@@ -136,21 +136,8 @@ void Send_Bigcup_Data()
     tx_data[4] = vout_integer;
     tx_data[5] = vout_decimal1;
     tx_data[6] = vout_decimal2;
-    tx_data[7] = 0x00;
+    tx_data[7] = (uint8_t)(RxStatus);
 
-    if(hcan.Instance->TSR & CAN_TSR_TXOK0)
-    {
-        tx_mailbox = CAN_TX_MAILBOX0;
-    }
-    else if(hcan.Instance->TSR & CAN_TSR_TXOK1)
-    {
-        tx_mailbox = CAN_TX_MAILBOX1;
-    }
-    else if(hcan.Instance->TSR & CAN_TSR_TXOK2)
-    {
-        tx_mailbox = CAN_TX_MAILBOX2;
-    }
-
-    HAL_CAN_AddTxMessage(&hcan, &(CAN_TxHeaderTypeDef){.StdId = BIGCUP_CAN_TX_ID, .ExtId = 0, .RTR = CAN_RTR_DATA, .IDE = CAN_ID_STD, .DLC = 8}, tx_data, &tx_mailbox);
+    return HAL_CAN_AddTxMessage(&hcan, &(CAN_TxHeaderTypeDef){.StdId = BIGCUP_CAN_TX_ID, .ExtId = 0, .RTR = CAN_RTR_DATA, .IDE = CAN_ID_STD, .DLC = 8}, tx_data, &tx_mailbox);
 }
 

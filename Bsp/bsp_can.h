@@ -34,6 +34,6 @@ extern BIGCUP_DATA_RX_T bigcup_data_rx;
 extern BIGCUP_DATA_RX_T miao_data_rx;
 
 void Bsp_CAN_Init();
-void Send_Bigcup_Data();
+HAL_StatusTypeDef Send_Bigcup_Data();
 
 #endif
