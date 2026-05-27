@@ -46,7 +46,7 @@
 
 #define VIN_CONNECTING_TO_CONNECTED 14.0f
 
-#define DEBUG_ENABLE_NO_CAN false
+#define DEBUG_ENABLE_NO_CAN true
 
 static void Debug_Task(void);
 static void Connecting_Task(void);
@@ -119,6 +119,11 @@ void Transmit_Task(void)
         tim15_arr = 500;
         TIM15->CCR2 = 0.5 * tim15_arr;
         Connecting_Task();
+        if(!miao_data_rx.backhome_flag && !DEBUG_ENABLE_NO_CAN)
+        {
+            last_RxStatus = RxStatus;
+            RxStatus = RxStatus_Disconnected;
+        }
         break;
     case RxStatus_Connected:
         // GPIOB->BSRR = GPIO_PIN_11;
@@ -126,6 +131,11 @@ void Transmit_Task(void)
         tim15_arr = 800;
         TIM15->CCR2 = 0.2 * tim15_arr;
         Connected_Task();
+        if(!miao_data_rx.backhome_flag && !DEBUG_ENABLE_NO_CAN)
+        {
+            last_RxStatus = RxStatus;
+            RxStatus = RxStatus_Disconnected;
+        }
         break;
     case RxStatus_Disconnected:
         // GPIOB->BRR = GPIO_PIN_11;
@@ -172,7 +182,7 @@ void Transmit_Task(void)
             TIM15->CCR2 = 0;
         }
 
-        if(bigcup_data_rx.reset_flag || miao_data_rx.reset_flag)
+        if(!miao_data_rx.backhome_flag && !DEBUG_ENABLE_NO_CAN && (bigcup_data_rx.reset_flag || miao_data_rx.reset_flag))
         {
             last_RxStatus = RxStatus;
             RxStatus = RxStatus_Disconnected;

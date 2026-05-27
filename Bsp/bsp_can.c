@@ -110,6 +110,10 @@ static void Bigcup_Data_Update()
 HAL_StatusTypeDef Send_Bigcup_Data()
 {
     static uint8_t can_health = 0;
+    static uint8_t vout_integer = 0;
+    static uint16_t vout_decimal = 0;
+    static uint8_t vout_decimal1 = 0;
+    static uint8_t vout_decimal2 = 0;
     if(HAL_CAN_GetTxMailboxesFreeLevel(&hcan) == 0)
     {
         can_health = 0;
@@ -124,10 +128,10 @@ HAL_StatusTypeDef Send_Bigcup_Data()
     uint32_t tx_mailbox;
 
     Bigcup_Data_Update();
-    uint8_t vout_integer = (uint8_t)(VOUT_f);
-    uint16_t vout_decimal = (uint16_t)(VOUT_f - vout_integer)*10000;
-    uint8_t vout_decimal1 = (uint8_t)(vout_decimal/100);
-    uint8_t vout_decimal2 = (uint8_t)(vout_decimal%100);
+    vout_integer = (uint8_t)(VOUT_f);
+    vout_decimal = (uint16_t)((VOUT_f - (float)vout_integer)*10000);
+    vout_decimal1 = (uint8_t)(vout_decimal/100);
+    vout_decimal2 = (uint8_t)(vout_decimal%100);
 
     tx_data[0] = bigcup_data_tx.start_charge_flag;
     tx_data[1] = bigcup_data_tx.shutdown_flag;

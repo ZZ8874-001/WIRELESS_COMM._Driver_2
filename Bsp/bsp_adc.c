@@ -25,7 +25,7 @@ float ADC_CURRENT_RATIO[BOARD_NUM] = { 5.100f , 10.3341f , 7.6570f , 10.1010f , 
 #define VIN_MAX 48.0f
 
 #define VOUT_MIN 0.0f
-#define VOUT_MAX 32.0f
+#define VOUT_MAX 100000.0f
 
 #define CURRENT_MIN 0.0f
 #define CURRENT_MAX 6.0f
