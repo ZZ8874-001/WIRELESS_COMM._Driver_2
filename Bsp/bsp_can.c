@@ -125,7 +125,7 @@ HAL_StatusTypeDef Send_Bigcup_Data()
 
     Bigcup_Data_Update();
     uint8_t vout_integer = (uint8_t)(VOUT_f);
-    uint16_t vout_decimal = (uint16_t)(VOUT_f - vout_integer)*10000;
+    uint16_t vout_decimal = (uint16_t)((VOUT_f - ((float)vout_integer))*10000);
     uint8_t vout_decimal1 = (uint8_t)(vout_decimal/100);
     uint8_t vout_decimal2 = (uint8_t)(vout_decimal%100);
 
