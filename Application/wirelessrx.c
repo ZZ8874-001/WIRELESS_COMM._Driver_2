@@ -46,7 +46,7 @@
 
 #define VIN_CONNECTING_TO_CONNECTED 14.0f
 
-#define DEBUG_ENABLE_NO_CAN true
+#define DEBUG_ENABLE_NO_CAN false
 
 static void Debug_Task(void);
 static void Connecting_Task(void);
