@@ -18,7 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "cmsis_os.h"
 #include "adc.h"
 #include "can.h"
 #include "dma.h"
@@ -29,6 +28,12 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "wirelessrx.h"
+#include "board_id.h"
+#include "detect_task.h"
+#include "bsp_adc.h"
+#include "bsp_can.h"
+#include "bsp_dwt.h"
+#include "bsp_usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,12 +54,12 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+int8_t IDCard = -2;
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -95,25 +100,30 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_ADC1_Init();
-  MX_CAN_Init();
-  MX_USART1_UART_Init();
   MX_TIM3_Init();
+  MX_ADC2_Init();
+  MX_USART3_UART_Init();
+  MX_TIM17_Init();
+  MX_CAN_Init();
+  MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
+
+  IDCard = BoardID_Detect();
+  if(!BoardID_IsValid(IDCard))
+  {
+    return 0;
+  }
+
   DWT_Init(72);
+  Detect_Init();
+  Bsp_CAN_Init();
+  Bsp_USART_Init();
+  Bsp_ADC_Init();
   WirelessInit();
   HAL_TIM_Base_Start_IT(&htim3);
+  HAL_TIM_PWM_Start(&htim15,TIM_CHANNEL_2);
+  HAL_TIM_Base_Start_IT(&htim17);
   /* USER CODE END 2 */
-
-  /* Init scheduler */
-  osKernelInitialize();
-
-  /* Call init function for freertos objects (in cmsis_os2.c) */
-  MX_FREERTOS_Init();
-
-  /* Start scheduler */
-  osKernelStart();
-
-  /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -164,9 +174,8 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1|RCC_PERIPHCLK_ADC12;
-  PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK1;
-  PeriphClkInit.Adc12ClockSelection = RCC_ADC12PLLCLK_DIV6;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC12;
+  PeriphClkInit.Adc12ClockSelection = RCC_ADC12PLLCLK_DIV64;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
@@ -174,33 +183,29 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
-
-/**
-  * @brief  Period elapsed callback in non blocking mode
-  * @note   This function is called  when TIM2 interrupt took place, inside
-  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
-  * a global variable "uwTick" used as application time base.
-  * @param  htim : TIM handle
-  * @retval None
-  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  /* USER CODE BEGIN Callback 0 */
   if(htim->Instance == TIM3)
   {
-    // 4kHz
-    QITask();
+    // 10kHz
+    static uint32_t count_tim3 = 0;
+    count_tim3++;
+    Detect_Task();
+    Transmit_Task();
+    if(count_tim3 >= 1000)
+    {
+      count_tim3 = 0;
+      Send_Bigcup_Data();
+    }
   }
-  /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM2) {
-    HAL_IncTick();
+  else if(htim->Instance == TIM17)
+  {
+    // 1000Hz
+    DMA1_Channel2->CCR |= DMA_CCR_EN;
+    USART3->CR1 |= USART_CR1_TE;
   }
-  /* USER CODE BEGIN Callback 1 */
-
-  /* USER CODE END Callback 1 */
 }
+/* USER CODE END 4 */
 
 /**
   * @brief  This function is executed in case of error occurrence.

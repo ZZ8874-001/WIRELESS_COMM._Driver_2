@@ -1,0 +1,5 @@
+build/
+.vscode/
+CLAUDE.md
+*.jdebug
+*.jdebug.user

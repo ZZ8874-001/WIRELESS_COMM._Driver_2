@@ -22,6 +22,8 @@
 #include "stm32f3xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "bsp_usart.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,10 +58,15 @@
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_adc1;
+extern DMA_HandleTypeDef hdma_adc2;
 extern ADC_HandleTypeDef hadc1;
+extern ADC_HandleTypeDef hadc2;
+extern CAN_HandleTypeDef hcan;
 extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim2;
-
+extern TIM_HandleTypeDef htim17;
+extern DMA_HandleTypeDef hdma_usart3_tx;
+extern DMA_HandleTypeDef hdma_usart3_rx;
+extern UART_HandleTypeDef huart3;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -143,6 +150,19 @@ void UsageFault_Handler(void)
 }
 
 /**
+  * @brief This function handles System service call via SWI instruction.
+  */
+void SVC_Handler(void)
+{
+  /* USER CODE BEGIN SVCall_IRQn 0 */
+
+  /* USER CODE END SVCall_IRQn 0 */
+  /* USER CODE BEGIN SVCall_IRQn 1 */
+
+  /* USER CODE END SVCall_IRQn 1 */
+}
+
+/**
   * @brief This function handles Debug monitor.
   */
 void DebugMon_Handler(void)
@@ -153,6 +173,33 @@ void DebugMon_Handler(void)
   /* USER CODE BEGIN DebugMonitor_IRQn 1 */
 
   /* USER CODE END DebugMonitor_IRQn 1 */
+}
+
+/**
+  * @brief This function handles Pendable request for system service.
+  */
+void PendSV_Handler(void)
+{
+  /* USER CODE BEGIN PendSV_IRQn 0 */
+
+  /* USER CODE END PendSV_IRQn 0 */
+  /* USER CODE BEGIN PendSV_IRQn 1 */
+
+  /* USER CODE END PendSV_IRQn 1 */
+}
+
+/**
+  * @brief This function handles System tick timer.
+  */
+void SysTick_Handler(void)
+{
+  /* USER CODE BEGIN SysTick_IRQn 0 */
+
+  /* USER CODE END SysTick_IRQn 0 */
+  HAL_IncTick();
+  /* USER CODE BEGIN SysTick_IRQn 1 */
+
+  /* USER CODE END SysTick_IRQn 1 */
 }
 
 /******************************************************************************/
@@ -177,6 +224,48 @@ void DMA1_Channel1_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles DMA1 channel2 global interrupt.
+  */
+void DMA1_Channel2_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel2_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel2_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_usart3_tx);
+  /* USER CODE BEGIN DMA1_Channel2_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel2_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA1 channel3 global interrupt.
+  */
+void DMA1_Channel3_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel3_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel3_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_usart3_rx);
+  /* USER CODE BEGIN DMA1_Channel3_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel3_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA1 channel4 global interrupt.
+  */
+void DMA1_Channel4_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel4_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel4_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_adc2);
+  /* USER CODE BEGIN DMA1_Channel4_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel4_IRQn 1 */
+}
+
+/**
   * @brief This function handles ADC1 and ADC2 interrupts.
   */
 void ADC1_2_IRQHandler(void)
@@ -185,23 +274,52 @@ void ADC1_2_IRQHandler(void)
 
   /* USER CODE END ADC1_2_IRQn 0 */
   HAL_ADC_IRQHandler(&hadc1);
+  HAL_ADC_IRQHandler(&hadc2);
   /* USER CODE BEGIN ADC1_2_IRQn 1 */
 
   /* USER CODE END ADC1_2_IRQn 1 */
 }
 
 /**
-  * @brief This function handles TIM2 global interrupt.
+  * @brief This function handles CAN TX interrupt.
   */
-void TIM2_IRQHandler(void)
+void CAN_TX_IRQHandler(void)
 {
-  /* USER CODE BEGIN TIM2_IRQn 0 */
+  /* USER CODE BEGIN CAN_TX_IRQn 0 */
 
-  /* USER CODE END TIM2_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim2);
-  /* USER CODE BEGIN TIM2_IRQn 1 */
+  /* USER CODE END CAN_TX_IRQn 0 */
+  HAL_CAN_IRQHandler(&hcan);
+  /* USER CODE BEGIN CAN_TX_IRQn 1 */
 
-  /* USER CODE END TIM2_IRQn 1 */
+  /* USER CODE END CAN_TX_IRQn 1 */
+}
+
+/**
+  * @brief This function handles CAN RX0 interrupt.
+  */
+void CAN_RX0_IRQHandler(void)
+{
+  /* USER CODE BEGIN CAN_RX0_IRQn 0 */
+
+  /* USER CODE END CAN_RX0_IRQn 0 */
+  HAL_CAN_IRQHandler(&hcan);
+  /* USER CODE BEGIN CAN_RX0_IRQn 1 */
+
+  /* USER CODE END CAN_RX0_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM1 trigger and commutation and TIM17 interrupts.
+  */
+void TIM1_TRG_COM_TIM17_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM1_TRG_COM_TIM17_IRQn 0 */
+
+  /* USER CODE END TIM1_TRG_COM_TIM17_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim17);
+  /* USER CODE BEGIN TIM1_TRG_COM_TIM17_IRQn 1 */
+
+  /* USER CODE END TIM1_TRG_COM_TIM17_IRQn 1 */
 }
 
 /**
@@ -216,6 +334,21 @@ void TIM3_IRQHandler(void)
   /* USER CODE BEGIN TIM3_IRQn 1 */
 
   /* USER CODE END TIM3_IRQn 1 */
+}
+
+/**
+  * @brief This function handles USART3 global interrupt / USART3 wake-up interrupt through EXT line 28.
+  */
+void USART3_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART3_IRQn 0 */
+  USER_USART_InterruptCallback(&huart3);
+  return;
+  /* USER CODE END USART3_IRQn 0 */
+  HAL_UART_IRQHandler(&huart3);
+  /* USER CODE BEGIN USART3_IRQn 1 */
+
+  /* USER CODE END USART3_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

@@ -7,7 +7,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2025 STMicroelectronics.
+  * Copyright (c) 2026 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -38,17 +38,17 @@ void MX_CAN_Init(void)
 
   /* USER CODE END CAN_Init 1 */
   hcan.Instance = CAN;
-  hcan.Init.Prescaler = 36;
+  hcan.Init.Prescaler = 3;
   hcan.Init.Mode = CAN_MODE_NORMAL;
   hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan.Init.TimeSeg1 = CAN_BS1_10TQ;
-  hcan.Init.TimeSeg2 = CAN_BS2_5TQ;
-  hcan.Init.TimeTriggeredMode = ENABLE;
-  hcan.Init.AutoBusOff = DISABLE;
+  hcan.Init.TimeSeg1 = CAN_BS1_9TQ;
+  hcan.Init.TimeSeg2 = CAN_BS2_2TQ;
+  hcan.Init.TimeTriggeredMode = DISABLE;
+  hcan.Init.AutoBusOff = ENABLE;
   hcan.Init.AutoWakeUp = DISABLE;
-  hcan.Init.AutoRetransmission = DISABLE;
+  hcan.Init.AutoRetransmission = ENABLE;
   hcan.Init.ReceiveFifoLocked = DISABLE;
-  hcan.Init.TransmitFifoPriority = DISABLE;
+  hcan.Init.TransmitFifoPriority = ENABLE;
   if (HAL_CAN_Init(&hcan) != HAL_OK)
   {
     Error_Handler();
@@ -83,6 +83,11 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
     GPIO_InitStruct.Alternate = GPIO_AF9_CAN;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+    /* CAN interrupt Init */
+    HAL_NVIC_SetPriority(CAN_TX_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(CAN_TX_IRQn);
+    HAL_NVIC_SetPriority(CAN_RX0_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(CAN_RX0_IRQn);
   /* USER CODE BEGIN CAN_MspInit 1 */
 
   /* USER CODE END CAN_MspInit 1 */
@@ -106,6 +111,9 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* canHandle)
     */
     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8|GPIO_PIN_9);
 
+    /* CAN interrupt Deinit */
+    HAL_NVIC_DisableIRQ(CAN_TX_IRQn);
+    HAL_NVIC_DisableIRQ(CAN_RX0_IRQn);
   /* USER CODE BEGIN CAN_MspDeInit 1 */
 
   /* USER CODE END CAN_MspDeInit 1 */
